@@ -816,18 +816,17 @@
        RESPONSIVE — screen only (print is handled by @media print)
     ───────────────────────────────────────────────────────────── */
 
-    /* Prevent horizontal scrollbar on all screen sizes */
-    html { overflow-x: hidden; }
+    /* Block all horizontal overflow at root */
+    html, body { overflow-x: hidden; max-width: 100%; }
 
-    /* Tablet / small desktop (≤ 880px)
-       Pages shrink to fit the viewport while preserving A4 proportions.
-       All absolutely-positioned cover children (masthead, teasers, quote-float)
-       use % or top/bottom offsets so they scale automatically. */
+    /* ── Tablet / small desktop (≤ 880px) ─────────────────────────
+       Pages shrink proportionally — A4 look on wider screens        */
     @media screen and (max-width: 880px) {
       .cover {
         width: min(210mm, 100%);
         height: auto;
         aspect-ratio: 210 / 297;
+        overflow: hidden;
       }
       .page {
         width: min(210mm, 100%);
@@ -835,104 +834,85 @@
       }
     }
 
-    /* Mobile (≤ 600px)
-       Full-width pages, condensed padding, proportional font scaling. */
+    /* ── Mobile (≤ 600px) ──────────────────────────────────────────
+       True mobile-web layout:
+       · Cover  = full-width proportional hero
+       · Pages  = continuous-scroll sections (no A4 box model)
+       · Zero horizontal overflow                                    */
     @media screen and (max-width: 600px) {
-      body {
-        padding: 12px 0;
-      }
-      .cover-section {
-        padding: 12px 0 0;
-      }
-      .cover, .page {
+
+      /* Edge-to-edge — no body padding on mobile */
+      body           { padding: 0; }
+      .cover-section { padding: 0; overflow: hidden; }
+
+      /* ── COVER ── */
+      /* calc() gives explicit proportional height — more reliable than
+         aspect-ratio with overflow:hidden + absolute children on iOS  */
+      .cover {
         width: 100%;
+        height: calc(100vw * 297 / 210);
         border-radius: 0;
-        margin-bottom: 12px;
+        margin-bottom: 0;
+        overflow: hidden;
       }
 
-      /* Tighter horizontal padding on page chrome */
-      .page-header {
-        padding-left: 6mm;
-        padding-right: 6mm;
-      }
-      .page-header::after {
-        left: 6mm;
-        right: 6mm;
-      }
-      .content-area {
-        padding-left: 6mm;
-        padding-right: 6mm;
-      }
-      .page-footer {
-        padding-left: 6mm;
-        padding-right: 6mm;
-      }
-      .page-footer::before {
-        left: 6mm;
-        right: 6mm;
-      }
+      /* Masthead grows to content height instead of fixed 26% */
+      .masthead { height: auto; padding: 4mm 6mm 3mm; }
 
-      /* ── Cover masthead: allow height to grow with content ── */
-      .masthead {
-        height: auto;
-        padding: 3mm 6mm 3mm;
-      }
-      /* Hide purely decorative spacer elements to reclaim vertical room */
+      /* Remove decorative spacers — reclaim vertical space */
       .org-vazangum,
-      .gold-rule {
-        display: none;
-      }
-      .org-name {
-        margin-bottom: 1mm;
-        letter-spacing: 1px;
-      }
-      .tagline {
-        margin-bottom: 2mm;
-      }
-      /* Push floating quote below the now auto-height masthead */
-      .quote-float {
-        top: 30%;
-        padding: 0 8mm;
-      }
-      /* Tighten bottom band side padding */
-      .bottom-band {
-        padding: 0 5mm 4mm;
+      .gold-rule     { display: none; }
+
+      .org-name      { margin-bottom: 1mm; letter-spacing: 1px; }
+      .tagline       { margin-bottom: 2mm; }
+
+      /* Title fits in 1–2 lines instead of 3 */
+      .mag-name-main { font-size: clamp(16pt, 5.5vw, 36pt); margin-bottom: 1mm; }
+
+      /* Pills wrap to next line if too wide — no overflow */
+      .issue-row     { flex-wrap: wrap; justify-content: center; gap: 1.5mm; }
+      .pill,
+      .pill-special  { white-space: normal; text-align: center; }
+
+      /* Push floating quote below the taller auto-height masthead */
+      .quote-float             { top: 30%; padding: 0 8mm; }
+      .quote-float .quote-text { font-size: 9pt; }
+      .bottom-band             { padding: 0 5mm 4mm; }
+
+      /* ── INTERIOR PAGES ── */
+      /* Drop the A4 box model — pages become continuous web sections */
+      .page {
+        width: 100%;
+        min-height: unset;
+        border-radius: 0;
+        box-shadow: none;
+        margin-bottom: 0;
       }
 
-      /* Scale large display fonts proportionally to viewport */
-      .mag-name-main {
-        font-size: clamp(16pt, 5.5vw, 36pt);
-        margin-bottom: 1mm;
-      }
-      .section-header .topic-title {
-        font-size: clamp(14pt, 5.5vw, 26pt);
-      }
-      .toc-title {
-        font-size: clamp(14pt, 6vw, 24pt);
-      }
+      /* Subtle green rule between sections instead of box shadows */
+      .page + .page { border-top: 3px solid rgba(141,198,63,0.18); }
 
-      /* Narrow decorative margins so they don't eat into readable width */
-      .slim-quote {
-        margin-left: 4mm;
-        margin-right: 4mm;
-      }
-      .section-header .title-underline {
-        width: 80%;
-      }
-      .toc-underline {
-        width: 75%;
-      }
+      /* Page chrome: web-appropriate tight padding */
+      .page-header         { padding: 3mm 4mm; }
+      .page-header::after  { left: 4mm; right: 4mm; }
+      .content-area        { padding: 4mm 4mm 3mm; }
+      .page-footer         { padding: 3mm 4mm 4mm; }
+      .page-footer::before { left: 4mm; right: 4mm; }
 
-      /* Cover teasers: single column on narrow screens */
-      .teasers {
-        grid-template-columns: 1fr;
-        gap: 1.5mm;
-      }
+      /* Scale display fonts */
+      .section-header .topic-title { font-size: clamp(14pt, 5.5vw, 26pt); }
+      .toc-title                   { font-size: clamp(14pt, 6vw, 24pt); }
 
-      /* TOC description: allow wrapping (was nowrap with ellipsis) */
-      .toc-desc {
-        white-space: normal;
-      }
+      /* Decorative elements: fit narrower content width */
+      .slim-quote                      { margin-left: 4mm; margin-right: 4mm; }
+      .section-header .title-underline { width: 80%; }
+      .toc-underline                   { width: 75%; }
+
+      /* Cover teasers: single column */
+      .teasers  { grid-template-columns: 1fr; gap: 1.5mm; }
+
+      /* TOC: descriptions wrap naturally */
+      .toc-desc { white-space: normal; }
     }
   </style>
 </head>
