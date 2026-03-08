@@ -61,16 +61,28 @@ REQUIRED_CSS_CLASSES = [
     "issue-info", "page-number", "van-logo-footer",
 ]
 
-# ── Brand color palette (must appear in CSS) ──────────────────────────────────
+# ── Brand color palette (must appear in CSS — as hex OR as CSS variable ref) ──
+# After the theme-system refactor, colors live in :root as CSS variables.
+# Each entry: hex_value → (var_name, css_variable_alternative)
 REQUIRED_BRAND_COLORS = {
-    "#8DC63F": "van-green-bright",
-    "#6BA82F": "van-green-dark",
-    "#2d7a3e": "van-green-deep",
-    "#D4AF37": "van-gold",
-    "#2B2B2B": "body-text",
-    "#fffef5": "page-bg-top",
-    "#fef9f2": "page-bg-bottom",
+    "#8DC63F": ("van-green-bright",  "--van-primary"),
+    "#6BA82F": ("van-green-dark",    "--van-dark"),
+    "#2d7a3e": ("van-green-deep",    "--van-deep"),
+    "#D4AF37": ("van-gold",          "--van-gold"),
+    "#2B2B2B": ("body-text",         "--body-text"),
+    "#fffef5": ("page-bg-top",       "--page-bg-top"),
+    "#fef9f2": ("page-bg-bottom",    "--page-bg-bottom"),
 }
+
+# ── Required theme system elements ────────────────────────────────────────────
+REQUIRED_THEME_VARS = [
+    "--van-primary", "--van-deep", "--van-dark", "--van-gold",
+    "--van-deepest", "--van-deeper",
+]
+REQUIRED_THEME_IDS = [
+    'data-theme="peacock"', 'data-theme="blue"',
+    'data-theme="terracotta"', 'data-theme="saffron"',
+]
 
 # ── Required media queries ────────────────────────────────────────────────────
 REQUIRED_MEDIA_QUERIES = [
@@ -210,17 +222,49 @@ def check_css_classes(css: str, report: Report):
 
 def check_brand_colors(css: str, report: Report):
     missing = []
-    for hex_val, name in REQUIRED_BRAND_COLORS.items():
-        # Case-insensitive search
-        if hex_val.lower() not in css.lower():
-            missing.append((hex_val, name))
+    for hex_val, (name, var_name) in REQUIRED_BRAND_COLORS.items():
+        # Accept the raw hex OR the CSS variable name (post theme-system refactor)
+        hex_present = hex_val.lower() in css.lower()
+        var_present = var_name in css
+        if not hex_present and not var_present:
+            missing.append((hex_val, name, var_name))
 
     if missing:
-        for hex_val, name in missing:
-            report.fail("Brand Colors", f"Brand color missing: {hex_val} ({name})")
+        for hex_val, name, var_name in missing:
+            report.fail("Brand Colors",
+                        f"Brand color missing: {hex_val} ({name}) — "
+                        f"expected hex or {var_name}")
     else:
         report.ok("Brand Colors",
-                  f"All {len(REQUIRED_BRAND_COLORS)} brand colors present ✓")
+                  f"All {len(REQUIRED_BRAND_COLORS)} brand colors present "
+                  f"(as hex or CSS variable) ✓")
+
+
+def check_theme_system(css: str, html: str, report: Report):
+    """Verify CSS variable theme system and picker UI are present."""
+    # CSS variables in :root
+    missing_vars = [v for v in REQUIRED_THEME_VARS if v not in css]
+    if missing_vars:
+        for v in missing_vars:
+            report.fail("Theme System", f"CSS variable missing from :root: {v}")
+    else:
+        report.ok("Theme System",
+                  f"All {len(REQUIRED_THEME_VARS)} CSS theme variables defined ✓")
+
+    # Theme override blocks
+    missing_themes = [t for t in REQUIRED_THEME_IDS if t not in css]
+    if missing_themes:
+        for t in missing_themes:
+            report.warn("Theme System", f"Theme override block missing: [{t}]")
+    else:
+        report.ok("Theme System", f"All 4 theme override blocks present ✓")
+
+    # Picker UI
+    if 'id="theme-picker"' in html:
+        report.ok("Theme System", "Theme picker UI (#theme-picker) present ✓")
+    else:
+        report.warn("Theme System",
+                    "Theme picker UI missing — add floating picker before </body>")
 
 
 def check_media_queries(css: str, report: Report):
@@ -468,6 +512,7 @@ def validate_file(filepath: Path) -> Report:
     check_font_import(html, report)
     check_css_classes(css, report)
     check_brand_colors(css, report)
+    check_theme_system(css, html, report)
     check_media_queries(css, report)
     check_print_query_intact(css, report)
     check_overflow_guard(css, report)
