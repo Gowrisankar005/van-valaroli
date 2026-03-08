@@ -1,533 +1,354 @@
-# வான் வளரொளி இதழ் - DESIGN ASSETS & BRAND SPECIFICATIONS
+# வான் வளரொளி இதழ் — IMPLEMENTED DESIGN SYSTEM
+## Single source of truth for all design decisions
+**Version:** 1.2 (சித்திரை 2026)
+**Last updated:** 2026-03-09
+**Source of truth:** `VAN_Vallaroli_TEMPLATE_v1.html` → `<style>` block
 
-## BRAND IDENTITY
-
-**Magazine Name:** வான் வளரொளி இதழ்
-**Publisher:** வள்ளலார் அறநிலையம் (VAN)
-**Tagline/Subtitle:** (To be determined)
-
-**Symbolism:**
-- **Lotus (தாமரை):** Wisdom, purity, spiritual awakening
-- **சுடரொடு அகல் விளக்கு (Brightly lit lamp):** ஞானம் (enlightenment), knowledge, divine light
+> ⚠️ This document reflects what is **actually implemented** in the codebase.
+> Do not change CSS values without updating this document.
+> Do not update this document without changing the CSS.
 
 ---
 
-## COLOR PALETTE
+## 1. BRAND PALETTE
 
-### Primary Colors
-- **Pure White:** #FFFFFF
-  - Use: Background, clean space, purity
-  
-- **VAN Green:** #8DC63F
-  - Use: Accent color, headers, important highlights, section dividers
-
-### Supporting Colors
-- **Deep Green:** #6BA82F
-  - Use: Subheadings, secondary accents
-  
-- **Light Green:** #A8D96E
-  - Use: Light backgrounds, subtle highlights
-
-### Traditional Colors
-- **Warm Gold:** #D4AF37
-  - Use: Traditional motifs, decorative elements, borders
-  
-- **Ochre:** #CC7722
-  - Use: Temple architecture elements, classical text frames
-
-### Text Colors
-- **Charcoal Black:** #2B2B2B
-  - Use: Body text (better readability than pure black)
-  
-- **Deep Green (Headers):** #6BA82F
-  - Use: Section titles, important headings
+| Token | Hex | Used For |
+|-------|-----|----------|
+| `--van-green-bright` | `#8DC63F` | Header rule gradient, bullet dots, box borders |
+| `--van-green-dark` | `#6BA82F` | Section header titles, TOC title, table headers |
+| `--van-green-deep` | `#2d7a3e` | Page header text, page numbers, subheadings, sign-off |
+| `--van-gold` | `#D4AF37` | Decorative rules, quote marks, section labels, accents |
+| `--body-text` | `#2B2B2B` | All body paragraphs |
+| `--subtle-text` | `#666666` | Sign titles, org names, captions |
+| `--page-bg-top` | `#fffef5` | Page background gradient top |
+| `--page-bg-bottom` | `#fef9f2` | Page background gradient bottom |
+| `--cover-dark` | `rgba(8,38,18,0.97)` | Cover masthead / bottom band overlay |
+| `--corner-motif` | `#8b6f47` @ 28% opacity | Decorative ❈ corner ornaments |
 
 ---
 
-## TYPOGRAPHY
+## 2. TYPOGRAPHY
 
-### Tamil Fonts
+| Element | Font | Size | Weight | Color |
+|---------|------|------|--------|-------|
+| Body text | Noto Sans Tamil | 12pt | 400 | `#2B2B2B` |
+| Body line-height | — | — | — | 1.65 |
+| Subheading | Noto Sans Tamil | 12.5pt | 700 | `#2d7a3e` |
+| Section title (first page) | Noto Sans Tamil | 26pt | 900 | `#6BA82F` |
+| Section label row | Noto Sans Tamil | 11pt | 600 | `#D4AF37` |
+| TOC title | Noto Sans Tamil | 24pt | 900 | `#6BA82F` |
+| Page header labels | Noto Sans Tamil | 9pt | 600 | `#2d7a3e` |
+| Page number | Noto Sans Tamil | 11pt | 700 | `#2d7a3e` |
+| Issue info (footer) | Noto Sans Tamil | 8pt | 400 | `#999` |
+| Classical quote text | Noto Sans Tamil | 12pt | 600 italic | `#6BA82F` |
+| Quote source | Noto Sans Tamil | 9pt | 600 | `#2d7a3e` |
+| Highlights box title | Noto Sans Tamil | 10.5pt | 700 | `#2d7a3e` |
+| Highlights list items | Noto Sans Tamil | 11pt | 400 | `#2B2B2B` |
+| Cover magazine name | Noto Sans Tamil | 36pt | 900 | `#fff8e8` |
+| Cover org name | Noto Sans Tamil | 8pt | 600 | `#D4AF37` |
+| Cover tagline | Noto Sans Tamil | 8pt | 400 | `rgba(212,175,55,0.72)` |
+| Cover teaser text | Noto Sans Tamil | 8.5pt | 600 | `rgba(255,255,255,0.85)` |
+| Byline | Noto Sans Tamil | 9pt | 600 italic | `#6BA82F` |
+| Salutation initial | Noto Sans Tamil | 15pt | 700 | `#6BA82F` |
 
-**Body Text:**
-- **Primary:** Noto Sans Tamil
-- **Alternative:** Lohit Tamil
-- **Size:** 12-13pt
-- **Line Height:** 1.5x (18-19.5pt)
-- **Weight:** Regular (400)
-- **Tracking:** Normal
-
-**Section Headers:**
-- **Font:** Noto Sans Tamil Bold OR traditional Tamil display font
-- **Size:** 14-16pt
-- **Weight:** Bold (700)
-- **Color:** #6BA82F (Deep Green)
-
-**Page Titles/Cover:**
-- **Font:** Traditional Tamil decorative font (if available) OR Noto Sans Tamil Black
-- **Size:** 20-24pt
-- **Weight:** Bold/Black
-
-**Classical Quotes/Verses:**
-- **Font:** Stylized Tamil script (traditional manuscript style if available)
-- **Size:** 14-15pt
-- **Style:** Centered, decorative frame
-- **Color:** Charcoal black with gold frame
-
-**Captions & Credits:**
-- **Font:** Noto Sans Tamil
-- **Size:** 9-10pt
-- **Style:** Italic or light weight
-- **Color:** #5A5A5A (Medium gray)
-
-### Minimum Sizes (Senior-Friendly)
-- Body text: Never below 11pt
-- Captions: Never below 9pt
-- All text must pass readability test when printed
+**Minimum size rule:** Never below 11pt (senior accessibility requirement).
 
 ---
 
-## LAYOUT GRID
+## 3. PAGE DIMENSIONS & LAYOUT
 
-### Page Dimensions
-- **Size:** A4 (210mm × 297mm / 8.27" × 11.69")
-- **Orientation:** Portrait
-- **Resolution:** 300 DPI (print quality)
-
-### Margins
-- **Top:** 25mm (0.98")
-- **Bottom:** 25mm (0.98")
-- **Inside (binding edge):** 20mm (0.79")
-- **Outside:** 20mm (0.79")
-
-### Columns
-- **Single column:** For most text (easier for seniors to read)
-- **Two columns:** Optional for certain sections (poems, vocabulary)
-- **Gutter:** 8mm (if using columns)
-
-### White Space
-- **Between sections:** Minimum 15mm
-- **Around images:** Minimum 5mm
-- **Paragraph spacing:** 6pt after each paragraph
+| Property | Value |
+|----------|-------|
+| Page size | A4 — 210mm × 297mm |
+| Orientation | Portrait |
+| Content padding L/R | 14mm (screen default) |
+| Content padding top | 5mm (below header rule) |
+| Content padding bottom | 3mm |
+| Page header padding | 4mm 14mm 3.5mm |
+| Page footer padding | 3mm 14mm 4.5mm |
+| Header/footer rule | 1.5px gradient: transparent → #8DC63F → #D4AF37 → #8DC63F → transparent |
+| Corner ornament | ❈ at 13pt, `#8b6f47` @ 28% opacity, 3.5mm from edges |
 
 ---
 
-## VISUAL ELEMENTS
+## 4. RESPONSIVE BREAKPOINTS
 
-### Kolam Patterns
-**Uses:** Page borders, section dividers, decorative frames
+| Breakpoint | Rule | Behaviour |
+|------------|------|-----------|
+| ≤ 880px (tablet) | `@media screen` | Pages shrink to `min(210mm, 100%)`, aspect-ratio maintained |
+| ≤ 600px (mobile) | `@media screen` | Full mobile-web layout (see below) |
+| Print | `@media print` | Forces `210mm × 297mm`, no shadows, page-break-after: always |
 
-**Types to Use:**
-- **மாவிலைக் கோலம் (Mango leaf kolam):** For auspicious sections
-- **தாமரைக் கோலம் (Lotus kolam):** For spiritual/classical content
-- **பூரண கும்பக் கோலம் (Full pot kolam):** For prosperity-related content
-- **காலைக் கோலம் (Morning kolam):** Simple, geometric for clean aesthetics
-
-**Application:**
-- Borders: Thin (2-3mm), subtle, not overwhelming
-- Corner decorations: Small (15mm × 15mm)
-- Color: #8DC63F or #D4AF37 (green or gold)
-- Opacity: 40-60% (subtle, not distracting)
-
-### Traditional Motifs
-**Uses:** Section headers, dividers, pull quote frames
-
-**Motif Library:**
-- **Lotus (தாமரை):** Single flower or blooming sequence
-- **Oil Lamp (விளக்கு):** Traditional clay lamp with flame
-- **Peacock (மயில்):** Tamil Nadu's state bird, symbol of beauty
-- **Temple Gopuram:** Silhouette or simplified architectural outline
-- **Mango Leaves (மாவிலை):** Auspicious garland
-- **Paisley (மாங்காய் வடிவம்):** Traditional paisley motif
-- **Tanjore Art Elements:** Gold work patterns, jewelry motifs
-- **Bronze Sculpture Silhouettes:** Nataraja, dancing figures
-
-**Application Guidelines:**
-- Use sparingly (elegance over clutter)
-- Monochrome or duotone (green/gold)
-- Size: Small to medium (10-30mm)
-- Placement: Section breaks, beside titles, corner decorations
-
-### செப்பேடு (Copper Plate) Style Frames
-**For:** Classical quotes, திருக்குறள், Sangam verses, important announcements
-
-**Characteristics:**
-- Ornate border mimicking ancient copper plate inscriptions
-- Aged/textured appearance (optional)
-- Gold or bronze coloring (#D4AF37, #CC7722)
-- Interior: Cream or light background (#FFFEF0)
-- Text: Centered, traditional font style
-
-### Page Headers & Footers
-
-**Header (Top of page):**
-- **Left pages:** Section name in small font (10pt, green)
-- **Right pages:** வான் வளரொளி இதழ் in small font
-- **Separator:** Thin line (0.5pt) or small kolam motif
-- **Height:** 15mm including separator
-
-**Footer (Bottom of page):**
-- **Center:** Page number in Tamil numerals (௧, ௨, ௩...)
-- **Left/Right:** Issue details (இதழ் எண்: ௧ | மாதம்: தை ௨௦௨௫)
-- **VAN logo:** Small (10mm × 10mm) in one corner
-- **Height:** 15mm
+**Mobile layout (≤ 600px):**
+- Pages become continuous-scroll sections (no box-shadows, no rounded corners, no margins between pages)
+- Cover uses `height: calc(100vw * 297/210)` — explicit A4 proportion
+- Page chrome padding reduced to `4mm`
+- Font scaling: `clamp(14pt, 5.5vw, 26pt)` for section titles, `clamp(14pt, 6vw, 24pt)` for TOC title
+- Cover masthead: `height: auto` (grows to content)
+- Pills: `flex-wrap: wrap` (never overflow)
+- `html, body { overflow-x: hidden; max-width: 100%; }`
 
 ---
 
-## COVER PAGE DESIGN
+## 5. COMPONENT LIBRARY
 
-### Elements (in order from top)
+### 5.1 Page Structure (every interior page)
+```html
+<div class="page">
+  <div class="glossy"></div>
+  <span class="corner-tl">❈</span>
+  <span class="corner-br">❈</span>
 
-1. **Magazine Title (Top):**
-   - வான் வளரொளி இதழ்
-   - Large, bold, traditional font (28-32pt)
-   - Color: #6BA82F or gold gradient
-   - Accompanied by lotus and lamp symbols
+  <div class="page-header">
+    <span class="section-name">[SECTION_LABEL]</span>
+    <span class="mag-name">வான் வளரொளி இதழ்</span>
+  </div>
 
-2. **Featured Image (Center):**
-   - High-quality, thematic photograph
-   - Size: 120mm × 160mm approximately
-   - Border: Decorative kolam frame (5mm)
-   - Relates to monthly theme or lead article
+  <div class="content-area">
+    <!-- content here -->
+  </div>
 
-3. **Issue Information (Below image):**
-   - இதழ் எண்: [number in Tamil]
-   - மாதம்: [month name in Tamil]
-   - வருடம்: [year in Tamil]
-   - Font: 14pt, centered
-
-4. **Featured Articles (Bottom third):**
-   - "இந்த இதழில்..." (In this issue...)
-   - 3-5 highlighted article titles
-   - Bullet points: Lotus or lamp icons
-   - Font: 11pt
-
-5. **Publisher Information (Very bottom):**
-   - வள்ளலார் அறநிலையம்
-   - Website, email, contact
-   - Font: 9pt
-
-6. **Background:**
-   - Clean white or subtle texture (Tamil manuscript paper texture)
-   - Optional: Watermark of lotus/lamp at 10-15% opacity
-
-### Color Scheme Options
-- **Option 1:** White background, green title, gold accents
-- **Option 2:** Light green gradient background (#F0F8E8), white title with shadow
-- **Option 3:** Cream/parchment background (#FFFEF0), traditional colors
-
----
-
-## SECTION HEADER DESIGNS
-
-### Standard Section Header Template
-
-```
-┌────────────────────────────────────────┐
-│  [Lotus icon] பகுதி தலைப்பு [Lamp icon] │
-│  ════════════════════════════════════  │
-└────────────────────────────────────────┘
-```
-
-**Specifications:**
-- Width: Full text width
-- Height: 15-20mm
-- Background: Light green (#F0F8E8) or white with green border
-- Border: 1pt solid #8DC63F OR decorative kolam pattern
-- Title: Centered, 16pt bold, #6BA82F
-- Icons: 12mm × 12mm, flanking title
-- Underline: Decorative line (traditional pattern or simple double line)
-
-### Alternative: Minimalist Header
-- Title only: 16pt bold, #6BA82F
-- Simple underline: 2pt solid #8DC63F
-- White background
-- More space above and below (10mm each)
-
----
-
-## IMAGE GUIDELINES
-
-### Technical Specifications
-- **Resolution:** Minimum 300 DPI at final print size
-- **Format:** JPEG (photos), PNG (graphics with transparency)
-- **Color Mode:** CMYK for print, RGB acceptable for digital-only
-- **File Size:** Balance quality and PDF file size
-
-### Image Types & Uses
-
-**Photography:**
-- Tamil temples and architecture
-- Classical art (Tanjore paintings, bronze sculptures)
-- Nature (flowers, plants from Sangam literature)
-- VAN social service activities (documentary style)
-- Cultural events and festivals
-- Traditional Tamil lifestyle
-
-**Graphics/Illustrations:**
-- Infographics explaining concepts (in Tamil)
-- Diagrams for science articles
-- Maps (historical Tamil regions, temple locations)
-- Timelines
-- Charts and data visualizations
-
-**Decorative:**
-- Kolam patterns (vector or high-res raster)
-- Traditional motifs
-- Borders and frames
-- Icons for sections
-
-### Image Placement Rules
-1. **Minimum size:** 40mm × 40mm (too small = pixelated when printed)
-2. **Preferred sizes:** Half-page (90mm wide) or full-page (170mm wide)
-3. **Alignment:** Centered or aligned with text column
-4. **Text wrap:** 5mm minimum clearance around image
-5. **Captions:** Always below image, 10pt, credited
-
-### Caption Format
-```
-[Image description in Tamil]
-புகைப்படம்: [Photographer name] / [Source]
-```
-
-### Image Sourcing
-- **Original photography:** VAN archives, contributors
-- **Public domain:** Wikimedia Commons, Tamil temple archives
-- **Licensed:** Credit clearly, ensure usage rights
-- **Never:** Use copyrighted images without permission
-
----
-
-## COLOR USAGE GUIDELINES
-
-### Background Colors
-- **Primary:** White (#FFFFFF) - 80% of pages
-- **Accent boxes:** Light green (#F0F8E8) - for sidebars, highlights
-- **Cream/Parchment (#FFFEF0):** Optional for classical text sections
-- **Avoid:** Dark backgrounds (hard to read, not senior-friendly)
-
-### Text Colors
-- **Body text:** Charcoal black (#2B2B2B) only
-- **Headers:** Deep green (#6BA82F)
-- **Highlights:** VAN green (#8DC63F) used sparingly
-- **Captions/Secondary:** Medium gray (#5A5A5A)
-- **Avoid:** Light text on white, low contrast combinations
-
-### Accent Colors
-- **Borders:** #8DC63F (1-2pt width)
-- **Dividers:** #8DC63F or gold (#D4AF37)
-- **Icons:** #8DC63F or gold, depending on context
-- **Pull quotes:** Green or gold borders with cream fill
-
-### Accessibility Standards
-- **Contrast ratio:** Minimum 4.5:1 for body text (WCAG AA)
-- **Test:** Print in grayscale to ensure readability
-- **Color-blindness friendly:** Don't rely on color alone to convey information
-
----
-
-## SPECIAL DESIGN ELEMENTS
-
-### Pull Quotes / Highlighted Text
-**Style 1: செப்பேடு Frame**
-```
-╔════════════════════════════╗
-║  "Quote in larger font"    ║
-║  - Attribution             ║
-╚════════════════════════════╝
-```
-- Gold border (#D4AF37), cream interior
-- 14pt quote text, centered
-- Traditional font style
-
-**Style 2: Side Bar**
-```
-│ "Quote text here in     │
-│  traditional Tamil       │
-│  script style"           │
-│  - Source                │
-```
-- Left border: 4pt solid #8DC63F
-- Light green background (#F0F8E8)
-- 13pt text, left-aligned
-
-### Tables (if needed)
-- **Header row:** Light green background (#F0F8E8), bold text
-- **Alternating rows:** White and very light green (#F9FCF6)
-- **Border:** 1pt solid #8DC63F
-- **Cell padding:** 3mm minimum
-- **Font:** Same as body text, 11-12pt
-- **All text in Tamil**
-
-### Lists & Bullet Points
-- **Bullet style:** • (simple dot) OR lotus/lamp icon (small, 8mm)
-- **Indentation:** 10mm from left margin
-- **Spacing:** 3pt between items
-- **Sub-bullets:** ◦ (open circle) OR mango leaf icon
-
-### Boxes/Sidebars
-- **Border:** 1-2pt solid #8DC63F OR decorative kolam border
-- **Background:** Light green (#F0F8E8) or cream (#FFFEF0)
-- **Padding:** 5mm all sides
-- **Uses:** Tips, definitions, additional information, "Did you know?" facts
-
----
-
-## TABLE OF CONTENTS DESIGN
-
-### Layout
-**Page 2 of magazine**
-
-**Title:** பொருளடக்கம் (centered, 18pt bold, green)
-
-**Format:**
-```
-கருணைச் சோலைக் கட்டுரை................................ ௪
-திருக்குறள் ஆய்வு........................................ ௬
-சங்க இலக்கியத் தொடர்.................................... ௮
-[etc.]
-```
-
-**Specifications:**
-- Two columns (optional) or single column
-- Section name: 12pt, left-aligned
-- Page number: 12pt, Tamil numerals, right-aligned
-- Leader dots: Light gray (#CCCCCC)
-- Spacing: 6pt between entries
-- Categories grouped (if many sections): Use subheadings in green
-
-**Decorative elements:**
-- Small lotus icons beside featured articles
-- Kolam border around entire TOC
-
----
-
-## FILE SPECIFICATIONS
-
-### Final PDF Requirements
-
-**For Email Distribution:**
-- File size: Target under 10 MB
-- Resolution: 150 DPI (acceptable for screen reading)
-- Compression: Medium JPEG quality for images
-- Fonts: Embedded
-- Color space: RGB
-
-**For Print/High-Quality:**
-- File size: No limit (quality priority)
-- Resolution: 300 DPI
-- Compression: Minimal or none
-- Fonts: Embedded and outlined (if possible)
-- Color space: CMYK preferred
-- Bleed: 3mm if printing professionally
-
-### File Naming Convention
-```
-VAN_Vallaroli_[Year]_[Month]_Issue[Number]_[Version].pdf
-
-Examples:
-VAN_Vallaroli_2025_Thai_Issue01_Final.pdf
-VAN_Vallaroli_2025_Masi_Issue02_Draft.pdf
+  <div class="page-footer">
+    <span class="issue-info">இதழ் எண்: [N] &nbsp;|&nbsp; [MONTH] [YEAR]</span>
+    <span class="page-number">[N]</span>
+    <img class="van-logo-footer" src="Images/VANLogoGold.jpg" alt="VAN">
+  </div>
+</div>
 ```
 
 ---
 
-## PRINT SPECIFICATIONS (If Printing)
-
-### Paper
-- **Type:** Matte or semi-gloss (better for text readability than glossy)
-- **Weight:** 100-120 GSM (substantial but not too heavy)
-- **Color:** White or natural cream
-- **Finish:** Smooth, not textured (for seniors' eyes)
-
-### Binding
-- **Saddle stitch:** For 15-25 pages (cost-effective)
-- **Perfect binding:** For thicker issues (professional look)
-- **Spiral/Wire-O:** For easy reading (lays flat)
-
-### Cover
-- **Paper:** 200-250 GSM (heavier than interior)
-- **Finish:** Matte lamination (durable, less glare)
-- **Optional:** Spot UV on logo/title for elegance
+### 5.2 Section Header (first page of any section)
+```html
+<div class="section-header">
+  <div class="topic-title">[ARTICLE TITLE]</div>
+  <div class="section-label-row">
+    <span class="lotus-icon">🪷</span>
+    <span class="section-label">[SECTION LABEL]</span>
+    <span class="lotus-icon">🪷</span>
+  </div>
+  <div class="title-underline"></div>
+</div>
+```
 
 ---
 
-## BRAND CONSISTENCY CHECKLIST
-
-Every issue must have:
-- [ ] VAN logo on cover and footer of each page
-- [ ] Lotus and lamp symbols featured prominently
-- [ ] Color palette: White, #8DC63F, #6BA82F, gold accents
-- [ ] Traditional Tamil aesthetic (kolam, motifs)
-- [ ] Tamil numerals for page numbers
-- [ ] Consistent typography (Noto Sans Tamil or Lohit)
-- [ ] Senior-friendly readability (12pt+, high contrast)
-- [ ] Generous white space
-- [ ] Professional, dignified appearance
-- [ ] Cultural appropriateness
+### 5.3 Continuation Banner (page 2+ of same section)
+```html
+<div class="continuation-banner">
+  <span class="cont-section-name">[SECTION NAME]</span>
+  <span class="cont-page-info">தொடர்ச்சி — பகுதி [X/Y]</span>
+</div>
+```
 
 ---
 
-## DESIGN DON'Ts
-
-**Avoid:**
-- ❌ Overly busy layouts (confusing for seniors)
-- ❌ Low contrast color combinations
-- ❌ Text smaller than 11pt
-- ❌ Too many font styles (limit to 2-3)
-- ❌ Clipart or unprofessional graphics
-- ❌ Stretched or distorted images
-- ❌ Cluttered pages without white space
-- ❌ Trendy designs that clash with traditional aesthetic
-- ❌ Dark backgrounds with light text
-- ❌ Excessive use of decorative elements
-
-**Remember:** Elegance through simplicity. Less is more.
+### 5.4 Body Text
+```html
+<div class="body-text">
+  <p class="first-para">[First paragraph — gets 5mm text-indent]</p>
+  <p>[Subsequent paragraphs]</p>
+</div>
+```
 
 ---
 
-## ACCESSIBILITY NOTES
-
-**For Senior Readers:**
-- Large, clear fonts
-- High contrast
-- Simple navigation
-- Consistent layout (predictability helps)
-- No small reversed text (white on dark)
-- Clear section breaks
-
-**For Print Accessibility:**
-- Test print pages to ensure readability
-- Check that green colors print clearly (not too light)
-- Ensure images are clear when printed
-- Verify Tamil characters render correctly
+### 5.5 Subheading
+```html
+<div class="subhead">[SUBHEADING TEXT]</div>
+```
+Renders: 12.5pt bold, `#2d7a3e`, 3pt left border in `#8DC63F`.
 
 ---
 
-## TEMPLATES TO CREATE
-
-**Cover Template:**
-- Editable title, issue number, month, year
-- Image placeholder with decorative frame
-- Featured articles section
-- Publisher information footer
-
-**Interior Page Template:**
-- Header and footer
-- Single column text area with margins
-- Image placement guides
-- Section header styles
-
-**Section Header Template:**
-- Multiple style options (ornate, minimalist)
-- Consistent sizing
-
-**Classical Quote Frame Template:**
-- செப்பேடு style
-- Centered text area
-- Attribution line
-
-These templates ensure consistency and speed up production each month.
+### 5.6 Classical Quote (Thirukkural / Sangam verse)
+```html
+<div class="slim-quote">
+  <div class="quote-text">
+    [VERSE LINE 1]<br>
+    [VERSE LINE 2]
+  </div>
+  <div class="quote-source">— திருக்குறள் [NUMBER], [அதிகாரம் NAME]</div>
+</div>
+```
+Renders: centered, gold top/bottom borders, italic green text with ❝❞ marks.
 
 ---
 
-**Summary:** Traditional Tamil elegance meets modern readability. Every design choice honors வள்ளலார்'s wisdom while serving today's readers across generations. 🪷✨
+### 5.7 Highlights / Key Points Box
+```html
+<div class="highlights-box">
+  <div class="box-title">[BOX TITLE]</div>
+  <ul>
+    <li>[POINT 1]</li>
+    <li>[POINT 2]</li>
+  </ul>
+</div>
+```
+Renders: light green background, 4pt left border, 🪷 bullet icons.
+
+---
+
+### 5.8 Numbered List
+```html
+<ol class="numbered-list">
+  <li>[STEP 1]</li>
+  <li>[STEP 2]</li>
+</ol>
+```
+
+---
+
+### 5.9 Comparison Table
+```html
+<table class="comparison-table">
+  <tr>
+    <th>[COL 1]</th>
+    <th>[COL 2]</th>
+  </tr>
+  <tr>
+    <td>[CELL]</td>
+    <td>[CELL]</td>
+  </tr>
+</table>
+```
+
+---
+
+### 5.10 Author Sign-off (closing block)
+```html
+<div class="closing">
+  <p>[Closing paragraph]</p>
+  <div class="sign-off">அன்புடன்,</div>
+  <div class="sign-name">[AUTHOR NAME]</div>
+  <div class="sign-title">[TITLE]</div>
+  <div class="org-name">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
+  <div class="lotus-end">🪷</div>
+</div>
+```
+
+---
+
+### 5.11 Section Divider
+```html
+<div class="section-divider">• &nbsp;&nbsp; • &nbsp;&nbsp; •</div>
+```
+
+---
+
+### 5.12 Image Placeholder
+```html
+<div class="img-placeholder">
+  <span class="img-icon">🖼</span>
+  <span>[IMAGE DESCRIPTION]</span>
+  <span class="img-caption">புகைப்படம்: [CREDIT]</span>
+</div>
+```
+Replace with actual `<img>` tag once image is ready.
+
+---
+
+### 5.13 TOC Row
+```html
+<div class="toc-row [row-alt]">
+  <div class="toc-accent" style="background: [COLOR];"></div>
+  <div class="toc-content">
+    <div class="toc-section">[SECTION NAME]</div>
+    <div class="toc-desc">[DESCRIPTION]</div>
+  </div>
+  <div class="toc-dots"></div>
+  <div class="toc-page" style="color:[COLOR];">[PAGE]</div>
+</div>
+```
+Accent colors rotate: `#8DC63F` → `#6BA82F` → `#D4AF37` → `#2d7a3e` → repeat.
+Add class `row-alt` on alternating rows for subtle gold tint background.
+
+---
+
+## 6. PRINT MEDIA QUERY (DO NOT REMOVE)
+
+```css
+@media print {
+  body { background: none; padding: 0; margin: 0; }
+  .cover-section { background: #6a6058; padding: 0; margin: 0; width: 210mm; }
+  .cover, .page {
+    width: 210mm; min-height: 297mm;
+    box-shadow: none; border-radius: 0; margin: 0;
+    page-break-after: always; break-after: page;
+  }
+  .glossy { display: none; }
+}
+@page { size: A4 portrait; margin: 0; }
+```
+
+---
+
+## 7. IMAGE ASSETS
+
+| File | Role | Used In |
+|------|------|---------|
+| `Images/VANLogoGold.jpg` | VAN logo (gold) | Every page footer |
+| `Images/valarolilogogold01.jpg` | Vallalar logo (larger) | Cover publisher row, TOC banner |
+| `Images/MagazineCoverImage01.jpg` | Cover background photo | Cover page only |
+
+**Rule:** Images are stored in `Images/` subfolder. HTML references them as `src="Images/filename.jpg"`. Never embed as base64 in the template (bloats file size).
+
+---
+
+## 8. PRODUCTION WORKFLOW
+
+### New Issue Checklist
+```
+1. cp VAN_Vallaroli_TEMPLATE_v1.html VAN_Vallaroli_[Month][Year]_v1_0_[YYYYMMDD].html
+2. Find-replace all [N] → issue number
+3. Find-replace all [TAMIL_MONTH] → new month
+4. Find-replace all [YEAR] → year
+5. Update cover image path (Images/[NewCoverImage].jpg)
+6. Update [SPECIAL_LABEL] or remove .pill-special span
+7. Add section pages (copy SECTION FIRST PAGE or CONTINUATION blocks)
+8. Fill all [EDIT:] zones with Tamil content
+9. Update TOC page numbers LAST
+10. Run pre-publish checklist (see CLAUDE.md Part 6 Task E)
+```
+
+### Section Page Count Reference
+| Section | Typical Pages | Notes |
+|---------|--------------|-------|
+| தலையங்கம் | 1 | Always page 3 |
+| கருணைச் சோலை | 2–3 | |
+| திருக்குறள் ஆய்வு | 2–4 | |
+| சங்க இலக்கியம் | 1–2 | |
+| மாணவர் வெற்றி | 1–2 | |
+| நலவாழ்வு | 1–2 | |
+| வீட்டுப்பெண்களுக்கு | 1–2 | |
+| அறநிலைய செய்திகள் | 1–2 | |
+| கோயில் கட்டமைப்பு | 1–2 | |
+| கல்வெட்டு ஆய்வு | 1 | |
+| தமிழிசை | 1 | |
+| தமிழர் வாழ்வியல் | 1 | |
+| நூல் மதிப்புரை | 1 | |
+| தமிழ் எழுத்து வரலாறு | 1 | |
+| அருளாளர்கள் | 1 | |
+| நற்றமிழ் சொற்கள் | 0.5 | Often paired on one page |
+| கவிதைகள் | 1 | |
+| சிறுகதை | 1–2 | |
+| ஒரு ஒழுக்கம் | 0.5 | Often paired on one page |
+| இயற்கை உணவு | 0.5 | Often paired on one page |
+| விவாதம் | 1–2 | |
+
+---
+
+## 9. DESIGN CHANGE PROTOCOL
+
+When a design change is needed:
+1. Make the change in `VAN_Vallaroli_TEMPLATE_v1.html` first
+2. Test at 375px (mobile), 768px (tablet), 1280px (desktop), and print preview
+3. Once approved, apply the same CSS change to the current issue file
+4. Update this document (section, value, reason)
+5. Commit both files together with a clear message
+
+**Never change CSS in the issue file without updating the template.**
+
+---
+
+*Design System v1.2 — செந்தமிழில் அறம் வளர்க்கும் அறிவொளி இதழ் 🪷*

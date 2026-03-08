@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║   வான் வளரொளி இதழ் — ISSUE TEMPLATE v1                        ║
+  ║   Design version: v1.2 (சித்திரை 2026)                         ║
+  ║                                                                  ║
+  ║   HOW TO USE:                                                    ║
+  ║   1. Copy this file → rename to:                                 ║
+  ║      VAN_Vallaroli_[Month][Year]_v1_0_[YYYYMMDD].html           ║
+  ║   2. Find every  <!-- EDIT: -->  comment and fill in content    ║
+  ║   3. Add/remove section pages as needed (copy page blocks below) ║
+  ║   4. Update TOC page numbers last (after all pages are final)   ║
+  ║   5. DO NOT edit the <style> block unless design changes needed  ║
+  ╚══════════════════════════════════════════════════════════════════╝
+  -->
+
+  <!-- EDIT: Update title tag each issue -->
+  <title>வான் வளரொளி இதழ் — [TAMIL_MONTH] [YEAR] — முழு இதழ்</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans Tamil', serif;
+      background: #c8bfb0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .cover {
+      width: 210mm;
+      height: 297mm;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 4px 8px rgba(0,0,0,0.15),
+        0 12px 30px rgba(0,0,0,0.28),
+        0 30px 70px rgba(0,0,0,0.22);
+    }
+
+    .cover-image {
+      position: absolute;
+      inset: 0; width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 38%;
+      z-index: 1;
+    }
+
+    .glossy {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+        rgba(255,255,255,0.38) 0%,
+        rgba(255,255,255,0.10) 25%,
+        transparent 50%,
+        rgba(255,255,255,0.05) 75%,
+        rgba(255,255,255,0.18) 100%
+      );
+      pointer-events: none;
+      z-index: 50;
+      mix-blend-mode: overlay;
+      border-radius: 3px;
+    }
+
+    .border-frame {
+      position: absolute; inset: 4.5mm;
+      border: 0.6pt solid rgba(212,175,55,0.42);
+      pointer-events: none; z-index: 55;
+    }
+
+    .corner {
+      position: absolute; font-size: 11pt;
+      color: #D4AF37; opacity: 0.55;
+      z-index: 56; pointer-events: none; line-height: 1;
+    }
+
+    .c-tl { top: 6mm;    left: 7mm;   }
+
+    .c-tr { top: 6mm;    right: 7mm;  }
+
+    .c-bl { bottom: 6mm; left: 7mm;   }
+
+    .c-br { bottom: 6mm; right: 7mm;  }
+
+    .masthead {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 26%;
+      background: linear-gradient(180deg,
+        rgba(8,38,18,0.97) 0%,
+        rgba(10,50,22,0.94) 60%,
+        rgba(12,58,26,0.60) 82%,
+        transparent 100%);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6mm 12mm 5mm;
+    }
+
+    .org-name {
+      font-size: 8pt; font-weight: 600;
+      color: #D4AF37; letter-spacing: 2px;
+      opacity: 0.85; margin-bottom: 0.5mm;
+    }
+
+    .org-vazangum {
+      font-size: 8pt; font-weight: 600;
+      color: rgba(212,175,55,0.65);
+      letter-spacing: 2px; margin-bottom: 3mm;
+    }
+
+    .gold-rule {
+      width: 35mm; height: 0.75px;
+      background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+      opacity: 0.50; margin-bottom: 3.5mm;
+    }
+
+    .mag-name-main {
+      font-size: 36pt; font-weight: 900;
+      color: #fff8e8;
+      line-height: 1.0; letter-spacing: 1px;
+      text-align: center;
+      text-shadow:
+        0 1px 3px rgba(0,0,0,0.50),
+        0 0 30px rgba(212,175,55,0.18);
+      margin-bottom: 2mm;
+    }
+
+    .tagline {
+      font-size: 8pt; font-weight: 400;
+      color: rgba(212,175,55,0.72);
+      letter-spacing: 0.3px;
+      text-align: center;
+      margin-bottom: 3.5mm;
+    }
+
+    .issue-row {
+      display: flex; align-items: center; gap: 2.5mm;
+    }
+
+    .pill {
+      border: 0.85pt solid rgba(255,248,232,0.45);
+      border-radius: 20px;
+      padding: 1.2mm 4.5mm;
+      font-size: 8pt; font-weight: 600;
+      color: #fff8e8;
+      background: rgba(255,248,232,0.08);
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    .pill-special {
+      border-color: rgba(255,248,232,0.60);
+      color: #fff8e8;
+      background: rgba(255,248,232,0.12);
+      font-weight: 700;
+    }
+
+    .quote-float {
+      position: absolute; top: 25%;
+      left: 0; right: 0;
+      display: flex; flex-direction: column;
+      align-items: center; padding: 0 18mm;
+      z-index: 25;
+    }
+
+    .quote-text {
+      font-size: 10pt; font-style: italic; font-weight: 600;
+      color: rgba(255,255,255,0.92); text-align: center;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.75), 0 2px 10px rgba(0,0,0,0.55);
+      line-height: 1.5;
+    }
+
+    .quote-attr {
+      font-size: 9pt; font-weight: 700;
+      color: #D4AF37; margin-top: 2mm;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.80), 0 0 8px rgba(0,0,0,0.60);
+      letter-spacing: 0.5px;
+    }
+
+    .bottom-band {
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 29%;
+      background: linear-gradient(0deg,
+        rgba(6,28,13,0.97) 0%,
+        rgba(8,36,16,0.93) 50%,
+        rgba(10,45,20,0.0) 100%);
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 10mm 6mm; z-index: 30;
+    }
+
+    .teasers-label {
+      font-size: 7pt; font-weight: 700;
+      color: #D4AF37; letter-spacing: 3.5px;
+      margin-bottom: 2.5mm; opacity: 0.85;
+    }
+
+    .teasers {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.8mm 8mm; margin-bottom: 4.5mm;
+    }
+
+    .teaser-item {
+      display: flex; align-items: baseline; gap: 2mm;
+    }
+
+    .teaser-dot {
+      color: #8DC63F; font-size: 6.5pt;
+      flex-shrink: 0; font-weight: 900;
+    }
+
+    .teaser-text {
+      font-size: 8.5pt; font-weight: 600;
+      color: rgba(255,255,255,0.85); line-height: 1.35;
+    }
+
+    .publisher-row {
+      display: flex; align-items: center;
+      justify-content: center; gap: 4mm;
+      padding-top: 3mm;
+      border-top: 0.5pt solid rgba(212,175,55,0.28);
+    }
+
+    .publisher-name {
+      font-size: 7.5pt; font-weight: 700;
+      color: rgba(255,255,255,0.65);
+    }
+
+    .van-seal {
+      width: 9mm; height: 9mm;
+      object-fit: contain; opacity: 0.78; flex-shrink: 0;
+    }
+
+    .publisher-url {
+      font-size: 7pt; color: rgba(255,255,255,0.38);
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, #fffef5 0%, #fef9f2 100%);
+      position: relative;
+      border-radius: 3px;
+      box-shadow:
+        0 2px 4px rgba(0,0,0,0.06),
+        0 8px 20px rgba(0,0,0,0.13),
+        0 20px 50px rgba(0,0,0,0.10);
+      margin-bottom: 30px;
+    }
+
+    .corner-tl, .corner-br {
+      position: absolute; font-size: 13pt;
+      color: #8b6f47; opacity: 0.28;
+      z-index: 5; pointer-events: none;
+    }
+
+    .corner-tl { top: 3.5mm; left: 4.5mm; }
+
+    .corner-br { bottom: 3.5mm; right: 4.5mm; }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4mm 14mm 3.5mm;
+      position: relative;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 14mm; right: 14mm;
+      height: 1.5px;
+      background: linear-gradient(90deg,
+        transparent, #8DC63F 20%, #D4AF37 50%, #8DC63F 80%, transparent);
+    }
+
+    .page-header .section-name,
+    .page-header .mag-name {
+      font-size: 9pt;
+      font-weight: 600;
+      color: #2d7a3e;
+      letter-spacing: 0.4px;
+    }
+
+    .content-area {
+      padding: 5mm 14mm 3mm;
+      position: relative;
+      z-index: 10;
+      flex: 1;
+    }
+
+    .toc-header {
+      text-align: center;
+      margin-bottom: 5mm;
+    }
+
+    .toc-title {
+      font-size: 24pt;
+      font-weight: 900;
+      color: #6BA82F;
+      line-height: 1.1;
+      margin-bottom: 2mm;
+    }
+
+    .toc-subtitle {
+      font-size: 9pt;
+      color: #D4AF37;
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin-bottom: 3mm;
+    }
+
+    .toc-underline {
+      width: 55mm;
+      height: 2px;
+      margin: 0 auto 2.5mm;
+      background: linear-gradient(90deg,
+        transparent, #8DC63F 30%, #D4AF37 50%, #8DC63F 70%, transparent);
+    }
+
+    .issue-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3mm;
+      background: linear-gradient(135deg, #0a2616 0%, #0d3320 100%);
+      border-radius: 3px;
+      padding: 3mm 8mm;
+      margin-bottom: 5mm;
+    }
+
+    .issue-banner .mag-logo-sm {
+      width: 10mm; height: 10mm;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      opacity: 0.90;
+    }
+
+    .issue-banner .banner-text {
+      text-align: center;
+    }
+
+    .issue-banner .banner-title {
+      font-size: 12pt; font-weight: 900;
+      color: #fff8e8; line-height: 1.1;
+    }
+
+    .issue-banner .banner-sub {
+      font-size: 7.5pt; font-weight: 600;
+      color: rgba(212,175,55,0.80);
+      letter-spacing: 0.5px;
+    }
+
+    .toc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .toc-row {
+      display: flex;
+      align-items: center;
+      padding: 2.8mm 0;
+      border-bottom: 0.5pt solid rgba(141,198,63,0.12);
+      position: relative;
+    }
+
+    .toc-row.row-alt {
+      background: rgba(212,175,55,0.03);
+    }
+
+    .toc-accent {
+      width: 3pt;
+      height: 100%;
+      min-height: 10mm;
+      border-radius: 2px;
+      flex-shrink: 0;
+      margin-right: 3.5mm;
+      align-self: stretch;
+    }
+
+    .toc-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .toc-section {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #2B2B2B;
+      line-height: 1.3;
+    }
+
+    .toc-desc {
+      font-size: 8.5pt;
+      font-weight: 400;
+      color: #888;
+      line-height: 1.3;
+      margin-top: 0.5mm;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toc-dots {
+      flex: 1;
+      min-width: 5mm;
+      max-width: 20mm;
+      height: 1pt;
+      border-bottom: 1pt dotted rgba(141,198,63,0.35);
+      margin: 0 3mm;
+      align-self: center;
+      margin-bottom: 4mm;
+    }
+
+    .toc-page {
+      font-size: 12pt;
+      font-weight: 700;
+      flex-shrink: 0;
+      width: 8mm;
+      text-align: right;
+      line-height: 1;
+    }
+
+    .toc-quote {
+      text-align: center;
+      margin-top: 5mm;
+      padding: 3.5mm 10mm;
+      border-top: 0.5pt solid rgba(212,175,55,0.25);
+      border-bottom: 0.5pt solid rgba(212,175,55,0.25);
+    }
+
+    .toc-quote .q-text {
+      font-size: 10pt;
+      font-style: italic;
+      font-weight: 600;
+      color: #2B2B2B;
+      line-height: 1.6;
+    }
+
+    .toc-quote .q-text::before {
+      content: '❝ ';
+      color: #D4AF37;
+      font-style: normal;
+      font-size: 13pt;
+      vertical-align: -1px;
+    }
+
+    .toc-quote .q-attr {
+      font-size: 8.5pt;
+      color: #6BA82F;
+      font-weight: 600;
+      margin-top: 1.5mm;
+    }
+
+    .page-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3mm 14mm 4.5mm;
+      margin-top: auto;
+      position: relative;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .page-footer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 14mm; right: 14mm;
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent, #8DC63F 20%, #D4AF37 50%, #8DC63F 80%, transparent);
+    }
+
+    .page-footer .issue-info { font-size: 8pt; color: #999; }
+
+    .page-footer .page-number {
+      font-size: 11pt; font-weight: 700; color: #2d7a3e;
+    }
+
+    .page-footer .van-logo-footer {
+      width: 9mm; height: 9mm;
+      object-fit: contain; opacity: 0.70;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3mm;
+      padding-bottom: 2mm;
+    }
+
+    .section-header .topic-title {
+      font-size: 26pt;
+      font-weight: 900;
+      color: #6BA82F;
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+      margin-bottom: 2.5mm;
+    }
+
+    .section-header .section-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 2.5mm;
+    }
+
+    .section-header .lotus-icon { font-size: 11pt; opacity: 0.80; }
+
+    .section-header .section-label {
+      font-size: 11pt;
+      font-weight: 600;
+      color: #D4AF37;
+    }
+
+    .section-header .title-underline {
+      width: 65mm;
+      margin: 0 auto 3mm;
+      height: 2px;
+      background: linear-gradient(90deg,
+        transparent, #8DC63F 30%, #D4AF37 50%, #8DC63F 70%, transparent);
+    }
+
+    .section-divider {
+      text-align: center;
+      font-size: 10pt;
+      color: #D4AF37;
+      opacity: 0.80;
+      margin-bottom: 3mm;
+      letter-spacing: 8px;
+    }
+
+    .body-text {
+      font-size: 12pt;
+      color: #2B2B2B;
+      line-height: 1.65;
+      text-align: justify;
+    }
+
+    .body-text p { margin-bottom: 3.5mm; }
+
+    .salutation {
+      font-size: 12pt;
+      font-weight: 700;
+      color: #2B2B2B;
+      margin-bottom: 1.5mm;
+      line-height: 1.5;
+    }
+
+    .sal-initial {
+      font-size: 15pt;
+      font-weight: 700;
+      color: #6BA82F;
+      line-height: 1;
+    }
+
+    .first-para { text-indent: 5mm; }
+
+    .subhead {
+      font-size: 12.5pt;
+      font-weight: 700;
+      color: #2d7a3e;
+      margin: 4mm 0 2mm;
+      padding-left: 3.5mm;
+      border-left: 3pt solid #8DC63F;
+      line-height: 1.4;
+    }
+
+    .slim-quote {
+      text-align: center;
+      margin: 4mm 18mm;
+      padding: 3mm 0;
+      border-top: 1pt solid rgba(212,175,55,0.70);
+      border-bottom: 1pt solid rgba(212,175,55,0.70);
+    }
+
+    .slim-quote .quote-text {
+      font-size: 12pt;
+      font-style: italic;
+      font-weight: 600;
+      color: #6BA82F;
+      line-height: 1.6;
+      text-shadow: none;
+    }
+    .slim-quote .quote-text::before {
+      content: '❝ ';
+      color: #D4AF37;
+      font-style: normal;
+      font-size: 14pt;
+      vertical-align: -2px;
+    }
+    .slim-quote .quote-text::after {
+      content: ' ❞';
+      color: #D4AF37;
+      font-style: normal;
+      font-size: 14pt;
+      vertical-align: -2px;
+    }
+
+    .slim-quote .quote-text::before {
+      content: '❝ ';
+      color: #D4AF37;
+      font-style: normal;
+      font-size: 14pt;
+      vertical-align: -1px;
+    }
+
+    .slim-quote .quote-source {
+      font-size: 9pt;
+      color: #2d7a3e;
+      font-weight: 600;
+      margin-top: 1mm;
+    }
+
+    .highlights-box {
+      background: #f4fbe8;
+      border-left: 4pt solid #6BA82F;
+      border-radius: 0 3px 3px 0;
+      padding: 3.5mm 6mm 3.5mm 5mm;
+      margin: 4mm 0;
+      position: relative;
+    }
+
+    .highlights-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1.5px;
+      background: linear-gradient(90deg, #6BA82F, #8DC63F 60%, transparent);
+    }
+
+    .highlights-box .box-title {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #2d7a3e;
+      margin-bottom: 2mm;
+      padding-bottom: 1.5mm;
+      border-bottom: 0.5pt solid rgba(107,168,47,0.25);
+    }
+
+    .highlights-box ul { list-style: none; padding: 0; }
+
+    .highlights-box ul li {
+      font-size: 11pt;
+      color: #2B2B2B;
+      padding: 1mm 0 1mm 5mm;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .highlights-box ul li::before {
+      content: '🪷';
+      position: absolute;
+      left: 0; font-size: 8.5pt; top: 1.5mm;
+    }
+
+    .closing {
+      text-align: center;
+      margin-top: 4mm;          
+      padding-top: 3mm;
+      border-top: 0.5pt solid rgba(212,175,55,0.35);
+    }
+
+    .closing p {
+      font-size: 12pt;
+      color: #2B2B2B;
+      line-height: 1.65;
+      margin-bottom: 3.5mm;
+      font-style: normal;       
+      text-align: justify;      
+    }
+
+    .closing .sign-off {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #2d7a3e;
+      margin-bottom: 0.5mm;
+      font-style: normal;
+    }
+
+    .closing .sign-name {
+      font-size: 11.5pt;
+      font-weight: 700;
+      color: #2d7a3e;
+      margin-bottom: 0.5mm;
+    }
+
+    .closing .sign-title {
+      font-size: 10pt;
+      color: #666;
+      margin-bottom: 0.5mm;
+    }
+
+    .closing .org-name { font-size: 10.5pt; color: #666; }
+
+    .closing .lotus-end {
+      font-size: 14pt; margin-top: 2.5mm; opacity: 0.65;
+    }
+
+    .comparison-table {
+      width: 100%;
+      margin: 4mm 0;
+      border-collapse: collapse;
+    }
+
+    .comparison-table th {
+      background: #6BA82F;
+      color: white;
+      font-size: 11pt;
+      font-weight: 700;
+      padding: 2mm 3mm;
+      text-align: center;
+    }
+
+    .comparison-table td {
+      font-size: 10.5pt;
+      padding: 2mm 3mm;
+      border-bottom: 0.5pt solid #ddd;
+      vertical-align: top;
+    }
+
+    .comparison-table tr:nth-child(even) td {
+      background: #f9f9f5;
+    }
+
+    .numbered-list {
+      margin: 3mm 0;
+      padding-left: 6mm;
+    }
+
+    .numbered-list li {
+      font-size: 11pt;
+      margin-bottom: 2mm;
+      line-height: 1.5;
+    }
+
+    .cover-section {
+      background: #6a6058;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 0;
+    }
+
+    @media print {
+      body { background: none; padding: 0; margin: 0; }
+      .cover-section { background: #6a6058; padding: 0; margin: 0; width: 210mm; }
+      .cover, .page {
+        width: 210mm; min-height: 297mm;
+        box-shadow: none; border-radius: 0; margin: 0;
+        page-break-after: always; break-after: page;
+      }
+      .glossy { display: none; }
+    }
+    @page { size: A4 portrait; margin: 0; }
+
+    .byline {
+      text-align: center;
+      font-size: 9pt;
+      color: #6BA82F;
+      font-style: italic;
+      font-weight: 600;
+      margin-top: 1mm;
+      margin-bottom: 3mm;
+      letter-spacing: 0.3px;
+    }
+
+    .img-placeholder {
+      width: 100%;
+      min-height: 45mm;
+      background: linear-gradient(135deg, #f0f7e6 0%, #e8f5d0 100%);
+      border: 1pt dashed rgba(141,198,63,0.50);
+      border-radius: 3px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 4mm 0;
+      color: #6BA82F;
+      font-size: 9pt;
+      font-style: italic;
+      gap: 2mm;
+    }
+    .img-placeholder .img-icon { font-size: 20pt; opacity: 0.45; }
+    .img-placeholder .img-caption {
+      font-size: 8.5pt;
+      color: #888;
+      text-align: center;
+      margin-top: 1mm;
+      font-style: italic;
+    }
+
+    .continuation-banner {
+      background: linear-gradient(90deg, rgba(141,198,63,0.10) 0%, rgba(212,175,55,0.08) 50%, rgba(141,198,63,0.10) 100%);
+      border-left: 3pt solid #8DC63F;
+      padding: 2mm 5mm;
+      margin-bottom: 4mm;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 0 3px 3px 0;
+    }
+    .cont-section-name {
+      font-size: 9pt;
+      font-weight: 700;
+      color: #2d7a3e;
+    }
+    .cont-page-info {
+      font-size: 8.5pt;
+      color: #D4AF37;
+      font-weight: 600;
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+       RESPONSIVE — screen only (print is handled by @media print)
+    ───────────────────────────────────────────────────────────── */
+
+    /* Block all horizontal overflow at root */
+    html, body { overflow-x: hidden; max-width: 100%; }
+
+    /* ── Tablet / small desktop (≤ 880px) ─────────────────────────
+       Pages shrink proportionally — A4 look on wider screens        */
+    @media screen and (max-width: 880px) {
+      .cover {
+        width: min(210mm, 100%);
+        height: auto;
+        aspect-ratio: 210 / 297;
+        overflow: hidden;
+      }
+      .page {
+        width: min(210mm, 100%);
+        min-height: auto;
+      }
+    }
+
+    /* ── Mobile (≤ 600px) ──────────────────────────────────────────
+       True mobile-web layout:
+       · Cover  = full-width proportional hero
+       · Pages  = continuous-scroll sections (no A4 box model)
+       · Zero horizontal overflow                                    */
+    @media screen and (max-width: 600px) {
+
+      /* Edge-to-edge — no body padding on mobile */
+      body           { padding: 0; }
+      .cover-section { padding: 0; overflow: hidden; }
+
+      /* ── COVER ── */
+      /* calc() gives explicit proportional height — more reliable than
+         aspect-ratio with overflow:hidden + absolute children on iOS  */
+      .cover {
+        width: 100%;
+        height: calc(100vw * 297 / 210);
+        border-radius: 0;
+        margin-bottom: 0;
+        overflow: hidden;
+      }
+
+      /* Masthead grows to content height instead of fixed 26% */
+      .masthead { height: auto; padding: 4mm 6mm 3mm; }
+
+      /* Remove decorative spacers — reclaim vertical space */
+      .org-vazangum,
+      .gold-rule     { display: none; }
+
+      .org-name      { margin-bottom: 1mm; letter-spacing: 1px; }
+      .tagline       { margin-bottom: 2mm; }
+
+      /* Title fits in 1–2 lines instead of 3 */
+      .mag-name-main { font-size: clamp(16pt, 5.5vw, 36pt); margin-bottom: 1mm; }
+
+      /* Pills wrap to next line if too wide — no overflow */
+      .issue-row     { flex-wrap: wrap; justify-content: center; gap: 1.5mm; }
+      .pill,
+      .pill-special  { white-space: normal; text-align: center; }
+
+      /* Push floating quote below the taller auto-height masthead */
+      .quote-float             { top: 30%; padding: 0 8mm; }
+      .quote-float .quote-text { font-size: 9pt; }
+      .bottom-band             { padding: 0 5mm 4mm; }
+
+      /* ── INTERIOR PAGES ── */
+      /* Drop the A4 box model — pages become continuous web sections */
+      .page {
+        width: 100%;
+        min-height: unset;
+        border-radius: 0;
+        box-shadow: none;
+        margin-bottom: 0;
+      }
+
+      /* Subtle green rule between sections instead of box shadows */
+      .page + .page { border-top: 3px solid rgba(141,198,63,0.18); }
+
+      /* Page chrome: web-appropriate tight padding */
+      .page-header         { padding: 3mm 4mm; }
+      .page-header::after  { left: 4mm; right: 4mm; }
+      .content-area        { padding: 4mm 4mm 3mm; }
+      .page-footer         { padding: 3mm 4mm 4mm; }
+      .page-footer::before { left: 4mm; right: 4mm; }
+
+      /* Scale display fonts */
+      .section-header .topic-title { font-size: clamp(14pt, 5.5vw, 26pt); }
+      .toc-title                   { font-size: clamp(14pt, 6vw, 24pt); }
+
+      /* Decorative elements: fit narrower content width */
+      .slim-quote                      { margin-left: 4mm; margin-right: 4mm; }
+      .section-header .title-underline { width: 80%; }
+      .toc-underline                   { width: 75%; }
+
+      /* Cover teasers: single column */
+      .teasers  { grid-template-columns: 1fr; gap: 1.5mm; }
+
+      /* TOC: descriptions wrap naturally */
+      .toc-desc { white-space: normal; }
+    }
+  
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE 1 — COVER
+     EDIT ZONES: org-name, mag-name, tagline, pills, teasers, image
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="cover-section">
+  <div class="cover">
+
+    <!-- EDIT: Replace with new cover image path each issue -->
+    <img class="cover-image"
+         src="Images/MagazineCoverImage01.jpg"
+         alt="வான் வளரொளி இதழ் அட்டை">
+
+    <div class="glossy"></div>
+    <div class="border-frame"></div>
+    <span class="corner c-tl">❈</span>
+    <span class="corner c-tr">❈</span>
+    <span class="corner c-bl">❈</span>
+    <span class="corner c-br">❈</span>
+
+    <!-- MASTHEAD (dark green top band) -->
+    <div class="masthead">
+      <!-- EDIT: org name stays fixed unless VAN changes it -->
+      <div class="org-name">வள்ளலார் அறநிலையம்</div>
+      <div class="org-vazangum">— வழங்கும் —</div>
+      <div class="gold-rule"></div>
+
+      <!-- EDIT: Magazine name — stays fixed -->
+      <div class="mag-name-main">வான் வளரொளி இதழ்</div>
+
+      <!-- EDIT: Tagline — can change per issue theme -->
+      <div class="tagline">செந்தமிழில் அறம் வளர்க்கும் அறிவொளி இதழ்</div>
+
+      <div class="issue-row">
+        <!-- EDIT: Update issue number and month -->
+        <span class="pill">இதழ் [N] &nbsp;·&nbsp; [TAMIL_MONTH] [YEAR]</span>
+        <!-- EDIT: Change or remove for non-special issues -->
+        <span class="pill pill-special">[SPECIAL_LABEL]</span>
+      </div>
+    </div>
+
+    <!-- FLOATING QUOTE (centre of cover image) -->
+    <!-- EDIT: Choose a வள்ளலார் or classical quote for the cover -->
+    <div class="quote-float">
+      <div class="quote-text">[COVER_QUOTE_LINE_1]<br>[COVER_QUOTE_LINE_2]</div>
+      <div class="quote-attr">— [QUOTE_SOURCE]</div>
+    </div>
+
+    <!-- BOTTOM BAND (dark green footer of cover) -->
+    <div class="bottom-band">
+      <div class="teasers-label">இந்த இதழில் &nbsp;▸</div>
+      <div class="teasers">
+        <!-- EDIT: 6–8 teaser items listing key articles this issue -->
+        <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">[TEASER_1]</span></div>
+        <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">[TEASER_2]</span></div>
+        <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">[TEASER_3]</span></div>
+        <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">[TEASER_4]</span></div>
+        <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">[TEASER_5]</span></div>
+        <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">[TEASER_6]</span></div>
+      </div>
+      <div class="publisher-row">
+        <img class="van-seal" src="Images/valarolilogogold01.jpg" alt="VAN">
+        <div class="publisher-name">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
+        <div class="publisher-url">www.van.org.in</div>
+      </div>
+    </div>
+
+  </div><!-- /.cover -->
+</div><!-- /.cover-section -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE 2 — TABLE OF CONTENTS (பொருளடக்கம்)
+     EDIT ZONE: toc-rows — update AFTER all page numbers are final
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="glossy"></div>
+  <span class="corner-tl">❈</span>
+  <span class="corner-br">❈</span>
+
+  <div class="page-header">
+    <span class="section-name">பொருளடக்கம்</span>
+    <span class="mag-name">வான் வளரொளி இதழ்</span>
+  </div>
+
+  <div class="content-area">
+    <div class="toc-header">
+      <div class="toc-title">பொருளடக்கம்</div>
+      <div class="toc-subtitle">CONTENTS</div>
+      <div class="toc-underline"></div>
+    </div>
+
+    <!-- EDIT: Update issue banner each issue -->
+    <div class="issue-banner">
+      <img class="mag-logo-sm" src="Images/valarolilogogold01.jpg" alt="VAN">
+      <div class="banner-text">
+        <div class="banner-title">வான் வளரொளி இதழ் — [N]</div>
+        <!-- EDIT: month + special label -->
+        <div class="banner-sub">[TAMIL_MONTH] [YEAR] &nbsp;•&nbsp; [SPECIAL_LABEL]</div>
+      </div>
+    </div>
+
+    <div class="toc-list">
+      <!--
+        TOC ROW TEMPLATE — copy and repeat for each section:
+
+        <div class="toc-row [row-alt if alternate row]">
+          <div class="toc-accent" style="background: [#8DC63F | #6BA82F | #D4AF37 | #2d7a3e];"></div>
+          <div class="toc-content">
+            <div class="toc-section">[SECTION TAMIL NAME]</div>
+            <div class="toc-desc">[Brief subtitle or topic description]</div>
+          </div>
+          <div class="toc-dots"></div>
+          <div class="toc-page" style="color:[matching accent color];">[PAGE NUMBER]</div>
+        </div>
+
+        Accent colors rotate: #8DC63F → #6BA82F → #D4AF37 → #2d7a3e → repeat
+      -->
+
+      <!-- EDIT: Replace with this issue's sections and page numbers -->
+      <div class="toc-row">
+        <div class="toc-accent" style="background: #8DC63F;"></div>
+        <div class="toc-content">
+          <div class="toc-section">தலையங்கம்</div>
+          <div class="toc-desc">[Editorial topic]</div>
+        </div>
+        <div class="toc-dots"></div>
+        <div class="toc-page" style="color:#8DC63F;">3</div>
+      </div>
+
+      <div class="toc-row row-alt">
+        <div class="toc-accent" style="background: #6BA82F;"></div>
+        <div class="toc-content">
+          <div class="toc-section">[SECTION NAME]</div>
+          <div class="toc-desc">[Topic description]</div>
+        </div>
+        <div class="toc-dots"></div>
+        <div class="toc-page" style="color:#6BA82F;">[PAGE]</div>
+      </div>
+
+      <!-- Add more toc-row blocks as needed -->
+
+    </div><!-- /.toc-list -->
+
+    <!-- EDIT: Choose a classical quote for the TOC footer -->
+    <div class="toc-quote">
+      <div class="q-text">[CLASSICAL QUOTE — Thirukkural or Vallalar verse]</div>
+      <div class="q-attr">— [SOURCE, e.g. திருக்குறள் 123, [அதிகாரம் name]]</div>
+    </div>
+
+  </div><!-- /.content-area -->
+
+  <div class="page-footer">
+    <span class="issue-info">இதழ் எண்: [N] &nbsp;|&nbsp; [TAMIL_MONTH] [YEAR]</span>
+    <span class="page-number">2</span>
+    <img class="van-logo-footer" src="Images/VANLogoGold.jpg" alt="VAN">
+  </div>
+</div><!-- PAGE 2 -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION PAGE — FIRST PAGE OF ANY SECTION
+     Use this template for the opening page of each new section.
+     Copy entire block, update section-name, topic-title, content.
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="glossy"></div>
+  <span class="corner-tl">❈</span>
+  <span class="corner-br">❈</span>
+
+  <div class="page-header">
+    <!-- EDIT: Section name shown in page header (from Section Registry) -->
+    <span class="section-name">[SECTION_HEADER_LABEL]</span>
+    <span class="mag-name">வான் வளரொளி இதழ்</span>
+  </div>
+
+  <div class="content-area">
+
+    <!-- Section title block — FIRST PAGE ONLY -->
+    <div class="section-header">
+      <!-- EDIT: Main article title -->
+      <div class="topic-title">[ARTICLE TITLE]</div>
+      <div class="section-label-row">
+        <span class="lotus-icon">🪷</span>
+        <!-- EDIT: Section label (from Section Registry column 3) -->
+        <span class="section-label">[SECTION LABEL]</span>
+        <span class="lotus-icon">🪷</span>
+      </div>
+      <div class="title-underline"></div>
+    </div>
+
+    <!-- EDIT: Author byline (optional — use for signed articles) -->
+    <div class="byline">எழுதியவர்: [AUTHOR NAME]</div>
+
+    <div class="section-divider">• &nbsp;&nbsp; • &nbsp;&nbsp; •</div>
+
+    <!-- EDIT: Article body content goes inside .body-text -->
+    <div class="body-text">
+
+      <p class="first-para">[OPENING PARAGRAPH — indent first line]</p>
+
+      <p>[BODY PARAGRAPH]</p>
+
+      <!-- Classical quote block -->
+      <div class="slim-quote">
+        <div class="quote-text">[VERSE LINE 1]<br>[VERSE LINE 2]</div>
+        <div class="quote-source">— [SOURCE e.g. திருக்குறள் 123, [அதிகாரம்]]</div>
+      </div>
+
+      <p>[PARAGRAPH AFTER QUOTE]</p>
+
+      <!-- Subheading -->
+      <div class="subhead">[SUBHEADING]</div>
+
+      <p>[PARAGRAPH UNDER SUBHEADING]</p>
+
+      <!-- Highlights / key points box -->
+      <div class="highlights-box">
+        <div class="box-title">[BOX TITLE]</div>
+        <ul>
+          <li>[KEY POINT 1]</li>
+          <li>[KEY POINT 2]</li>
+          <li>[KEY POINT 3]</li>
+        </ul>
+      </div>
+
+    </div><!-- /.body-text -->
+
+  </div><!-- /.content-area -->
+
+  <div class="page-footer">
+    <!-- EDIT: Update issue number, month, and page number each issue -->
+    <span class="issue-info">இதழ் எண்: [N] &nbsp;|&nbsp; [TAMIL_MONTH] [YEAR]</span>
+    <span class="page-number">[PAGE_NUMBER]</span>
+    <img class="van-logo-footer" src="Images/VANLogoGold.jpg" alt="VAN">
+  </div>
+</div><!-- SECTION FIRST PAGE -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION PAGE — CONTINUATION (page 2, 3, 4 of same section)
+     Use this template for all pages after the first in a section.
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="glossy"></div>
+  <span class="corner-tl">❈</span>
+  <span class="corner-br">❈</span>
+
+  <div class="page-header">
+    <span class="section-name">[SECTION_HEADER_LABEL]</span>
+    <span class="mag-name">வான் வளரொளி இதழ்</span>
+  </div>
+
+  <div class="content-area">
+
+    <!-- Continuation banner — replaces section-header on page 2+ -->
+    <div class="continuation-banner">
+      <span class="cont-section-name">[SECTION NAME]</span>
+      <!-- EDIT: Update part numbers e.g. பகுதி 2/4 -->
+      <span class="cont-page-info">தொடர்ச்சி — பகுதி [X/Y]</span>
+    </div>
+
+    <div class="section-divider">• &nbsp;&nbsp; • &nbsp;&nbsp; •</div>
+
+    <!-- EDIT: Continuation body content -->
+    <div class="body-text">
+
+      <p>[CONTINUATION PARAGRAPH]</p>
+
+      <!-- Numbered list (for step-by-step content) -->
+      <ol class="numbered-list">
+        <li>[STEP 1]</li>
+        <li>[STEP 2]</li>
+        <li>[STEP 3]</li>
+      </ol>
+
+      <!-- Comparison table (optional) -->
+      <table class="comparison-table">
+        <tr>
+          <th>[COLUMN 1 HEADER]</th>
+          <th>[COLUMN 2 HEADER]</th>
+        </tr>
+        <tr>
+          <td>[CELL]</td>
+          <td>[CELL]</td>
+        </tr>
+      </table>
+
+    </div><!-- /.body-text -->
+
+  </div><!-- /.content-area -->
+
+  <div class="page-footer">
+    <span class="issue-info">இதழ் எண்: [N] &nbsp;|&nbsp; [TAMIL_MONTH] [YEAR]</span>
+    <span class="page-number">[PAGE_NUMBER]</span>
+    <img class="van-logo-footer" src="Images/VANLogoGold.jpg" alt="VAN">
+  </div>
+</div><!-- CONTINUATION PAGE -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CLOSING PAGE — அடுத்த இதழில் + contact
+     Always the last page of every issue.
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="glossy"></div>
+  <span class="corner-tl">❈</span>
+  <span class="corner-br">❈</span>
+
+  <div class="page-header">
+    <span class="section-name">அடுத்த இதழில்</span>
+    <span class="mag-name">வான் வளரொளி இதழ்</span>
+  </div>
+
+  <div class="content-area">
+
+    <div class="section-header">
+      <div class="topic-title">அடுத்த இதழில்…</div>
+      <div class="section-label-row">
+        <span class="lotus-icon">🪷</span>
+        <!-- EDIT: Next issue month -->
+        <span class="section-label">[NEXT_TAMIL_MONTH] [YEAR] இதழில்</span>
+        <span class="lotus-icon">🪷</span>
+      </div>
+      <div class="title-underline"></div>
+    </div>
+
+    <div class="body-text">
+
+      <!-- EDIT: Preview of upcoming sections -->
+      <div class="highlights-box">
+        <div class="box-title">வரும் இதழில் எதிர்பாருங்கள்</div>
+        <ul>
+          <li>[UPCOMING SECTION 1 TEASER]</li>
+          <li>[UPCOMING SECTION 2 TEASER]</li>
+          <li>[UPCOMING SECTION 3 TEASER]</li>
+          <li>[UPCOMING SECTION 4 TEASER]</li>
+        </ul>
+      </div>
+
+      <!-- Closing sign-off from editorial team -->
+      <div class="closing">
+        <p>[CLOSING PARAGRAPH — thank readers, invite contributions]</p>
+        <div class="sign-off">அன்புடன்,</div>
+        <div class="sign-name">[EDITOR NAME]</div>
+        <div class="sign-title">[TITLE]</div>
+        <div class="org-name">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
+        <div class="lotus-end">🪷</div>
+      </div>
+
+      <!-- Contact block -->
+      <div class="slim-quote">
+        <div class="quote-text">
+          இணையதளம்: www.vallalar.org<br>
+          மின்னஞ்சல்: vallalararanilayampdm@gmail.com
+        </div>
+        <div class="quote-source">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
+      </div>
+
+    </div><!-- /.body-text -->
+  </div><!-- /.content-area -->
+
+  <div class="page-footer">
+    <span class="issue-info">இதழ் எண்: [N] &nbsp;|&nbsp; [TAMIL_MONTH] [YEAR]</span>
+    <span class="page-number">[LAST_PAGE_NUMBER]</span>
+    <img class="van-logo-footer" src="Images/VANLogoGold.jpg" alt="VAN">
+  </div>
+</div><!-- CLOSING PAGE -->
+
+</body>
+</html>
