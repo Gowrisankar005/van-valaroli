@@ -872,9 +872,37 @@
         right: 6mm;
       }
 
+      /* ── Cover masthead: allow height to grow with content ── */
+      .masthead {
+        height: auto;
+        padding: 3mm 6mm 3mm;
+      }
+      /* Hide purely decorative spacer elements to reclaim vertical room */
+      .org-vazangum,
+      .gold-rule {
+        display: none;
+      }
+      .org-name {
+        margin-bottom: 1mm;
+        letter-spacing: 1px;
+      }
+      .tagline {
+        margin-bottom: 2mm;
+      }
+      /* Push floating quote below the now auto-height masthead */
+      .quote-float {
+        top: 30%;
+        padding: 0 8mm;
+      }
+      /* Tighten bottom band side padding */
+      .bottom-band {
+        padding: 0 5mm 4mm;
+      }
+
       /* Scale large display fonts proportionally to viewport */
       .mag-name-main {
-        font-size: clamp(18pt, 8vw, 36pt);
+        font-size: clamp(16pt, 5.5vw, 36pt);
+        margin-bottom: 1mm;
       }
       .section-header .topic-title {
         font-size: clamp(14pt, 5.5vw, 26pt);
