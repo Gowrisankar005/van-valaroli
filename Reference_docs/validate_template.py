@@ -240,9 +240,80 @@ def check_brand_colors(css: str, report: Report):
                   f"(as hex or CSS variable) ✓")
 
 
+def check_css_variable_values(css: str, report: Report):
+    """
+    Verify that CSS variables defined in :root (and theme blocks) are assigned
+    real color values — NOT circular var() self-references.
+
+    This catches the exact failure mode where a script replaces color hex values
+    everywhere in the CSS block including inside the :root variable definitions,
+    turning  --van-primary: #8DC63F  into  --van-primary: var(--van-primary).
+    CSS treats circular var() as invalid and silently falls back to black.
+    """
+    # ── 1. Parse :root block ─────────────────────────────────────────────────
+    root_match = re.search(r':root\s*\{([^}]+)\}', css)
+    if not root_match:
+        report.warn("CSS Variable Values",
+                    ":root block not found — cannot verify variable values")
+        return
+
+    root_content = root_match.group(1)
+    # Extract all  --name: value;  declarations
+    decls = re.findall(r'(--[\w-]+)\s*:\s*([^;]+)\s*;', root_content)
+
+    circular, valid = [], 0
+    for var_name, raw_value in decls:
+        value = raw_value.strip()
+        # Circular if the value itself is a var() call
+        if re.search(r'var\s*\(', value):
+            circular.append((var_name, value))
+        else:
+            valid += 1
+
+    if circular:
+        for var_name, value in circular:
+            report.fail(
+                "CSS Variable Values",
+                f":root circular reference — {var_name}: {value}  "
+                f"(CSS falls back to black; replace with a real hex value)"
+            )
+    else:
+        report.ok(
+            "CSS Variable Values",
+            f":root has {valid} variable(s) — all assigned real values, "
+            f"no circular var() references ✓"
+        )
+
+    # ── 2. Same check for every [data-theme="…"] override block ──────────────
+    theme_blocks = re.finditer(
+        r'\[data-theme=["\'](\w+)["\']\]\s*\{([^}]+)\}', css
+    )
+    bad_themes = []
+    for match in theme_blocks:
+        theme_name   = match.group(1)
+        block_content = match.group(2)
+        block_decls  = re.findall(r'(--[\w-]+)\s*:\s*([^;]+)\s*;', block_content)
+        for var_name, raw_value in block_decls:
+            if re.search(r'var\s*\(', raw_value.strip()):
+                bad_themes.append((theme_name, var_name, raw_value.strip()))
+
+    if bad_themes:
+        for theme_name, var_name, value in bad_themes:
+            report.fail(
+                "CSS Variable Values",
+                f"[data-theme=\"{theme_name}\"] circular ref — "
+                f"{var_name}: {value}"
+            )
+    else:
+        report.ok(
+            "CSS Variable Values",
+            "All theme override blocks have real values — no circular refs ✓"
+        )
+
+
 def check_theme_system(css: str, html: str, report: Report):
     """Verify CSS variable theme system and picker UI are present."""
-    # CSS variables in :root
+    # CSS variables in :root — check names AND that they have real values
     missing_vars = [v for v in REQUIRED_THEME_VARS if v not in css]
     if missing_vars:
         for v in missing_vars:
@@ -513,6 +584,7 @@ def validate_file(filepath: Path) -> Report:
     check_css_classes(css, report)
     check_brand_colors(css, report)
     check_theme_system(css, html, report)
+    check_css_variable_values(css, report)
     check_media_queries(css, report)
     check_print_query_intact(css, report)
     check_overflow_guard(css, report)
