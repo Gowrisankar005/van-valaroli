@@ -619,7 +619,7 @@ python3 Reference_docs/validate_template.py --self-test
 python3 Reference_docs/validate_template.py --all
 ```
 
-**Expected: 26/26 PASS, 0 failures.** Warnings are non-blocking but should be reviewed.
+**Expected: 0 FAIL.** Run `--self-test` to see the current check count — don't rely on a number written here. Warnings are non-blocking but should be reviewed.
 
 ### Three Gates — All Enforced
 | Gate | Trigger | Blocks? |
@@ -689,7 +689,7 @@ At the beginning of every Claude Code session on this project:
 
 1. **Read this CLAUDE.md fully** before making any changes
 2. **Run self-test** to confirm the validator is healthy:
-   `python3 Reference_docs/validate_template.py --self-test` → must be 17/17 PASS
+   `python3 Reference_docs/validate_template.py --self-test` → all tests must pass
 3. **Run validator on the working file** to establish a clean baseline:
    `python3 Reference_docs/validate_template.py VAN_Vallaroli_Chittirai2026_v1_2_20260309.html`
 4. **Identify the specific task** — maintenance, content edit, or new feature?
@@ -698,11 +698,37 @@ At the beginning of every Claude Code session on this project:
 7. **Commit using the pre-commit hook** — never use `--no-verify`
 
 ### End of Session
-- [ ] Validator passes (26/26, 0 failures) on all modified HTML files
+- [ ] Validator passes (0 failures) on all modified HTML files
 - [ ] All changes committed and pushed
 - [ ] Any new lessons learned added to Part 18 of this file
+- [ ] CLAUDE.md updated if any of the Maintenance Triggers below apply
+
+---
+
+## CLAUDE.md MAINTENANCE TRIGGERS
+
+CLAUDE.md is a living document. Update it whenever the project evolves. Use this table to know **what to update and where**.
+
+| What Changed | Update in CLAUDE.md | Section |
+|---|---|---|
+| New validator check added | Nothing — `--self-test` always shows current count | Part 17 |
+| Validator self-test count changes | Nothing — count is not hardcoded here (by design) | Part 17 |
+| New bug found and fixed | Add entry to Lessons Learned | Part 18 |
+| New CSS component/class added | Add row to Content Components table | Part 2 |
+| Brand color added or renamed | Update Brand Colors block + CSS Variables section | Parts 3 & 16 |
+| New theme added to theme picker | Add to theme table + `[data-theme]` rules | Part 16 |
+| New section type added | Add row to Section Registry | Part 5 |
+| Image asset renamed or moved | Update image assets list | Part 3 |
+| Production process step changes | Update the corresponding Phase in production_workflow.md | (external) |
+| New monthly issue started | Update current file in Session Checklist + issue rotation table | Parts 12 & 14 |
+| VAN contact details change | Update contact block | Part 15 |
+
+### When to update CLAUDE.md vs. when NOT to
+**Update CLAUDE.md** when the change affects *how Claude Code should behave in future sessions* — design rules, quality gates, hard-won lessons, component patterns.
+
+**Do NOT update CLAUDE.md** for one-off content changes, issue-specific edits, or temporary workarounds. Those belong in `Reference_docs/content_tracker.md` or commit messages.
 
 ---
 
 *நன்றி! Together we illuminate minds with வான் வளரொளி. 🪷✨*
-*CLAUDE.md — Last updated: சித்திரை 2026 (session 2)*
+*CLAUDE.md — Last updated: சித்திரை 2026 (session 3)*
