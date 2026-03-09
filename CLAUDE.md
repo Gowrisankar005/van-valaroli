@@ -69,9 +69,9 @@ Every content page follows this exact structure — learn it well:
     <div class="section-header">
       <div class="topic-title">[ARTICLE TITLE]</div>
       <div class="section-label-row">
-        <span class="lotus-icon">🪷</span>
+        <span class="lotus-icon">❀</span>
         <span class="section-label">[SECTION LABEL]</span>
-        <span class="lotus-icon">🪷</span>
+        <span class="lotus-icon">❀</span>
       </div>
       <div class="title-underline"></div>
     </div>
@@ -105,12 +105,32 @@ Every content page follows this exact structure — learn it well:
 | Component | HTML | When to Use |
 |-----------|------|-------------|
 | Body paragraph | `<p>text</p>` | All running text |
+| Lead paragraph | `<p class="lead-para">text</p>` | Opening paragraph of each article only |
 | Subheading | `<div class="subhead">text</div>` | Section sub-topics |
 | Classical quote block | `<div class="slim-quote"><div class="quote-text">verse</div><div class="quote-source">source</div></div>` | Thirukkural, Sangam verses |
 | Highlights box | `<div class="highlights-box"><div class="box-title">title</div><ul><li>item</li></ul></div>` | Key points, lists |
 | Numbered list | `<ol class="numbered-list"><li>item</li></ol>` | Step-by-step instructions |
 | Author byline | `<div class="author-byline">text</div>` | Article attribution |
 | Section divider | `<div class="section-divider">• &nbsp; • &nbsp; •</div>` | Between sub-sections |
+| **Image — float right** | `<figure class="article-figure img-right"><img src="..." alt="[Tamil]"><figcaption class="img-caption">[Tamil caption]</figcaption></figure>` | Portraits, illustrations, book covers (62mm wide, text wraps left) |
+| **Image — float left** | `<figure class="article-figure img-left"><img src="..." alt="[Tamil]"><figcaption class="img-caption">[Tamil caption]</figcaption></figure>` | Same as above, text wraps right |
+| **Image — full banner** | `<figure class="article-figure img-banner"><img src="..." alt="[Tamil]"><figcaption class="img-caption">[Tamil caption]</figcaption></figure>` | Temple exteriors, landscapes (full content width) |
+| **Image — half centered** | `<figure class="article-figure img-half"><img src="..." alt="[Tamil]"><figcaption class="img-caption">[Tamil caption]</figcaption></figure>` | Diagrams, single objects (100mm centered) |
+
+### Image Size Guide
+
+| Placement mode | CSS class | Width | Min pixels (screen) | Ideal for print (300dpi) |
+|---|---|---|---|---|
+| Float column | `.img-right` / `.img-left` | 62mm | 370 × 280px | 730 × 550px |
+| Full banner | `.img-banner` | 182mm | 1080 × 400px | 2150 × 790px |
+| Half centered | `.img-half` | 100mm | 590 × 440px | 1180 × 870px |
+
+**Placement decision guide:**
+- Saint/author portrait → `img-right` (face toward text centre)
+- Sangam bird/plant illustration → `img-right` or `img-left`
+- Temple exterior, colonnade, gopuram → `img-banner`
+- Book cover, diagram, single artefact → `img-half`
+- Never place a float immediately after another float — use a `section-divider` between them
 
 ---
 
@@ -375,7 +395,7 @@ Always verify Thirukkural text and numbers from the canonical source. Do not par
   <div class="sign-name">[Author Name in Tamil]</div>
   <div class="sign-title">[Title]</div>
   <div class="org-name">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
-  <div class="lotus-end">🪷</div>
+  <div class="lotus-end">❀</div>
 </div>
 ```
 
@@ -730,5 +750,5 @@ CLAUDE.md is a living document. Update it whenever the project evolves. Use this
 
 ---
 
-*நன்றி! Together we illuminate minds with வான் வளரொளி. 🪷✨*
+*நன்றி! Together we illuminate minds with வான் வளரொளி. ❀✨*
 *CLAUDE.md — Last updated: சித்திரை 2026 (session 3)*

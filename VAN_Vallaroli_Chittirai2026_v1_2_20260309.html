@@ -905,11 +905,12 @@
     }
     .img-placeholder .img-icon { font-size: 20pt; opacity: 0.45; }
     .img-placeholder .img-caption {
-      font-size: 8.5pt;
-      color: #888;
+      font-size: 9pt;
+      color: var(--subtle-text);
       text-align: center;
-      margin-top: 1mm;
+      margin-top: 2mm;
       font-style: italic;
+      line-height: 1.4;
     }
 
     .continuation-banner {
@@ -1135,6 +1136,83 @@
       font-weight: 500;
       margin-bottom: 4mm;
       margin-top: 1.5mm;
+    }
+
+  
+    /* ═══════════════════════════════════════════════════════════════
+       ARTICLE IMAGE COMPONENT — four placement modes
+       Usage: <figure class="article-figure img-right">
+                <img src="..." alt="[Tamil alt text]">
+                <figcaption class="img-caption">[Tamil caption]</figcaption>
+              </figure>
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* Base figure */
+    .article-figure {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── Mode 1: Float right — 62mm column, text wraps left ───── */
+    .img-right {
+      float: right;
+      width: 62mm;
+      margin: 1mm 0 5mm 6mm;
+      clear: right;
+    }
+
+    /* ── Mode 2: Float left — 62mm column, text wraps right ───── */
+    .img-left {
+      float: left;
+      width: 62mm;
+      margin: 1mm 6mm 5mm 0;
+      clear: left;
+    }
+
+    /* ── Mode 3: Full banner — 100% content width, no float ───── */
+    .img-banner {
+      display: block;
+      width: 100%;
+      margin: 5mm 0;
+      clear: both;
+    }
+
+    /* ── Mode 4: Half-width centered — 100mm, no float ─────────── */
+    .img-half {
+      display: block;
+      width: 100mm;
+      margin: 5mm auto;
+      clear: both;
+    }
+
+    /* Image itself: maintain aspect ratio, thin gold border */
+    .article-figure img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 0.5pt solid color-mix(in srgb, var(--van-gold) 40%, transparent);
+      border-radius: 2px;
+    }
+
+    /* figcaption inside article-figure uses .img-caption */
+    .article-figure .img-caption {
+      text-align: center;
+    }
+    .img-banner .img-caption,
+    .img-half .img-caption {
+      text-align: center;
+    }
+    .img-right .img-caption,
+    .img-left .img-caption {
+      text-align: left;
+      font-size: 8.5pt;
+    }
+
+    /* Clearfix — ensures text after a float starts below the image */
+    .body-text::after {
+      content: '';
+      display: table;
+      clear: both;
     }
 
   </style>
