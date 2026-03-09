@@ -255,6 +255,23 @@
       background: rgba(255,248,232,0.12);
       font-weight: 700;
     }
+    /* ── Cover logo row ── */
+    .cover-logo-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 3mm;
+      padding-bottom: 2.5mm;
+      border-bottom: 0.75px solid color-mix(in srgb, var(--van-gold) 35%, transparent);
+    }
+    .cover-logo-left, .cover-logo-right {
+      height: 8mm;
+      width: auto;
+      opacity: 0.88;
+    }
+
+
 
     .quote-float {
       position: absolute; top: 25%;
@@ -720,6 +737,28 @@
       letter-spacing: 0.3px;
     }
 
+    /* ── Auto-compact when two quotes are adjacent ── */
+    .slim-quote + .slim-quote {
+      margin-top: 2mm;           /* reduce gap between consecutive quotes */
+      padding-top: 3mm;
+      padding-bottom: 3mm;
+    }
+    .slim-quote + .slim-quote .quote-text { font-size: 12.5pt; }
+    .slim-quote + .slim-quote .quote-text::before,
+    .slim-quote + .slim-quote .quote-text::after { font-size: 14pt; }
+
+    /* ── .slim-quote-compact: inline ornamental quote, minimal footprint ── */
+    /* Usage: <div class="slim-quote slim-quote-compact"> ... </div>          */
+    .slim-quote-compact {
+      margin: 3mm 8mm;
+      padding: 3mm 5mm;
+      font-size: 12pt;
+    }
+    .slim-quote-compact .quote-text { font-size: 12pt; line-height: 1.6; }
+    .slim-quote-compact .quote-text::before,
+    .slim-quote-compact .quote-text::after { font-size: 13pt; }
+    .slim-quote-compact .quote-source { font-size: 9pt; margin-top: 2mm; }
+
     .highlights-box {
       background: var(--van-bg-light);
       border-left: 4pt solid var(--van-dark);
@@ -885,6 +924,13 @@
         overflow:           hidden  !important;
       }
       .glossy { display: none !important; }
+      /* ── Cover section: strip screen-only padding/bg to prevent phantom blank page ── */
+      .cover-section {
+        padding:    0       !important;
+        background: none    !important;
+        display:    block   !important;
+        width:      210mm   !important;
+      }
       /* ── Header logos: keep consistent size in print ── */
       .header-logo-left, .header-logo-right {
         height: 6mm !important;
@@ -930,28 +976,22 @@
       line-height: 1.4;
     }
 
-    .continuation-banner {
-      background: linear-gradient(90deg,
-        color-mix(in srgb, var(--van-primary) 10%, transparent) 0%,
-        color-mix(in srgb, var(--van-gold)    8%, transparent)  50%,
-        color-mix(in srgb, var(--van-primary) 10%, transparent) 100%);
-      border-left: 3pt solid var(--van-primary);
-      padding: 2mm 5mm;
-      margin-bottom: 4mm;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-radius: 0 3px 3px 0;
-    }
-    .cont-section-name {
-      font-size: 9pt;
+    /* .continuation-banner is now hidden — cont info moved to page-header */
+    .continuation-banner { display: none !important; }
+    .cont-section-name, .cont-page-info { display: none !important; }
+
+    /* ── Continuation tag in page-header (replaces inline banner) ── */
+    .header-cont-tag {
+      font-size: 7.5pt;
       font-weight: 700;
-      color: var(--van-deep);
-    }
-    .cont-page-info {
-      font-size: 8.5pt;
       color: var(--van-gold);
-      font-weight: 600;
+      letter-spacing: 0.3px;
+      opacity: 0.92;
+      padding: 0.5mm 2.5mm;
+      border: 0.75px solid color-mix(in srgb, var(--van-gold) 45%, transparent);
+      border-radius: 3px;
+      white-space: nowrap;
+      margin-left: 2mm;
     }
 
     /* ─────────────────────────────────────────────────────────────
@@ -1246,7 +1286,7 @@
 
     <!-- EDIT: Replace with new cover image path each issue -->
     <img class="cover-image"
-         src="Images/MagazineCoverImage01.jpg"
+         src="Images/cover-image.jpg"
          alt="வான் வளரொளி இதழ் அட்டை">
 
     <div class="glossy"></div>
@@ -1258,6 +1298,11 @@
 
     <!-- MASTHEAD (dark green top band) -->
     <div class="masthead">
+      <!-- Logo row: VAN logo left, Magazine logo right — stays on every cover -->
+      <div class="cover-logo-row">
+        <img class="cover-logo-left" src="Images/van-logo.jpg" alt="VAN">
+        <img class="cover-logo-right" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
+      </div>
       <!-- EDIT: org name stays fixed unless VAN changes it -->
       <div class="org-name">வள்ளலார் அறநிலையம்</div>
       <div class="org-vazangum">— வழங்கும் —</div>
@@ -1297,7 +1342,7 @@
         <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">[TEASER_6]</span></div>
       </div>
       <div class="publisher-row">
-        <img class="van-seal" src="Images/valarolilogogold01.jpg" alt="VAN">
+        <img class="van-seal" src="Images/vallaroli-logo.jpg" alt="VAN">
         <div class="publisher-name">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
         <div class="publisher-url">www.van.org.in</div>
       </div>
@@ -1317,9 +1362,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+    <img class="header-logo-left" src="Images/van-logo.jpg" alt="VAN">
       <span class="section-name">பொருளடக்கம்</span>
-    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
+    <img class="header-logo-right" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -1331,7 +1376,7 @@
 
     <!-- EDIT: Update issue banner each issue -->
     <div class="issue-banner">
-      <img class="mag-logo-sm" src="Images/valarolilogogold01.jpg" alt="VAN">
+      <img class="mag-logo-sm" src="Images/vallaroli-logo.jpg" alt="VAN">
       <div class="banner-text">
         <div class="banner-title">வான் வளரொளி இதழ் — [N]</div>
         <!-- EDIT: month + special label -->
@@ -1392,7 +1437,7 @@
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: [N] &nbsp;|&nbsp; [TAMIL_MONTH] [YEAR]</span>
     <span class="page-number">2</span>
-    <img class="van-logo-footer" src="Images/VANLogoGold.jpg" alt="VAN">
+    <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 </div><!-- PAGE 2 -->
 
@@ -1408,10 +1453,10 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+    <img class="header-logo-left" src="Images/van-logo.jpg" alt="VAN">
       <!-- EDIT: Section name shown in page header (from Section Registry) -->
     <span class="section-name">[SECTION_HEADER_LABEL]</span>
-    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
+    <img class="header-logo-right" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -1472,7 +1517,7 @@
     <!-- EDIT: Update issue number, month, and page number each issue -->
     <span class="issue-info">இதழ் எண்: [N] &nbsp;|&nbsp; [TAMIL_MONTH] [YEAR]</span>
     <span class="page-number">[PAGE_NUMBER]</span>
-    <img class="van-logo-footer" src="Images/VANLogoGold.jpg" alt="VAN">
+    <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 </div><!-- SECTION FIRST PAGE -->
 
@@ -1487,9 +1532,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+    <img class="header-logo-left" src="Images/van-logo.jpg" alt="VAN">
       <span class="section-name">[SECTION_HEADER_LABEL]</span>
-    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
+    <img class="header-logo-right" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -1534,7 +1579,7 @@
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: [N] &nbsp;|&nbsp; [TAMIL_MONTH] [YEAR]</span>
     <span class="page-number">[PAGE_NUMBER]</span>
-    <img class="van-logo-footer" src="Images/VANLogoGold.jpg" alt="VAN">
+    <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 </div><!-- CONTINUATION PAGE -->
 
@@ -1549,9 +1594,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+    <img class="header-logo-left" src="Images/van-logo.jpg" alt="VAN">
       <span class="section-name">அடுத்த இதழில்</span>
-    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
+    <img class="header-logo-right" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -1605,7 +1650,7 @@
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: [N] &nbsp;|&nbsp; [TAMIL_MONTH] [YEAR]</span>
     <span class="page-number">[LAST_PAGE_NUMBER]</span>
-    <img class="van-logo-footer" src="Images/VANLogoGold.jpg" alt="VAN">
+    <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 </div><!-- CLOSING PAGE -->
 

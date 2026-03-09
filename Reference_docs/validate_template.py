@@ -113,8 +113,8 @@ REQUIRED_AT_PAGE = "@page"
 
 # ── Required image file references in HTML ────────────────────────────────────
 REQUIRED_IMAGE_REFS = [
-    "Images/VANLogoGold.jpg",
-    "Images/valarolilogogold01.jpg",
+    "Images/van-logo.jpg",
+    "Images/vallaroli-logo.jpg",
 ]
 
 # ── செந்தமிழ் violations — banned loan words in body content ─────────────────
@@ -410,7 +410,7 @@ def check_image_refs(html: str, report: Report):
     if base64_footers:
         report.fail("Images",
                     f"{len(base64_footers)} footer logo(s) use base64 — "
-                    "footer logos must use file paths (VANLogoGold.jpg) for consistency")
+                    "footer logos must use file paths (Images/van-logo.jpg) for consistency")
     elif base64_imgs:
         # Cover/decorative images embedded as base64: acceptable for self-contained delivery
         report.warn("Images",
@@ -560,9 +560,9 @@ def check_title_tag(html: str, is_template: bool, report: Report):
 
 
 def check_footer_consistency(html: str, report: Report):
-    """All footers must include VANLogoGold.jpg and issue-info."""
+    """All footers must include Images/van-logo.jpg and issue-info."""
     page_count = html.count('<div class="page">')
-    logo_count = html.count("VANLogoGold.jpg")
+    logo_count = html.count("van-logo.jpg")
     issue_info_count = html.count('class="issue-info"')
 
     if page_count == 0:
@@ -571,10 +571,10 @@ def check_footer_consistency(html: str, report: Report):
     # Allow ± 1 for pages without footer (shouldn't happen)
     if logo_count >= page_count:
         report.ok("Footer Consistency",
-                  f"VANLogoGold.jpg present in all {page_count} page footer(s) ✓")
+                  f"van-logo.jpg present in all {page_count} page footer(s) ✓")
     else:
         report.fail("Footer Consistency",
-                    f"VANLogoGold.jpg found {logo_count}× but there are {page_count} pages — "
+                    f"van-logo.jpg found {logo_count}× but there are {page_count} pages — "
                     "some footers missing logo")
 
     if issue_info_count >= page_count:
@@ -685,8 +685,8 @@ SELF_TESTS = [
         "description": "File-path image reference in body must PASS (no base64)",
         "check": "check_image_refs",
         "html": ('<html><body>'
-                 '<img src="Images/VANLogoGold.jpg">'
-                 '<img src="Images/valarolilogogold01.jpg">'
+                 '<img src="Images/van-logo.jpg">'
+                 '<img src="Images/vallaroli-logo.jpg">'
                  '</body></html>'),
         "expect": "pass",
     },
