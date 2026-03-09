@@ -1,0 +1,64 @@
+name: Validate Magazine HTML
+
+# ── Triggers ──────────────────────────────────────────────────────────────────
+on:
+  push:
+    paths:
+      - '**.html'                        # any HTML file changed
+      - 'Reference_docs/validate_template.py'  # or the validator itself updated
+  pull_request:
+    paths:
+      - '**.html'
+      - 'Reference_docs/validate_template.py'
+
+# ── Jobs ──────────────────────────────────────────────────────────────────────
+jobs:
+  validate:
+    name: வான் வளரொளி — Design System Validator
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Set up Python (validator uses only stdlib — no pip install needed)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Self-test the validator first — a broken validator silently misses bugs
+      - name: Self-test the validator (--self-test)
+        run: |
+          echo "Testing the validator itself..."
+          python3 Reference_docs/validate_template.py --self-test
+          EXIT=$?
+          if [ $EXIT -eq 2 ]; then
+            echo ""
+            echo "❌ VALIDATOR SELF-TESTS FAILED — the validator has gaps."
+            echo "Fix the check function(s) before this can validate HTML files."
+            exit 1
+          fi
+          echo "✅ Validator self-tests passed — proceeding to HTML validation."
+
+      # 4. Run the validator against every HTML file in the repo
+      - name: Run validate_template.py (--all)
+        run: |
+          echo "Running validator against all HTML files..."
+          python3 Reference_docs/validate_template.py --all
+          EXIT=$?
+          if [ $EXIT -eq 2 ]; then
+            echo ""
+            echo "❌ Validation FAILED — see errors above."
+            echo "Fix all failures before merging."
+            exit 1
+          elif [ $EXIT -eq 1 ]; then
+            echo ""
+            echo "⚠️  Validation passed with WARNINGS — review before release."
+            exit 0
+          else
+            echo ""
+            echo "✅ All HTML files passed validation."
+            exit 0
+          fi

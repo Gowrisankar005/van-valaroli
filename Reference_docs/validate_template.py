@@ -5,6 +5,7 @@ validate_template.py — வான் வளரொளி இதழ் HTML Valid
 Validates the template and any issue file against:
   - CSS class completeness (all design-spec components present)
   - Brand color integrity (hex values match spec)
+  - CSS variable values (no circular var() references in :root / theme blocks)
   - Responsive media queries (print, tablet, mobile)
   - Page structure rules (header + content-area + footer per page)
   - Image references (file paths, no base64 in template)
@@ -16,8 +17,24 @@ Usage:
   python3 validate_template.py                          # validates template
   python3 validate_template.py path/to/issue.html       # validates an issue file
   python3 validate_template.py --all                    # validates all HTML files
+  python3 validate_template.py --self-test              # tests the validator itself
 
 Exit codes: 0 = PASS, 1 = WARNINGS only, 2 = FAILURES found
+
+─────────────────────────────────────────────────────────────────────────────
+STANDARD PRACTICE — Keeping the validator trustworthy
+─────────────────────────────────────────────────────────────────────────────
+Rule: Every bug that escapes this validator must become a permanent self-test.
+      No gap may cause a production problem twice.
+
+When you find a validator gap:
+  1. Write a self-test case that FAILS (proving the gap exists)      ← red
+  2. Add / fix the check function so the self-test PASSES            ← green
+  3. Commit both together: "Fix validator gap: <description>"
+
+Self-tests run before HTML validation in CI, so a broken validator
+is caught before it silently misses real issues.
+─────────────────────────────────────────────────────────────────────────────
 """
 
 import sys
@@ -353,9 +370,10 @@ def check_media_queries(css: str, report: Report):
 
 def check_page_structure(body: str, report: Report):
     """Each .page div must contain page-header, content-area, page-footer."""
-    # Find all page div blocks (rough heuristic: capture between class="page" and next same-level div)
+    # Capture content between consecutive <div class="page"> openings, or to end-of-string.
+    # NOTE: body is already extracted (no <body> tags present), so do NOT use </body> as sentinel.
     page_blocks = re.findall(
-        r'<div class="page">(.*?)(?=<div class="page"|</body>)',
+        r'<div class="page">(.*?)(?=<div class="page">|$)',
         body, re.DOTALL
     )
 
@@ -502,8 +520,11 @@ def check_overflow_guard(css: str, report: Report):
     if "overflow-x: hidden" in css:
         report.ok("Responsiveness", "overflow-x: hidden on html/body — no horizontal scroll ✓")
     else:
-        report.warn("Responsiveness",
-                    "overflow-x: hidden not found — mobile may show horizontal scrollbar")
+        # FAIL not WARN: this rule was added specifically to fix horizontal scroll on mobile.
+        # Its absence directly breaks the mobile layout — not optional.
+        report.fail("Responsiveness",
+                    "overflow-x: hidden missing — mobile layout will show horizontal scrollbar. "
+                    "Add: html, body { overflow-x: hidden; max-width: 100%; }")
 
 
 def check_title_tag(html: str, is_template: bool, report: Report):
@@ -554,6 +575,303 @@ def check_footer_consistency(html: str, report: Report):
 
 
 # ══════════════════════════════════════════════════════════════════════════════
+# Self-test suite  (python3 validate_template.py --self-test)
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# Each entry proves ONE check function behaves correctly on a known input.
+# "expect" is either "fail" (check must raise ≥1 FAIL) or "pass" (0 FAILs).
+#
+# HOW TO ADD A NEW SELF-TEST:
+#   1. Give it a unique ID  (e.g. "VAR-003", "IMG-002")
+#   2. Set "check" to the exact function name
+#   3. Provide minimal "css" and/or "html" that exercise the scenario
+#   4. Set "expect": "fail" for bad inputs, "pass" for good inputs
+#   5. Add "origin" explaining which real bug this guards against
+# ─────────────────────────────────────────────────────────────────────────────
+
+SELF_TESTS = [
+
+    # ── CSS Variable Values ───────────────────────────────────────────────────
+    {
+        "id": "VAR-001",
+        "description": "Circular var() in :root must FAIL",
+        "check": "check_css_variable_values",
+        "css": ":root { --van-primary: var(--van-primary); --van-deep: #2d7a3e; }",
+        "expect": "fail",
+        "origin": "Commit 4d63330: replacement script overwrote :root hex values "
+                  "with var() self-refs → all fonts fell back to black. "
+                  "Old check_brand_colors/check_theme_system both passed because "
+                  "they only tested for the variable NAME, not its VALUE.",
+    },
+    {
+        "id": "VAR-002",
+        "description": "Circular var() inside [data-theme] block must FAIL",
+        "check": "check_css_variable_values",
+        "css": (":root { --van-primary: #8DC63F; }"
+                "[data-theme=\"blue\"] { --van-gold: var(--van-gold); }"),
+        "expect": "fail",
+        "origin": "Blue theme had --van-gold: var(--van-gold) with different "
+                  "indentation; fix script matched :root but missed theme block.",
+    },
+    {
+        "id": "VAR-003",
+        "description": "Valid hex values in :root and theme blocks must PASS",
+        "check": "check_css_variable_values",
+        "css": (":root { --van-primary: #8DC63F; --van-deep: #2d7a3e; }"
+                "[data-theme=\"blue\"] { --van-primary: #1A6BB5; "
+                "--van-gold: #D4AF37; }"),
+        "expect": "pass",
+    },
+
+    # ── Brand Colors ──────────────────────────────────────────────────────────
+    {
+        "id": "CLR-001",
+        "description": "Brand color missing entirely must FAIL",
+        "check": "check_brand_colors",
+        "css": "body { color: red; }",   # none of the required brand colors
+        "expect": "fail",
+    },
+    {
+        "id": "CLR-002",
+        "description": "Brand color present as CSS variable name must PASS",
+        "check": "check_brand_colors",
+        "css": (":root { --van-primary: #8DC63F; --van-dark: #6BA82F; "
+                "--van-deep: #2d7a3e; --van-gold: #D4AF37; "
+                "--body-text: #2B2B2B; --page-bg-top: #fffef5; "
+                "--page-bg-bottom: #fef9f2; }"),
+        "expect": "pass",
+    },
+
+    # ── செந்தமிழ் ─────────────────────────────────────────────────────────────
+    {
+        "id": "STZ-001",
+        "description": "Banned Tamil loan word in body must FAIL",
+        "check": "check_senthamizh",
+        "html": "<html><body><p>கம்ப்யூட்டர் பயன்படுத்துக</p></body></html>",
+        "expect": "fail",
+    },
+    {
+        "id": "STZ-002",
+        "description": "Clean pure-Tamil body text must PASS",
+        "check": "check_senthamizh",
+        "html": "<html><body><p>கணினி பயன்படுத்துக</p></body></html>",
+        "expect": "pass",
+    },
+
+    # ── Images ────────────────────────────────────────────────────────────────
+    {
+        "id": "IMG-001",
+        "description": "base64 image in <body> must FAIL",
+        "check": "check_image_refs",
+        "html": ('<html><body>'
+                 '<img src="data:image/png;base64,iVBORw0KGgo=">'
+                 '</body></html>'),
+        "expect": "fail",
+    },
+    {
+        "id": "IMG-002",
+        "description": "File-path image reference in body must PASS (no base64)",
+        "check": "check_image_refs",
+        "html": ('<html><body>'
+                 '<img src="Images/VANLogoGold.jpg">'
+                 '<img src="Images/valarolilogogold01.jpg">'
+                 '</body></html>'),
+        "expect": "pass",
+    },
+
+    # ── Media Queries ─────────────────────────────────────────────────────────
+    {
+        "id": "MQ-001",
+        "description": "Missing @media print must FAIL",
+        "check": "check_media_queries",
+        "css": "@media screen and (max-width: 880px) { } "
+               "@media screen and (max-width: 600px) { } @page { }",
+        "expect": "fail",
+    },
+    {
+        "id": "MQ-002",
+        "description": "All required media queries present must PASS",
+        "check": "check_media_queries",
+        "css": ("@media print { .page { page-break-after: always; } } "
+                "@media screen and (max-width: 880px) { } "
+                "@media screen and (max-width: 600px) { } "
+                "@page { size: A4 portrait; margin: 0; }"),
+        "expect": "pass",
+    },
+
+    # ── Page Structure ────────────────────────────────────────────────────────
+    {
+        "id": "PG-001",
+        "description": "Page missing content-area must FAIL",
+        "check": "check_page_structure",
+        "html": ('<html><body>'
+                 '<div class="page">'
+                 '  <div class="page-header"></div>'
+                 '  <div class="page-footer"></div>'
+                 '</div>'
+                 '</body></html>'),
+        "expect": "fail",
+    },
+    {
+        "id": "PG-002",
+        "description": "Page with all required structure must PASS",
+        "check": "check_page_structure",
+        "html": ('<html><body>'
+                 '<div class="page">'
+                 '  <div class="glossy"></div>'
+                 '  <span class="corner-tl">❈</span>'
+                 '  <span class="corner-br">❈</span>'
+                 '  <div class="page-header"></div>'
+                 '  <div class="content-area"></div>'
+                 '  <div class="page-footer"></div>'
+                 '</div>'
+                 '</body></html>'),
+        "expect": "pass",
+    },
+
+    # ── Overflow Guard ────────────────────────────────────────────────────────
+    {
+        "id": "OVF-001",
+        "description": "Missing overflow-x guard must FAIL",
+        "check": "check_overflow_guard",
+        "css": "body { margin: 0; }",
+        "expect": "fail",
+    },
+    {
+        "id": "OVF-002",
+        "description": "overflow-x: hidden on html/body must PASS",
+        "check": "check_overflow_guard",
+        "css": "html, body { overflow-x: hidden; max-width: 100%; }",
+        "expect": "pass",
+    },
+
+    # ── Placeholders ──────────────────────────────────────────────────────────
+    {
+        "id": "PH-001",
+        "description": "Unfilled [SLOT] in issue file must FAIL",
+        "check": "check_placeholders",
+        "html": ('<html><head><title>Issue</title></head>'
+                 '<body><p>[ARTICLE TITLE]</p></body></html>'),
+        "is_template": False,
+        "expect": "fail",
+    },
+    {
+        "id": "PH-002",
+        "description": "No unfilled slots in issue file must PASS",
+        "check": "check_placeholders",
+        "html": ('<html><head><title>Issue</title></head>'
+                 '<body><p>திருக்குறள் ஆய்வு</p></body></html>'),
+        "is_template": False,
+        "expect": "pass",
+    },
+]
+
+
+def _run_one_self_test(test: dict) -> tuple:
+    """
+    Run a single self-test. Returns (passed: bool, detail: str).
+    A self-test 'passes' when the check behaves as expected.
+    """
+    css  = test.get("css",  "")
+    html = test.get("html", "") or (
+        f"<html><head><style>{css}</style></head><body></body></html>"
+    )
+    is_template = test.get("is_template", True)
+    body = extract_body(html)
+
+    r = Report("self-test")
+
+    # Dispatch to the right check function
+    fn_name = test["check"]
+    dispatch = {
+        "check_css_variable_values": lambda: check_css_variable_values(css, r),
+        "check_brand_colors":        lambda: check_brand_colors(css, r),
+        "check_theme_system":        lambda: check_theme_system(css, html, r),
+        "check_media_queries":       lambda: check_media_queries(css, r),
+        "check_print_query_intact":  lambda: check_print_query_intact(css, r),
+        "check_css_classes":         lambda: check_css_classes(css, r),
+        "check_senthamizh":          lambda: check_senthamizh(html, r),
+        "check_image_refs":          lambda: check_image_refs(html, r),
+        "check_page_structure":      lambda: check_page_structure(body, r),
+        "check_overflow_guard":      lambda: check_overflow_guard(css, r),
+        "check_placeholders":        lambda: check_placeholders(html, is_template, r),
+    }
+    fn = dispatch.get(fn_name)
+    if fn is None:
+        return False, f"Unknown check function: {fn_name}"
+
+    fn()
+
+    expect_fail = (test["expect"] == "fail")
+    actually_failed = (r.fail_cnt > 0)
+
+    if expect_fail and actually_failed:
+        return True, "correctly detected the bad pattern ✓"
+    elif not expect_fail and not actually_failed:
+        return True, "correctly accepted the good pattern ✓"
+    elif expect_fail and not actually_failed:
+        return False, (f"MISSED — expected FAIL but got PASS. "
+                       f"The check did not catch this bad pattern.")
+    else:
+        return False, (f"FALSE ALARM — expected PASS but got FAIL. "
+                       f"The check incorrectly rejected a valid pattern.")
+
+
+def run_self_tests() -> int:
+    """
+    Run all self-tests. Returns exit code: 0 = all pass, 2 = gaps found.
+    """
+    GREEN  = "\033[32m"
+    RED    = "\033[31m"
+    YELLOW = "\033[33m"
+    RESET  = "\033[0m"
+    BOLD   = "\033[1m"
+
+    print(f"\n{'═'*64}")
+    print(f"  {BOLD}வான் வளரொளி — Validator Self-Tests{RESET}")
+    print(f"  Proving the validator catches what it should")
+    print(f"{'═'*64}")
+
+    passed = 0
+    failed = 0
+    last_check = None
+
+    for test in SELF_TESTS:
+        check = test["check"]
+        if check != last_check:
+            print(f"\n  ── {check} ──")
+            last_check = check
+
+        ok, detail = _run_one_self_test(test)
+
+        label = f"{test['id']}: {test['description']}"
+        if ok:
+            print(f"  {GREEN}✅  {label}{RESET}")
+            passed += 1
+        else:
+            print(f"  {RED}❌  {label}{RESET}")
+            print(f"      {RED}↳  {detail}{RESET}")
+            if "origin" in test:
+                print(f"      {YELLOW}Origin: {test['origin'][:80]}{RESET}")
+            failed += 1
+
+    print(f"\n{'─'*64}")
+    total = passed + failed
+    print(f"  Self-tests: {passed} passed  |  {failed} failed  (of {total})")
+
+    if failed == 0:
+        print(f"\n  {GREEN}✅  All self-tests pass — validator is trustworthy.{RESET}")
+        print(f"  Every known gap has a check. Every check has a test.")
+    else:
+        print(f"\n  {RED}❌  {failed} self-test(s) FAILED — validator has gaps.{RESET}")
+        print(f"  A gap means a real bug could slip through undetected.")
+        print(f"  Fix the check function(s) before running HTML validation.")
+    print(f"{'═'*64}\n")
+
+    return 0 if failed == 0 else 2
+
+
+# ══════════════════════════════════════════════════════════════════════════════
 # Main orchestration
 # ══════════════════════════════════════════════════════════════════════════════
 
@@ -600,6 +918,11 @@ def validate_file(filepath: Path) -> Report:
 def main():
     args = sys.argv[1:]
 
+    # ── Self-test mode ────────────────────────────────────────────────────────
+    if "--self-test" in args:
+        sys.exit(run_self_tests())
+
+    # ── HTML validation mode ──────────────────────────────────────────────────
     if "--all" in args:
         files = list(PROJECT_DIR.glob("*.html"))
         if not files:
