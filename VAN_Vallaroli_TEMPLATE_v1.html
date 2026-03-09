@@ -599,7 +599,7 @@
     .section-header .topic-title {
       font-size: 26pt;
       font-weight: 900;
-      color: var(--van-dark);
+      color: var(--van-deep);
       letter-spacing: 0.5px;
       line-height: 1.2;
       margin-bottom: 2.5mm;
@@ -613,7 +613,12 @@
       margin-bottom: 2.5mm;
     }
 
-    .section-header .lotus-icon { font-size: 11pt; opacity: 0.80; }
+    .section-header .lotus-icon {
+      font-size: 11pt;
+      color: var(--van-gold);
+      opacity: 0.85;
+      font-style: normal;
+    }
 
     .section-header .section-label {
       font-size: 11pt;
@@ -676,48 +681,43 @@
 
     .slim-quote {
       text-align: center;
-      margin: 4mm 18mm;
-      padding: 3mm 0;
-      border-top: 1pt solid color-mix(in srgb, var(--van-gold) 70%, transparent);
-      border-bottom: 1pt solid color-mix(in srgb, var(--van-gold) 70%, transparent);
+      margin: 6mm 10mm;
+      padding: 5mm 6mm;
+      border-top: 1.5pt solid color-mix(in srgb, var(--van-gold) 65%, transparent);
+      border-bottom: 1.5pt solid color-mix(in srgb, var(--van-gold) 65%, transparent);
+      background: color-mix(in srgb, var(--van-gold) 5%, transparent);
+      border-radius: 2px;
     }
 
     .slim-quote .quote-text {
-      font-size: 12pt;
+      font-size: 14pt;
       font-style: italic;
       font-weight: 600;
-      color: var(--van-dark);
-      line-height: 1.6;
+      color: var(--van-deep);
+      line-height: 1.75;
       text-shadow: none;
     }
     .slim-quote .quote-text::before {
       content: '❝ ';
       color: var(--van-gold);
       font-style: normal;
-      font-size: 14pt;
-      vertical-align: -2px;
+      font-size: 16pt;
+      vertical-align: -3px;
     }
     .slim-quote .quote-text::after {
       content: ' ❞';
       color: var(--van-gold);
       font-style: normal;
-      font-size: 14pt;
-      vertical-align: -2px;
-    }
-
-    .slim-quote .quote-text::before {
-      content: '❝ ';
-      color: var(--van-gold);
-      font-style: normal;
-      font-size: 14pt;
-      vertical-align: -1px;
+      font-size: 16pt;
+      vertical-align: -3px;
     }
 
     .slim-quote .quote-source {
-      font-size: 9pt;
+      font-size: 10pt;
       color: var(--van-deep);
       font-weight: 600;
-      margin-top: 1mm;
+      margin-top: 3mm;
+      letter-spacing: 0.3px;
     }
 
     .highlights-box {
@@ -757,7 +757,7 @@
     }
 
     .highlights-box ul li::before {
-      content: '🪷';
+      content: '❀';
       position: absolute;
       left: 0; font-size: 8.5pt; top: 1.5mm;
     }
@@ -802,7 +802,14 @@
     .closing .org-name { font-size: 10.5pt; color: #666; }
 
     .closing .lotus-end {
-      font-size: 14pt; margin-top: 2.5mm; opacity: 0.65;
+      font-size: 18pt;
+      color: var(--van-gold);
+      margin-top: 6mm;
+      margin-bottom: 2mm;
+      opacity: 0.80;
+      text-align: center;
+      letter-spacing: 6px;
+      display: block;
     }
 
     .comparison-table {
@@ -1125,7 +1132,30 @@
   @media print {
     #theme-picker { display: none !important; }
   }
-</style>
+
+    /* ── 1. Author byline (was missing entirely) ──────────────────────────── */
+    .author-byline {
+      font-size: 11pt;
+      font-weight: 700;
+      color: var(--van-deep);
+      text-align: right;
+      margin-top: 5mm;
+      padding-top: 2.5mm;
+      border-top: 0.75pt solid color-mix(in srgb, var(--van-primary) 35%, transparent);
+      letter-spacing: 0.3px;
+    }
+
+    /* ── 4. Lead paragraph — article entry point ──────────────────────────── */
+    .lead-para {
+      font-size: 13.5pt;
+      line-height: 1.75;
+      color: #1a1a1a;
+      font-weight: 500;
+      margin-bottom: 4mm;
+      margin-top: 1.5mm;
+    }
+
+  </style>
 </head>
 <body>
 
@@ -1313,10 +1343,10 @@
       <!-- EDIT: Main article title -->
       <div class="topic-title">[ARTICLE TITLE]</div>
       <div class="section-label-row">
-        <span class="lotus-icon">🪷</span>
+        <span class="lotus-icon">❀</span>
         <!-- EDIT: Section label (from Section Registry column 3) -->
         <span class="section-label">[SECTION LABEL]</span>
-        <span class="lotus-icon">🪷</span>
+        <span class="lotus-icon">❀</span>
       </div>
       <div class="title-underline"></div>
     </div>
@@ -1451,10 +1481,10 @@
     <div class="section-header">
       <div class="topic-title">அடுத்த இதழில்…</div>
       <div class="section-label-row">
-        <span class="lotus-icon">🪷</span>
+        <span class="lotus-icon">❀</span>
         <!-- EDIT: Next issue month -->
         <span class="section-label">[NEXT_TAMIL_MONTH] [YEAR] இதழில்</span>
-        <span class="lotus-icon">🪷</span>
+        <span class="lotus-icon">❀</span>
       </div>
       <div class="title-underline"></div>
     </div>
@@ -1479,7 +1509,7 @@
         <div class="sign-name">[EDITOR NAME]</div>
         <div class="sign-title">[TITLE]</div>
         <div class="org-name">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
-        <div class="lotus-end">🪷</div>
+        <div class="lotus-end">❀</div>
       </div>
 
       <!-- Contact block -->
