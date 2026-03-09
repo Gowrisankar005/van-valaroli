@@ -564,17 +564,145 @@ These appear on the closing/contact page. Never change without Gowri's explicit 
 
 ---
 
+## PART 16: THEME SYSTEM — CSS CUSTOM PROPERTIES
+
+The magazine uses a CSS variable theme system. **This changes how you must handle color values.**
+
+### Structure
+```css
+/* In <style> block — always present */
+:root {
+  --van-primary:   #8DC63F;   /* green — default */
+  --van-deep:      #2d7a3e;
+  --van-dark:      #6BA82F;
+  --van-gold:      #D4AF37;
+  --van-deepest:   #0a2616;   /* masthead gradient */
+  --van-deeper:    #0d3320;
+  --van-brown:     #8b6f47;   /* corner motifs */
+  /* Background tints */
+  --van-bg-light:          #f4fbe8;
+  --van-bg-gradient-start: #f0f7e6;
+  --van-bg-gradient-end:   #e8f5d0;
+  --van-text-on-dark:      #fff8e8;
+  --page-bg-top:           #fffef5;
+  --page-bg-bottom:        #fef9f2;
+}
+/* + 4 [data-theme="peacock/blue/terracotta/saffron"] override blocks */
+```
+
+### Rules for Working with the Theme System
+
+**DO:**
+- Use `var(--van-primary)` etc. in any new CSS rules you write — never hardcode the theme hex values
+- After any CSS edit, run the validator to check `check_css_variable_values` passes
+
+**NEVER DO:**
+- Hardcode `#8DC63F`, `#2d7a3e`, `#6BA82F`, `#D4AF37` directly in CSS rules — these are now owned by the variable system
+- Run a global string replacement on the *entire* CSS block — the `:root` block must be excluded or you will corrupt the variable definitions with circular self-references (see Part 17)
+
+### Theme Picker UI
+A floating picker (`id="theme-picker"`) sits before `</body>`. It is hidden via `@media print` and must stay that way. Never remove it or move it inside a `.page` div.
+
+---
+
+## PART 17: QUALITY PROTOCOL — VALIDATOR AND GATES
+
+### The Validator
+```bash
+# Run after every edit session — before git add
+python3 Reference_docs/validate_template.py <file>.html
+
+# Test the validator itself (run if you modify validate_template.py)
+python3 Reference_docs/validate_template.py --self-test
+
+# Validate all HTML files at once
+python3 Reference_docs/validate_template.py --all
+```
+
+**Expected: 26/26 PASS, 0 failures.** Warnings are non-blocking but should be reviewed.
+
+### Three Gates — All Enforced
+| Gate | Trigger | Blocks? |
+|------|---------|---------|
+| Manual checkpoint | After every edit session | Best practice — do it |
+| Pre-commit hook | `git commit` | ✅ Commit blocked on FAIL |
+| GitHub Actions CI | `git push` | ✅ Shows ✅/❌ on GitHub |
+
+**Never use `git commit --no-verify`.** Both gates exist for a reason — bypassing the local hook means the only remaining catch is CI after the code is already in the repo.
+
+### When You Modify `validate_template.py`
+Run `--self-test` first. If a self-test fails, fix the check *before* using it on real files. If you find a gap (a bug the validator missed), follow this sequence:
+1. Write a self-test that FAILS (proving the gap) — commit it first so the gap is on record
+2. Fix the check function so the self-test passes
+3. Commit both together: `"Fix validator gap: <description>"`
+
+---
+
+## PART 18: LESSONS LEARNED — NEVER REPEAT THESE
+
+These are real bugs from production. Read before touching CSS or writing scripts.
+
+### ❌ Lesson 1 — Never Run Color Replacement Across the Entire CSS Block
+**What happened:** A Python script replaced hex color values throughout the entire `<style>` block, including inside the `:root { }` variable definitions. This turned `--van-primary: #8DC63F` into `--van-primary: var(--van-primary)` — a circular self-reference. CSS silently ignores circular refs and falls back to `black` for all color properties. Every font color in the magazine turned black. The old validator passed it because it only checked that the variable *name* was present, not its *value*.
+
+**The rule:** When writing any script that does string/regex replacement in the CSS block, **always exclude the `:root { }` block and all `[data-theme]` blocks from replacement.** Only replace in the CSS rules body.
+
+**How to do it safely:**
+```python
+# Find where :root and theme blocks end, only replace after that point
+theme_section_end = css.rfind('}', 0, css.index('.page'))  # find end of vars section
+css_rules = css[theme_section_end:]
+css_rules = css_rules.replace('#8DC63F', 'var(--van-primary)')
+css = css[:theme_section_end] + css_rules
+```
+
+### ❌ Lesson 2 — Never Use a Cursor/Slice to Restructure CSS Without Verifying Length
+**What happened:** A fix script found the end of the last `[data-theme]` block using brace-counting, then returned `CORRECT_ROOT + css[saffron_end:]`. Due to a logic error in the cut point, `css[saffron_end:]` was nearly empty — silently deleting 900 lines of CSS. The file appeared fine until the CSS length was checked.
+
+**The rule:** After any script that restructures the CSS block, immediately verify:
+```python
+before_lines = len(original_css.split('\n'))
+after_lines  = len(new_css.split('\n'))
+assert after_lines >= before_lines - 10, f"CSS shrank too much: {before_lines} → {after_lines}"
+```
+
+### ❌ Lesson 3 — Spacing Variations Break Targeted String Replacement
+**What happened:** A fix was applied to `:root` using exact string matching: `'--van-gold:       var(--van-gold);'` (7 spaces). The same circular ref existed in `[data-theme="blue"]` with different spacing: `'--van-gold:     var(--van-gold);'` (5 spaces). The fix missed it. The validator didn't catch it until `check_css_variable_values` was added.
+
+**The rule:** When doing targeted replacement in CSS, always do a final search for the target pattern with flexible whitespace:
+```python
+import re
+remaining = re.findall(r'--van-\w+:\s*var\(--van-\w+\)', css)
+assert not remaining, f"Circular refs still present: {remaining}"
+```
+
+### ❌ Lesson 4 — Validator Gaps are Silent
+**What happened:** `check_brand_colors` tested whether a variable *name* like `--van-primary` was anywhere in the CSS. It was — as a circular definition. The check passed. `check_theme_system` had the same gap. Both gave false confidence that the theme system was correct.
+
+**The rule:** Every check must test the *semantic meaning* of what it finds, not just the *presence of a string*. When writing a new check, immediately write a self-test with a bad input that should fail — if the self-test passes (bad input wasn't caught), the check is incomplete.
+
+---
+
 ## START OF SESSION CHECKLIST
 
 At the beginning of every Claude Code session on this project:
 
 1. **Read this CLAUDE.md fully** before making any changes
-2. **Identify the specific task:** maintenance of current issue, or building new issue?
-3. **Check the file version** in the filename before editing
-4. **Clarify scope** before touching the CSS block
-5. **Output the updated file** with version number incremented in filename
+2. **Run self-test** to confirm the validator is healthy:
+   `python3 Reference_docs/validate_template.py --self-test` → must be 17/17 PASS
+3. **Run validator on the working file** to establish a clean baseline:
+   `python3 Reference_docs/validate_template.py VAN_Vallaroli_Chittirai2026_v1_2_20260309.html`
+4. **Identify the specific task** — maintenance, content edit, or new feature?
+5. **Check the file version** in the filename before editing
+6. **After making changes** — run validator again before committing
+7. **Commit using the pre-commit hook** — never use `--no-verify`
+
+### End of Session
+- [ ] Validator passes (26/26, 0 failures) on all modified HTML files
+- [ ] All changes committed and pushed
+- [ ] Any new lessons learned added to Part 18 of this file
 
 ---
 
 *நன்றி! Together we illuminate minds with வான் வளரொளி. 🪷✨*
-*CLAUDE.md — Synced from Claude.ai project — சித்திரை 2026*
+*CLAUDE.md — Last updated: சித்திரை 2026 (session 2)*
