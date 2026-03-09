@@ -266,8 +266,13 @@
       border-bottom: 0.75px solid color-mix(in srgb, var(--van-gold) 35%, transparent);
     }
     .cover-logo-left, .cover-logo-right {
-      height: 8mm;
-      width: auto;
+      height:     8mm;
+      max-height: 8mm;
+      width:      auto;
+      max-width:  28mm;
+      flex-shrink: 0;
+      align-self: center;
+      object-fit: contain;
       opacity: 0.88;
     }
 
@@ -403,6 +408,18 @@
       font-weight: 600;
       color: var(--van-deep);
       letter-spacing: 0.4px;
+    }
+
+    /* ── Header logos: VAN logo left, magazine logo right ── */
+    .header-logo-left,
+    .header-logo-right {
+      height:     6.5mm;
+      max-height: 6.5mm;
+      width:      auto;
+      max-width:  22mm;        /* prevents very wide logos breaking layout */
+      flex-shrink: 0;
+      align-self: center;
+      object-fit: contain;
     }
 
     .content-area {
