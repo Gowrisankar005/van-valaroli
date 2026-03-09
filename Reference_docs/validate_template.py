@@ -401,14 +401,21 @@ def check_page_structure(body: str, report: Report):
 
 
 def check_image_refs(html: str, report: Report):
-    """All image src refs should be file paths, not base64."""
-    # Check for base64 images (only flag if outside CSS — cover image in issues is OK)
+    """Image src refs: cover/logo base64 is OK (self-contained design); footer logos must use file paths."""
     body = extract_body(html)
     base64_imgs = re.findall(r'<img[^>]+src=["\']data:image/', body)
-    if base64_imgs:
+    # Classify: footer logos with base64 are a real problem; cover/seal/decorative base64 is acceptable
+    # Footer logos are identified by class="van-logo-footer"
+    base64_footers = re.findall(r'<img[^>]*van-logo-footer[^>]*data:image[^>]*>', body)
+    if base64_footers:
         report.fail("Images",
-                    f"{len(base64_imgs)} base64-embedded image(s) found in <body> — "
-                    "use file paths (Images/*.jpg) instead")
+                    f"{len(base64_footers)} footer logo(s) use base64 — "
+                    "footer logos must use file paths (VANLogoGold.jpg) for consistency")
+    elif base64_imgs:
+        # Cover/decorative images embedded as base64: acceptable for self-contained delivery
+        report.warn("Images",
+                    f"{len(base64_imgs)} base64 image(s) in body (cover/decorative) — "
+                    "acceptable for self-contained HTML; footer logos use file paths ✓")
     else:
         report.ok("Images", "No base64 images in body — all images use file paths ✓")
 
@@ -661,10 +668,10 @@ SELF_TESTS = [
     # ── Images ────────────────────────────────────────────────────────────────
     {
         "id": "IMG-001",
-        "description": "base64 image in <body> must FAIL",
+        "description": "Footer logo as base64 must FAIL (must use file path)",
         "check": "check_image_refs",
         "html": ('<html><body>'
-                 '<img src="data:image/png;base64,iVBORw0KGgo=">'
+                 '<img class="van-logo-footer" src="data:image/png;base64,iVBORw0KGgo=" alt="VAN">'
                  '</body></html>'),
         "expect": "fail",
     },
