@@ -9,13 +9,18 @@
   /* ── CSS Custom Properties (Theme System) ──────────────────── */
   :root {
     /* Theme-aware colors */
-    --van-primary:    var(--van-primary);   /* subheadings, accents */
-    --van-deep:       var(--van-deep);   /* page headers, page numbers */
-    --van-dark:       var(--van-dark);   /* TOC borders, box borders */
-    --van-gold:       var(--van-gold);   /* decorative accents, rules */
-    --van-deepest:    var(--van-deepest);   /* masthead darkest gradient stop */
-    --van-deeper:     var(--van-deeper);   /* masthead dark gradient stop */
-    --van-brown:      var(--van-brown);   /* corner motifs */
+    --van-primary:    #8DC63F;   /* subheadings, accents */
+    --van-deep:       #2d7a3e;   /* page headers, page numbers */
+    --van-dark:       #6BA82F;   /* TOC borders, box borders */
+    --van-gold:       #D4AF37;   /* decorative accents, rules */
+    --van-deepest:    #0a2616;   /* masthead darkest gradient stop */
+    --van-deeper:     #0d3320;   /* masthead dark gradient stop */
+    --van-brown:      #8b6f47;   /* corner motifs */
+    /* Theme-aware — element backgrounds & text-on-dark */
+    --van-bg-light:            #f4fbe8;
+    --van-bg-gradient-start:   #f0f7e6;
+    --van-bg-gradient-end:     #e8f5d0;
+    --van-text-on-dark:        #fff8e8;
     /* Fixed colors */
     --body-text:      #2B2B2B;
     --subtle-text:    #666666;
@@ -31,6 +36,13 @@
     --van-gold:     #C8A020;
     --van-deepest:  #003830;
     --van-deeper:   #004840;
+  
+    --van-bg-light:            #e4f8f5;
+    --van-bg-gradient-start:   #d4f0eb;
+    --van-bg-gradient-end:     #b8e8e0;
+    --van-text-on-dark:        #f0fff8;
+    --page-bg-top:             #f5fffe;
+    --page-bg-bottom:          #edfaf8;
   }
 
   /* ── Theme: ஆழிநீலம் (Royal Blue) ──────────────────────────── */
@@ -41,6 +53,13 @@
     --van-gold:     var(--van-gold);
     --van-deepest:  #071A30;
     --van-deeper:   #0C2545;
+  
+    --van-bg-light:            #e8f0fb;
+    --van-bg-gradient-start:   #dce8f8;
+    --van-bg-gradient-end:     #c8d8f4;
+    --van-text-on-dark:        #f0f6ff;
+    --page-bg-top:             #f8faff;
+    --page-bg-bottom:          #f2f6fe;
   }
 
   /* ── Theme: மண்ணிறம் (Terracotta) ──────────────────────────── */
@@ -51,6 +70,13 @@
     --van-gold:     #C87941;
     --van-deepest:  #3A1208;
     --van-deeper:   #4A1A0A;
+  
+    --van-bg-light:            #fce8e0;
+    --van-bg-gradient-start:   #f8ddd2;
+    --van-bg-gradient-end:     #f0c8b8;
+    --van-text-on-dark:        #fff3ee;
+    --page-bg-top:             #fffaf8;
+    --page-bg-bottom:          #fff4f0;
   }
 
   /* ── Theme: குங்குமம் (Saffron) ─────────────────────────────── */
@@ -61,6 +87,13 @@
     --van-gold:     #E8B94B;
     --van-deepest:  #3B2000;
     --van-deeper:   #4D2B00;
+  
+    --van-bg-light:            #fef3d8;
+    --van-bg-gradient-start:   #fdecc4;
+    --van-bg-gradient-end:     #fbe2a0;
+    --van-text-on-dark:        #fff8e8;
+    --page-bg-top:             #fffdf5;
+    --page-bg-bottom:          #fff9e8;
   }
 
 
@@ -167,7 +200,7 @@
 
     .mag-name-main {
       font-size: 36pt; font-weight: 900;
-      color: #fff8e8;
+      color: var(--van-text-on-dark);
       line-height: 1.0; letter-spacing: 1px;
       text-align: center;
       text-shadow:
@@ -193,7 +226,7 @@
       border-radius: 20px;
       padding: 1.2mm 4.5mm;
       font-size: 8pt; font-weight: 600;
-      color: #fff8e8;
+      color: var(--van-text-on-dark);
       background: rgba(255,248,232,0.08);
       letter-spacing: 0.2px;
       white-space: nowrap;
@@ -201,7 +234,7 @@
 
     .pill-special {
       border-color: rgba(255,248,232,0.60);
-      color: #fff8e8;
+      color: var(--van-text-on-dark);
       background: rgba(255,248,232,0.12);
       font-weight: 700;
     }
@@ -291,7 +324,7 @@
       min-height: 297mm;
       display: flex;
       flex-direction: column;
-      background: linear-gradient(180deg, #fffef5 0%, #fef9f2 100%);
+      background: linear-gradient(180deg, var(--page-bg-top) 0%, var(--page-bg-bottom) 100%);
       position: relative;
       border-radius: 3px;
       box-shadow:
@@ -398,7 +431,7 @@
 
     .issue-banner .banner-title {
       font-size: 12pt; font-weight: 900;
-      color: #fff8e8; line-height: 1.1;
+      color: var(--van-text-on-dark); line-height: 1.1;
     }
 
     .issue-banner .banner-sub {
@@ -671,7 +704,7 @@
     }
 
     .highlights-box {
-      background: #f4fbe8;
+      background: var(--van-bg-light);
       border-left: 4pt solid var(--van-dark);
       border-radius: 0 3px 3px 0;
       padding: 3.5mm 6mm 3.5mm 5mm;
@@ -827,7 +860,7 @@
     .img-placeholder {
       width: 100%;
       min-height: 45mm;
-      background: linear-gradient(135deg, #f0f7e6 0%, #e8f5d0 100%);
+      background: linear-gradient(135deg, var(--van-bg-gradient-start) 0%, var(--van-bg-gradient-end) 100%);
       border: 1pt dashed rgba(141,198,63,0.50);
       border-radius: 3px;
       display: flex;
