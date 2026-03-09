@@ -20,6 +20,55 @@ PHASE 1: Planning → PHASE 2: Content → PHASE 3: Assembly → PHASE 4: QA →
 
 ---
 
+## Quality Gate System
+
+The validator (`Reference_docs/validate_template.py`) runs at **three enforced points**. It is not optional.
+
+```
+   Edit HTML
+       │
+       ▼
+ Pre-commit hook ──── FAIL ───▶  Fix errors  ──▶  (retry)
+       │ PASS
+       ▼
+  git commit
+       │
+       ▼
+  git push
+       │
+       ▼
+ GitHub Actions ──── FAIL ───▶  Fix + push again
+       │ PASS
+       ▼
+  ✅ Safe in repo
+```
+
+| Gate | When | What runs | Blocks? |
+|------|------|-----------|---------|
+| **Pre-commit hook** | Every `git commit` | Validator on all staged `.html` files | ✅ Yes — commit blocked on FAIL |
+| **GitHub Actions CI** | Every `git push` | Validator on all `.html` files in repo | ✅ Yes — PR merge blocked on FAIL |
+| **Manual checkpoint** | After every Claude Code edit session | Run validator manually before committing | Best practice |
+
+**Manual run (always do this after an edit session):**
+```bash
+cd /Users/gowri/spaceclub/e-magazine
+python3 Reference_docs/validate_template.py <filename>.html
+```
+
+**If the pre-commit hook blocks a commit:**
+1. Read the error message — it names the exact failing check
+2. Fix the issue in the HTML file
+3. `git add <file>` again
+4. `git commit` — the hook will re-run automatically
+
+**Emergency bypass** (use only if absolutely necessary and you know why it's failing):
+```bash
+git commit --no-verify -m "message"
+```
+⚠️ Only use this if GitHub Actions will still catch the issue — never bypass both gates.
+
+---
+
 ## PHASE 1 — Planning (Week 1)
 
 ### 1.1 Define the Issue
@@ -201,6 +250,18 @@ If the cover image changes, update `src` in the `.cover` div and update `content
 > **Do not embed images as base64 in the file body.** Reference them via file path.
 > (The validator will flag inline base64 in the body as a failure.)
 
+### 3.7 Run Validator Before Committing
+
+After assembly is complete — and **before** `git add` / `git commit`:
+
+```bash
+python3 Reference_docs/validate_template.py VAN_Vallaroli_[Month][Year]_v1_0_[YYYYMMDD].html
+```
+
+Expected: **zero failures**. Fix any failures before proceeding. Warnings may be reviewed and carried forward if non-critical.
+
+> The pre-commit hook will also run this automatically — but running it manually first means you catch errors in your editor rather than at commit time, which is faster to fix.
+
 ### ✅ Gate 3 — HTML Assembly Complete
 - [ ] File named correctly: `VAN_Vallaroli_[Month][Year]_v1_0_[YYYYMMDD].html`
 - [ ] All global metadata updated (no placeholder tokens remain)
@@ -209,6 +270,7 @@ If the cover image changes, update `src` in the `.cover` div and update `content
 - [ ] Every page has: `.glossy`, corner motifs ❈, `.page-header`, `.content-area`, `.page-footer`
 - [ ] `VANLogoGold.jpg` in every page footer
 - [ ] Closing page has next-issue preview and VAN contact details
+- [ ] **`validate_template.py` run — 0 failures** ← required before Gate 3 is closed
 
 ---
 
@@ -221,7 +283,9 @@ cd /Users/gowri/spaceclub/e-magazine
 python3 Reference_docs/validate_template.py VAN_Vallaroli_[Month][Year]_v1_0_[YYYYMMDD].html
 ```
 
-**Expected result: 20/20 PASS (zero failures)**
+**Expected result: 26/26 PASS (zero failures)**
+
+> Note: The pre-commit hook runs this automatically on `git commit`. But running it manually here — before commit — is the Phase 4 quality gate and gives you time to fix without interrupting the commit flow.
 
 Interpret results:
 | Status | Meaning | Action |
@@ -388,6 +452,7 @@ Claude Code does **not** handle distribution — only the HTML/PDF output.
 | Version | Date | Change |
 |---------|------|--------|
 | 1.0 | 2026-03-09 | Initial creation — five-phase pipeline |
+| 1.1 | 2026-03-09 | Added Quality Gate System section — pre-commit hook, GitHub Actions CI, manual checkpoints |
 
 ---
 
