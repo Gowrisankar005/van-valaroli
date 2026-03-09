@@ -835,14 +835,37 @@
     }
 
     @media print {
-      body { background: none; padding: 0; margin: 0; }
-      .cover-section { background: #6a6058; padding: 0; margin: 0; width: 210mm; }
-      .cover, .page {
-        width: 210mm; min-height: 297mm;
-        box-shadow: none; border-radius: 0; margin: 0;
-        page-break-after: always; break-after: page;
+      /* ── Root reset ── */
+      html {
+        width: 210mm;
       }
-      .glossy { display: none; }
+      body {
+        background:   none    !important;
+        padding:      0       !important;
+        margin:       0       !important;
+        display:      block   !important;   /* override screen flex layout */
+        width:        210mm   !important;
+      }
+      /* ── Each page = exactly one A4 sheet ── */
+      .cover, .page {
+        width:              210mm   !important;
+        height:             297mm   !important;   /* exact — not min-height */
+        min-height:         unset   !important;
+        margin:             0       !important;
+        box-shadow:         none    !important;
+        border-radius:      0       !important;
+        page-break-after:   always  !important;
+        break-after:        page    !important;
+        page-break-inside:  avoid   !important;
+        break-inside:       avoid   !important;
+        overflow:           hidden  !important;
+      }
+      .glossy { display: none !important; }
+      /* ── Header logos: keep consistent size in print ── */
+      .header-logo-left, .header-logo-right {
+        height: 6mm !important;
+        width: auto !important;
+      }
     }
     @page { size: A4 portrait; margin: 0; }
 
@@ -1170,8 +1193,9 @@
 
     <!-- PAGE HEADER -->
     <div class="page-header">
+      <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
       <span class="section-name">பொருளடக்கம்</span>
-      <span class="mag-name">வான் வளரொளி இதழ்</span>
+      <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
     </div>
 
     <div class="content-area">
@@ -1332,8 +1356,9 @@
 
     <!-- PAGE HEADER -->
     <div class="page-header">
+      <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
       <span class="section-name">தலையங்கம்</span>
-      <span class="mag-name">வான் வளரொளி இதழ்</span>
+      <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
     </div>
 
     <!-- CONTENT -->
@@ -1429,8 +1454,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">திருக்குறள் ஆய்வு</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">திருக்குறள் ஆய்வு</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -1507,8 +1533,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">திருக்குறள் ஆய்வு</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">திருக்குறள் ஆய்வு</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -1578,8 +1605,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">திருக்குறள் ஆய்வு</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">திருக்குறள் ஆய்வு</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -1651,8 +1679,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">திருக்குறள் ஆய்வு</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">திருக்குறள் ஆய்வு</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -1804,8 +1833,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">சங்க இலக்கியத் தொடர்</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">சங்க இலக்கியத் தொடர்</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -1878,8 +1908,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">சங்க இலக்கியத் தொடர்</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">சங்க இலக்கியத் தொடர்</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -1959,8 +1990,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">சங்க இலக்கியத் தொடர்</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">சங்க இலக்கியத் தொடர்</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2031,8 +2063,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">சங்க இலக்கியத் தொடர்</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">சங்க இலக்கியத் தொடர்</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2096,8 +2129,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">கோயில் கட்டமைப்பு</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">கோயில் கட்டமைப்பு</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2201,8 +2235,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">கோயில் கட்டமைப்பு</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">கோயில் கட்டமைப்பு</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2262,8 +2297,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">கோயில் கட்டமைப்பு</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">கோயில் கட்டமைப்பு</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2331,8 +2367,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">கோயில் கட்டமைப்பு</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">கோயில் கட்டமைப்பு</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2412,8 +2449,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">கோயில் கட்டமைப்பு</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">கோயில் கட்டமைப்பு</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2480,8 +2518,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">நலவாழ்வு</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">நலவாழ்வு</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2559,8 +2598,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">நலவாழ்வு</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">நலவாழ்வு</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2625,8 +2665,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">நலவாழ்வு</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">நலவாழ்வு</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2697,8 +2738,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">நலவாழ்வு</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">நலவாழ்வு</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2767,8 +2809,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">சிறுகதை</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">சிறுகதை</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2822,8 +2865,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">சிறுகதை</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">சிறுகதை</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2872,8 +2916,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">சிறுகதை</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">சிறுகதை</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2918,8 +2963,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">சிறுகதை</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">சிறுகதை</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -2971,8 +3017,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">சிறுகதை</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">சிறுகதை</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -3051,8 +3098,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">நூல் மதிப்புரை</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">நூல் மதிப்புரை</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -3121,8 +3169,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">நூல் மதிப்புரை</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">நூல் மதிப்புரை</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -3194,8 +3243,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">அறக்கட்டுரை</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">அறக்கட்டுரை</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -3263,8 +3313,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">அறக்கட்டுரை</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">அறக்கட்டுரை</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -3332,8 +3383,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">ஓர் ஒழுக்கம்</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">ஓர் ஒழுக்கம்</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -3404,8 +3456,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">ஓர் ஒழுக்கம்</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">ஓர் ஒழுக்கம்</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -3469,8 +3522,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">அறநிலைய செய்திகள்</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">அறநிலைய செய்திகள்</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -3545,8 +3599,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">நற்றமிழ் சொற்கள் | கவிதை</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">நற்றமிழ் சொற்கள் | கவிதை</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">
@@ -3644,8 +3699,9 @@
   <span class="corner-br">❈</span>
 
   <div class="page-header">
-    <span class="section-name">அடுத்த இதழில்</span>
-    <span class="mag-name">வான் வளரொளி இதழ்</span>
+    <img class="header-logo-left" src="VANLogoGold.jpg" alt="VAN">
+      <span class="section-name">அடுத்த இதழில்</span>
+    <img class="header-logo-right" src="valarolilogogold01.jpg" alt="வான் வளரொளி">
   </div>
 
   <div class="content-area">

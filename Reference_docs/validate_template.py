@@ -491,13 +491,18 @@ def check_senthamizh(html: str, report: Report):
 
 def check_print_query_intact(css: str, report: Report):
     """Verify the print query hasn't been accidentally altered."""
+    import re as _re
+    # Check with flexible whitespace and optional !important
+    def rule_present(pattern):
+        return bool(_re.search(pattern, css))
+
     essential = [
-        "page-break-after: always",
-        "break-after: page",
-        "width: 210mm",
-        "min-height: 297mm",
+        (r"page-break-after:\s*always",   "page-break-after: always"),
+        (r"break-after:\s*page",           "break-after: page"),
+        (r"width:\s*210mm",                "width: 210mm"),
+        (r"(min-)?height:\s*297mm",        "height: 297mm (or min-height: 297mm)"),
     ]
-    missing = [e for e in essential if e not in css]
+    missing = [(label) for pattern, label in essential if not rule_present(pattern)]
     if missing:
         for m in missing:
             report.fail("Print Safety", f"Print query missing critical rule: '{m}'")
