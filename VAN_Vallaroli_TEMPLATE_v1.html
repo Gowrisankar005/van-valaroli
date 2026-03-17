@@ -256,24 +256,29 @@
       font-weight: 700;
     }
     /* ── Cover logo row ── */
-    .cover-logo-row {
+    /* ── Cover org-row: logos flanking the org-name text ── */
+    .cover-org-text .org-vazangum { margin-bottom: 0; }  /* no gap inside aligned row */
+    .cover-org-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: center;
+      gap: 4mm;
       width: 100%;
-      margin-bottom: 3mm;
-      padding-bottom: 2.5mm;
-      border-bottom: 0.75px solid color-mix(in srgb, var(--van-gold) 35%, transparent);
+      margin-bottom: 2mm;
+    }
+    .cover-org-text {
+      text-align: center;
+      flex: 0 0 auto;
     }
     .cover-logo-left, .cover-logo-right {
-      height:     8mm;
-      max-height: 8mm;
+      height:     7mm;
+      max-height: 7mm;
       width:      auto;
-      max-width:  28mm;
+      max-width:  20mm;
       flex-shrink: 0;
       align-self: center;
       object-fit: contain;
-      opacity: 0.88;
+      opacity: 0.90;
     }
 
 
@@ -941,6 +946,11 @@
         overflow:           hidden  !important;
       }
       .glossy { display: none !important; }
+      /* ── Prevent content-area from pushing footer below page boundary ── */
+      .content-area {
+        overflow:   hidden  !important;
+        min-height: unset   !important;
+      }
       /* ── Cover section: strip screen-only padding/bg to prevent phantom blank page ── */
       .cover-section {
         padding:    0       !important;
@@ -1315,14 +1325,16 @@
 
     <!-- MASTHEAD (dark green top band) -->
     <div class="masthead">
-      <!-- Logo row: VAN logo left, Magazine logo right — stays on every cover -->
-      <div class="cover-logo-row">
+      <!-- Org row: logo | org name text | logo — all inline -->
+      <div class="cover-org-row">
         <img class="cover-logo-left" src="Images/van-logo.jpg" alt="VAN">
+        <div class="cover-org-text">
+          <!-- EDIT: org name stays fixed unless VAN changes it -->
+          <div class="org-name">வள்ளலார் அறநிலையம்</div>
+          <div class="org-vazangum">— வழங்கும் —</div>
+        </div>
         <img class="cover-logo-right" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
       </div>
-      <!-- EDIT: org name stays fixed unless VAN changes it -->
-      <div class="org-name">வள்ளலார் அறநிலையம்</div>
-      <div class="org-vazangum">— வழங்கும் —</div>
       <div class="gold-rule"></div>
 
       <!-- EDIT: Magazine name — stays fixed -->
