@@ -4,18 +4,25 @@ name: Validate Magazine HTML
 on:
   push:
     paths:
-      - '**.html'                        # any HTML file changed
-      - 'Reference_docs/validate_template.py'  # or the validator itself updated
+      - '*.html'                                    # root HTML files only
+      - 'Reference_docs/validate_template.py'       # or the validator itself
+      - '.github/workflows/validate.yml'
+    paths-ignore:
+      - 'Archive/**'                                # skip archived old versions
   pull_request:
     paths:
-      - '**.html'
+      - '*.html'
       - 'Reference_docs/validate_template.py'
+    paths-ignore:
+      - 'Archive/**'
 
 # ── Jobs ──────────────────────────────────────────────────────────────────────
 jobs:
   validate:
     name: வான் வளரொளி — Design System Validator
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true    # opt into Node.js 24 now
 
     steps:
       # 1. Check out the repo

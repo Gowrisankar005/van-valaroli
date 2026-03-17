@@ -936,7 +936,8 @@ def main():
 
     # ── HTML validation mode ──────────────────────────────────────────────────
     if "--all" in args:
-        files = list(PROJECT_DIR.glob("*.html"))
+        # Scan root HTML files only — skip Archive/ (old versions kept for reference)
+        files = [f for f in PROJECT_DIR.glob("*.html")]
         if not files:
             print("No HTML files found in project directory.")
             sys.exit(0)
