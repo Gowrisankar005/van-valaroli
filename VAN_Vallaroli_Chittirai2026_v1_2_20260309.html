@@ -1351,22 +1351,26 @@
     /* ═══════════════════════════════════════════════════════════
        MASTHEAD / CREDITS PAGE (Page 3) — editorial team
     ═══════════════════════════════════════════════════════════ */
+    /* ── Masthead/Credits grid — fills full content-area height ── */
     .masthead-grid {
       display: grid;
-      grid-template-columns: 48% 48%;
+      grid-template-columns: 46% 50%;
       gap: 4%;
       height: 100%;
-      align-items: start;
+      align-items: stretch;    /* both columns stretch to full height */
     }
-    /* Green card — left column */
+
+    /* ── Left: green card fills full column height ── */
     .masthead-card {
       background: var(--van-deepest);
       border-radius: 8px;
-      padding: 5mm 5mm 6mm;
+      padding: 6mm 6mm 7mm;
       color: white;
+      display: flex;
+      flex-direction: column;
     }
     .masthead-card-title {
-      font-size: 13pt;
+      font-size: 14pt;
       font-weight: 800;
       color: var(--van-gold);
       text-align: center;
@@ -1376,7 +1380,7 @@
     .masthead-card-divider {
       height: 1px;
       background: color-mix(in srgb, var(--van-gold) 45%, transparent);
-      margin: 3mm 0;
+      margin: 3.5mm 0;
     }
     .masthead-role-label {
       font-size: 8pt;
@@ -1384,68 +1388,87 @@
       color: var(--van-gold);
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      margin-top: 3mm;
-      margin-bottom: 0.5mm;
+      margin-top: 4mm;
+      margin-bottom: 1mm;
       opacity: 0.85;
     }
     .masthead-name {
-      font-size: 11.5pt;
+      font-size: 12pt;
       font-weight: 700;
       color: var(--van-text-on-dark);
-      margin-bottom: 0.5mm;
+      margin-bottom: 1mm;
     }
     .masthead-contact-heading {
-      font-size: 7.5pt;
+      font-size: 8pt;
       font-weight: 700;
       color: var(--van-gold);
       letter-spacing: 1px;
-      margin-top: 2.5mm;
+      margin-top: 3mm;
       opacity: 0.85;
     }
     .masthead-contact-text {
-      font-size: 8.5pt;
+      font-size: 9pt;
       color: rgba(255,255,255,0.85);
       margin-bottom: 0.5mm;
       word-break: break-all;
     }
-    /* Right column */
+    /* spacer that pushes remaining card content to top & bottom */
+    .masthead-card-spacer {
+      flex: 1;
+    }
+
+    /* ── Right: logos on top, editorial board fills space ── */
     .masthead-board {
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: space-between;  /* spread content top-to-bottom */
+      height: 100%;
     }
     .masthead-board-logos {
       display: flex;
-      gap: 6mm;
+      gap: 8mm;
       justify-content: center;
-      margin-bottom: 5mm;
-      flex-wrap: wrap;
+      align-items: center;
+      padding: 4mm 0 2mm;
+      flex-shrink: 0;
     }
     .masthead-logo {
-      height: 26mm;
-      max-height: 26mm;
+      height: 32mm;
+      max-height: 32mm;
       width: auto;
-      max-width: 45mm;
+      max-width: 50mm;
       object-fit: contain;
     }
+    .masthead-board-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
     .masthead-board-title {
-      font-size: 13pt;
+      font-size: 15pt;
       font-weight: 800;
       color: var(--van-deep);
-      margin-bottom: 3mm;
+      margin-bottom: 4mm;
       text-align: center;
-      border-bottom: 1.5pt solid color-mix(in srgb, var(--van-gold) 55%, transparent);
-      padding-bottom: 2mm;
+      border-bottom: 2pt solid color-mix(in srgb, var(--van-gold) 60%, transparent);
+      padding-bottom: 2.5mm;
       width: 100%;
     }
     .masthead-board-list {
-      font-size: 12.5pt;
+      font-size: 13pt;
       font-weight: 600;
       color: var(--van-deepest);
-      line-height: 2.0;
-      padding-left: 6mm;
+      line-height: 2.2;
+      padding-left: 7mm;
       list-style-type: decimal;
       width: 100%;
+    }
+    .masthead-board-list li {
+      padding-left: 1mm;
     }
 
     /* ═══════════════════════════════════════════════════════════
@@ -1672,15 +1695,17 @@
             <img class="masthead-logo" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
           </div>
 
-          <div class="masthead-board-title">ஆசிரியர் குழு :</div>
-          <ol class="masthead-board-list">
-            <li>[பங்களிப்பாளர் 1]</li>
-            <li>[பங்களிப்பாளர் 2]</li>
-            <li>[பங்களிப்பாளர் 3]</li>
-            <li>[பங்களிப்பாளர் 4]</li>
-            <li>[பங்களிப்பாளர் 5]</li>
-            <li>[பங்களிப்பாளர் 6]</li>
-          </ol>
+          <div class="masthead-board-main">
+            <div class="masthead-board-title">ஆசிரியர் குழு :</div>
+            <ol class="masthead-board-list">
+              <li>[பங்களிப்பாளர் 1]</li>
+              <li>[பங்களிப்பாளர் 2]</li>
+              <li>[பங்களிப்பாளர் 3]</li>
+              <li>[பங்களிப்பாளர் 4]</li>
+              <li>[பங்களிப்பாளர் 5]</li>
+              <li>[பங்களிப்பாளர் 6]</li>
+            </ol>
+          </div>
         </div>
 
       </div>
