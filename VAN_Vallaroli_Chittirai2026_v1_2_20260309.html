@@ -254,14 +254,14 @@
       flex: 0 0 auto;
     }
     .cover-logo-left, .cover-logo-right {
-      height:     7mm;
-      max-height: 7mm;
+      height:     14mm;
+      max-height: 14mm;
       width:      auto;
-      max-width:  20mm;
+      max-width:  40mm;
       flex-shrink: 0;
       align-self: center;
       object-fit: contain;
-      opacity: 0.90;
+      opacity: 0.92;
     }
 
 
@@ -1282,6 +1282,218 @@
       clear: both;
     }
 
+
+    /* ═══════════════════════════════════════════════════════════
+       IMPRINT PAGE (Page 2) — title / publication details
+    ═══════════════════════════════════════════════════════════ */
+    .page-imprint {
+      display: flex;
+      flex-direction: column;
+    }
+    .imprint-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding: 8mm 20mm 4mm;
+      text-align: center;
+    }
+    .imprint-org-label {
+      font-size: 9pt;
+      color: var(--van-deep);
+      letter-spacing: 1px;
+      font-style: italic;
+      margin-bottom: 4mm;
+    }
+    .imprint-mag-name {
+      font-size: 28pt;
+      font-weight: 900;
+      color: var(--van-deep);
+      line-height: 1.1;
+      margin-bottom: 3mm;
+    }
+    .imprint-tagline {
+      font-size: 10pt;
+      color: var(--van-dark);
+      font-style: italic;
+      margin-bottom: 5mm;
+    }
+    .imprint-rule {
+      width: 55mm;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--van-gold), transparent);
+      margin: 4mm auto;
+    }
+    .imprint-logos {
+      display: flex;
+      gap: 14mm;
+      align-items: center;
+      justify-content: center;
+      margin: 5mm 0;
+    }
+    .imprint-logo {
+      height: 32mm;
+      width: auto;
+      max-width: 50mm;
+      object-fit: contain;
+    }
+    .imprint-details {
+      margin-top: 5mm;
+    }
+    .imprint-detail {
+      font-size: 12pt;
+      color: var(--van-deepest);
+      font-weight: 600;
+      line-height: 2.1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       MASTHEAD / CREDITS PAGE (Page 3) — editorial team
+    ═══════════════════════════════════════════════════════════ */
+    .masthead-grid {
+      display: grid;
+      grid-template-columns: 48% 48%;
+      gap: 4%;
+      height: 100%;
+      align-items: start;
+    }
+    /* Green card — left column */
+    .masthead-card {
+      background: var(--van-deepest);
+      border-radius: 8px;
+      padding: 5mm 5mm 6mm;
+      color: white;
+    }
+    .masthead-card-title {
+      font-size: 13pt;
+      font-weight: 800;
+      color: var(--van-gold);
+      text-align: center;
+      letter-spacing: 0.5px;
+      margin-bottom: 3mm;
+    }
+    .masthead-card-divider {
+      height: 1px;
+      background: color-mix(in srgb, var(--van-gold) 45%, transparent);
+      margin: 3mm 0;
+    }
+    .masthead-role-label {
+      font-size: 8pt;
+      font-weight: 700;
+      color: var(--van-gold);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 3mm;
+      margin-bottom: 0.5mm;
+      opacity: 0.85;
+    }
+    .masthead-name {
+      font-size: 11.5pt;
+      font-weight: 700;
+      color: var(--van-text-on-dark);
+      margin-bottom: 0.5mm;
+    }
+    .masthead-contact-heading {
+      font-size: 7.5pt;
+      font-weight: 700;
+      color: var(--van-gold);
+      letter-spacing: 1px;
+      margin-top: 2.5mm;
+      opacity: 0.85;
+    }
+    .masthead-contact-text {
+      font-size: 8.5pt;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 0.5mm;
+      word-break: break-all;
+    }
+    /* Right column */
+    .masthead-board {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .masthead-board-logos {
+      display: flex;
+      gap: 6mm;
+      justify-content: center;
+      margin-bottom: 5mm;
+      flex-wrap: wrap;
+    }
+    .masthead-logo {
+      height: 26mm;
+      max-height: 26mm;
+      width: auto;
+      max-width: 45mm;
+      object-fit: contain;
+    }
+    .masthead-board-title {
+      font-size: 13pt;
+      font-weight: 800;
+      color: var(--van-deep);
+      margin-bottom: 3mm;
+      text-align: center;
+      border-bottom: 1.5pt solid color-mix(in srgb, var(--van-gold) 55%, transparent);
+      padding-bottom: 2mm;
+      width: 100%;
+    }
+    .masthead-board-list {
+      font-size: 12.5pt;
+      font-weight: 600;
+      color: var(--van-deepest);
+      line-height: 2.0;
+      padding-left: 6mm;
+      list-style-type: decimal;
+      width: 100%;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       COVER — issue badge (circular gold stamp bottom-right)
+    ═══════════════════════════════════════════════════════════ */
+    .cover-issue-badge {
+      position: absolute;
+      bottom: 9mm;
+      right: 11mm;
+      width: 20mm;
+      height: 20mm;
+      background: radial-gradient(circle at 40% 40%,
+        color-mix(in srgb, var(--van-gold) 100%, white) 0%,
+        var(--van-gold) 55%,
+        color-mix(in srgb, var(--van-gold) 80%, var(--van-deepest)) 100%);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5),
+                  0 0 0 1.5px color-mix(in srgb, var(--van-gold) 50%, white),
+                  0 0 0 3px color-mix(in srgb, var(--van-deepest) 70%, transparent);
+    }
+    .badge-label-top {
+      font-size: 5pt;
+      font-weight: 700;
+      color: var(--van-deepest);
+      letter-spacing: 0.5px;
+      line-height: 1;
+      opacity: 0.75;
+    }
+    .badge-num {
+      font-size: 18pt;
+      font-weight: 900;
+      color: var(--van-deepest);
+      line-height: 1.0;
+    }
+    .badge-label-bot {
+      font-size: 4.5pt;
+      font-weight: 700;
+      color: var(--van-deepest);
+      letter-spacing: 0.3px;
+      line-height: 1;
+      opacity: 0.75;
+    }
+
   </style>
 </head>
 <body>
@@ -1329,7 +1541,7 @@
 
     <!-- BOTTOM BAND -->
     <div class="bottom-band">
-      <div class="teasers-label">இந்த இதழில்</div>
+      <div class="teasers-label">கல்வி சிறப்பிதழ் &nbsp;·&nbsp; இந்த இதழில்</div>
       <div class="teasers">
         <div class="teaser-item">
           <span class="teaser-dot">&#x25C6;</span>
@@ -1364,10 +1576,124 @@
       </div>
     </div>
 
+      <!-- Issue number badge — circular gold stamp bottom right -->
+      <div class="cover-issue-badge">
+        <span class="badge-label-top">இதழ்</span>
+        <span class="badge-num">1</span>
+        <span class="badge-label-bot">சித்திரை</span>
+      </div>
+
   </div>
   </div>
 
-  <!-- PAGE 2 — TABLE OF CONTENTS ════════════════════════════════════ -->
+  <!-- PAGE 4 — IMPRINT ═══════════════════════════════════════════════ -->
+  <div class="page page-imprint">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-br">❈</span>
+
+    <div class="imprint-content">
+
+      <div class="imprint-org-label">பெண்ணாடம் வள்ளலார் அறநிலையம் வழங்கும்</div>
+
+      <div class="imprint-mag-name">வான் வளரொளி இதழ்</div>
+
+      <div class="imprint-tagline">செந்தமிழில் அறம் வளர்க்கும் அறிவொளி இதழ்</div>
+
+      <div class="imprint-rule"></div>
+
+      <div class="imprint-logos">
+        <img class="imprint-logo" src="Images/van-logo.jpg" alt="வள்ளலார் அறநிலையம்">
+        <img class="imprint-logo" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
+      </div>
+
+      <div class="imprint-rule"></div>
+
+      <div class="imprint-details">
+        <div class="imprint-detail">வான் வளரொளி இதழ் — ௧</div>
+        <div class="imprint-detail">திருவள்ளுவர் ஆண்டு ௨௦௫௭ — சித்திரை</div>
+        <div class="imprint-detail">[ சித்திரை — 2026 ]</div>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
+      <span class="page-number">2</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  </div>
+
+  <!-- PAGE 5 — CREDITS / MASTHEAD ════════════════════════════════════ -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-br">❈</span>
+
+    <div class="page-header">
+      <img class="header-logo-left" src="Images/van-logo.jpg" alt="VAN">
+      <span class="section-name">ஆசிரியர் குழு</span>
+      <img class="header-logo-right" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
+    </div>
+
+    <div class="content-area">
+      <div class="masthead-grid">
+
+        <!-- LEFT — Dark green info card -->
+        <div class="masthead-card">
+          <div class="masthead-card-title">வான் வளரொளி இதழ்</div>
+          <div class="masthead-card-divider"></div>
+
+          <div class="masthead-role-label">ஆசிரியர்</div>
+          <div class="masthead-name">[ஆசிரியர் பெயர்]</div>
+
+          <div class="masthead-role-label">பொறுப்பாசிரியர்</div>
+          <div class="masthead-name">[பொறுப்பாசிரியர் பெயர்]</div>
+
+          <div class="masthead-card-divider"></div>
+
+          <div class="masthead-contact-heading">இணையதளம்:</div>
+          <div class="masthead-contact-text">www.vallalar.org</div>
+
+          <div class="masthead-contact-heading">மின்னஞ்சல்:</div>
+          <div class="masthead-contact-text">vallalararanilayampdm@gmail.com</div>
+
+          <div class="masthead-contact-heading">அமைப்பு:</div>
+          <div class="masthead-contact-text">பெண்ணாடம் வள்ளலார் அறநிலையம் (VAN)</div>
+
+          <div class="masthead-contact-heading">தலைவர்:</div>
+          <div class="masthead-contact-text">மு. முத்துஜோதி</div>
+        </div>
+
+        <!-- RIGHT — Logos + editorial board -->
+        <div class="masthead-board">
+          <div class="masthead-board-logos">
+            <img class="masthead-logo" src="Images/van-logo.jpg" alt="VAN">
+            <img class="masthead-logo" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
+          </div>
+
+          <div class="masthead-board-title">ஆசிரியர் குழு :</div>
+          <ol class="masthead-board-list">
+            <li>[பங்களிப்பாளர் 1]</li>
+            <li>[பங்களிப்பாளர் 2]</li>
+            <li>[பங்களிப்பாளர் 3]</li>
+            <li>[பங்களிப்பாளர் 4]</li>
+            <li>[பங்களிப்பாளர் 5]</li>
+            <li>[பங்களிப்பாளர் 6]</li>
+          </ol>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
+      <span class="page-number">3</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  </div>
+
+  <!-- PAGE 6 — TABLE OF CONTENTS ════════════════════════════════════ -->
   <div class="page">
     <div class="glossy"></div>
     <span class="corner-tl">❈</span>
@@ -1410,7 +1736,7 @@
             <div class="toc-desc">தமிழர்களின் அறநெறியும் தமிழ் உணர்வும்</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#2d7a3e">3</div>
+          <div class="toc-page" style="color:#2d7a3e">5</div>
         </div>
         <div class="toc-row ">
           <div class="toc-accent" style="background:#D4AF37"></div>
@@ -1419,7 +1745,7 @@
             <div class="toc-desc">கல்வி அதிகாரம் — முழுமையான பகுப்பாய்வு</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#D4AF37">4</div>
+          <div class="toc-page" style="color:#D4AF37">6</div>
         </div>
         <div class="toc-row row-alt">
           <div class="toc-accent" style="background:#D4AF37"></div>
@@ -1428,7 +1754,7 @@
             <div class="toc-desc">சங்கப் பாடல்களில் தாமரையின் தத்துவம்</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#D4AF37">8</div>
+          <div class="toc-page" style="color:#D4AF37">10</div>
         </div>
         <div class="toc-row ">
           <div class="toc-accent" style="background:#8b6f47"></div>
@@ -1437,7 +1763,7 @@
             <div class="toc-desc">தமிழர் கட்டிடக்கலை — கருவறை முதல் கோபுரம் வரை</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#8b6f47">12</div>
+          <div class="toc-page" style="color:#8b6f47">14</div>
         </div>
         <div class="toc-row row-alt">
           <div class="toc-accent" style="background:#2d7a3e"></div>
@@ -1446,7 +1772,7 @@
             <div class="toc-desc">பாலில்லா புரதமும் கால்சியமும் — அறிவியல் விளக்கம்</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#2d7a3e">17</div>
+          <div class="toc-page" style="color:#2d7a3e">19</div>
         </div>
         <div class="toc-row ">
           <div class="toc-accent" style="background:#D4AF37"></div>
@@ -1455,7 +1781,7 @@
             <div class="toc-desc">கல்வி மரம் — ஒரு அன்பு கதை</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#D4AF37">21</div>
+          <div class="toc-page" style="color:#D4AF37">23</div>
         </div>
         <div class="toc-row row-alt">
           <div class="toc-accent" style="background:#6BA82F"></div>
@@ -1464,7 +1790,7 @@
             <div class="toc-desc">வாசிப்பது எப்படி? — விரிவான மதிப்பீடு</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#6BA82F">26</div>
+          <div class="toc-page" style="color:#6BA82F">28</div>
         </div>
         <div class="toc-row ">
           <div class="toc-accent" style="background:#6BA82F"></div>
@@ -1473,7 +1799,7 @@
             <div class="toc-desc">அறம் — தமிழரின் வாழ்வியல் மெய்ப்பொருள்</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#6BA82F">28</div>
+          <div class="toc-page" style="color:#6BA82F">30</div>
         </div>
         <div class="toc-row ">
           <div class="toc-accent" style="background:#6BA82F"></div>
@@ -1482,7 +1808,7 @@
             <div class="toc-desc">அதிகாலை துயிலெழல் — வள்ளலார் காட்டும் முதல் படி</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#2d7a3e">30</div>
+          <div class="toc-page" style="color:#2d7a3e">32</div>
         </div>
         <div class="toc-row row-alt">
           <div class="toc-accent" style="background:#2d7a3e"></div>
@@ -1491,7 +1817,7 @@
             <div class="toc-desc">VAN — சேவைகள், திட்டங்கள், புதிய முன்னெடுப்புகள்</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#2d7a3e">32</div>
+          <div class="toc-page" style="color:#2d7a3e">34</div>
         </div>
         <div class="toc-row ">
           <div class="toc-accent" style="background:#8DC63F"></div>
@@ -1500,7 +1826,7 @@
             <div class="toc-desc">மனமே புனிதம் • நற்றமிழ் சொற்கள் அறிவோம்</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#8DC63F">33</div>
+          <div class="toc-page" style="color:#8DC63F">35</div>
         </div>
         <div class="toc-row row-alt">
           <div class="toc-accent" style="background:#6BA82F"></div>
@@ -1509,7 +1835,7 @@
             <div class="toc-desc">மனம் தொடர் அறிவிப்பு • நன்றி குறிப்புகள்</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#6BA82F">34</div>
+          <div class="toc-page" style="color:#6BA82F">36</div>
         </div>
       </div>
 
@@ -1524,13 +1850,13 @@
     <!-- PAGE FOOTER -->
     <div class="page-footer">
       <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-      <span class="page-number">2</span>
+      <span class="page-number">4</span>
       <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
     </div>
 
   </div>
 
-  <!-- PAGE 3 — EDITORIAL (தலையங்கம்) ════════════════════════════════ -->
+  <!-- PAGE 5 — EDITORIAL (தலையங்கம்) ════════════════════════════════ -->
   <div class="page">
     <div class="glossy"></div>
     <span class="corner-tl">❈</span>
@@ -1620,7 +1946,7 @@
     <!-- PAGE FOOTER — margin-top: auto anchors to bottom -->
     <div class="page-footer">
       <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-      <span class="page-number">3</span>
+      <span class="page-number">5</span>
       <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
     </div>
 
@@ -1699,7 +2025,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">4</span>
+    <span class="page-number">6</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -1772,7 +2098,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">5</span>
+    <span class="page-number">7</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -1847,7 +2173,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">6</span>
+    <span class="page-number">8</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -1946,7 +2272,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">7</span>
+    <span class="page-number">9</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -2077,7 +2403,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">8</span>
+    <span class="page-number">10</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -2160,7 +2486,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">9</span>
+    <span class="page-number">11</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -2234,7 +2560,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">10</span>
+    <span class="page-number">12</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -2300,7 +2626,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">11</span>
+    <span class="page-number">13</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -2407,7 +2733,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">12</span>
+    <span class="page-number">14</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -2470,7 +2796,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">13</span>
+    <span class="page-number">15</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -2541,7 +2867,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">14</span>
+    <span class="page-number">16</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -2624,7 +2950,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">15</span>
+    <span class="page-number">17</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -2693,7 +3019,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">16</span>
+    <span class="page-number">18</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -2774,7 +3100,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">17</span>
+    <span class="page-number">19</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -2842,7 +3168,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">18</span>
+    <span class="page-number">20</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -2916,7 +3242,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">19</span>
+    <span class="page-number">21</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -2990,7 +3316,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">20</span>
+    <span class="page-number">22</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3044,7 +3370,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">21</span>
+    <span class="page-number">23</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3096,7 +3422,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">22</span>
+    <span class="page-number">24</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3144,7 +3470,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">23</span>
+    <span class="page-number">25</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3199,7 +3525,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">24</span>
+    <span class="page-number">26</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3281,7 +3607,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">25</span>
+    <span class="page-number">27</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3352,7 +3678,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">26</span>
+    <span class="page-number">28</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3427,7 +3753,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">27</span>
+    <span class="page-number">29</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3497,7 +3823,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">28</span>
+    <span class="page-number">30</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3569,7 +3895,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">29</span>
+    <span class="page-number">31</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3641,7 +3967,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">30</span>
+    <span class="page-number">32</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3706,7 +4032,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">31</span>
+    <span class="page-number">33</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3785,7 +4111,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">32</span>
+    <span class="page-number">34</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3885,7 +4211,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">33</span>
+    <span class="page-number">35</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
@@ -3969,7 +4295,7 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-    <span class="page-number">34</span>
+    <span class="page-number">36</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
 
