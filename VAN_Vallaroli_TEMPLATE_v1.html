@@ -1300,6 +1300,190 @@
       clear: both;
     }
 
+
+    /* ═══════════════════════════════════════════════════════════
+       IMPRINT PAGE (Page 2) — title / publication details
+    ═══════════════════════════════════════════════════════════ */
+    .page-imprint {
+      display: flex;
+      flex-direction: column;
+    }
+    .imprint-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding: 8mm 20mm 4mm;
+      text-align: center;
+    }
+    .imprint-org-label {
+      font-size: 9pt;
+      color: var(--van-deep);
+      letter-spacing: 1px;
+      font-style: italic;
+      margin-bottom: 4mm;
+    }
+    .imprint-mag-name {
+      font-size: 28pt;
+      font-weight: 900;
+      color: var(--van-deep);
+      line-height: 1.1;
+      margin-bottom: 3mm;
+    }
+    .imprint-tagline {
+      font-size: 10pt;
+      color: var(--van-dark);
+      font-style: italic;
+      margin-bottom: 5mm;
+    }
+    .imprint-rule {
+      width: 55mm;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--van-gold), transparent);
+      margin: 4mm auto;
+    }
+    .imprint-logos {
+      display: flex;
+      gap: 14mm;
+      align-items: center;
+      justify-content: center;
+      margin: 5mm 0;
+    }
+    .imprint-logo {
+      height: 32mm;
+      width: auto;
+      max-width: 50mm;
+      object-fit: contain;
+    }
+    .imprint-details {
+      margin-top: 5mm;
+    }
+    .imprint-detail {
+      font-size: 12pt;
+      color: var(--van-deepest);
+      font-weight: 600;
+      line-height: 2.1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       MASTHEAD / CREDITS PAGE (Page 3) — editorial team
+    ═══════════════════════════════════════════════════════════ */
+    /* Make the content-area a flex column so masthead-grid can stretch */
+    .page-masthead .content-area {
+      display: flex;
+      flex-direction: column;
+    }
+    /* Masthead/Credits grid — fills full content-area height */
+    .masthead-grid {
+      display: grid;
+      grid-template-columns: 46% 50%;
+      gap: 4%;
+      flex: 1;
+      align-items: stretch;
+    }
+    .masthead-card {
+      background: var(--van-deepest);
+      border-radius: 8px;
+      padding: 6mm 6mm 7mm;
+      color: white;
+      display: flex;
+      flex-direction: column;
+    }
+    .masthead-card-title {
+      font-size: 14pt;
+      font-weight: 800;
+      color: var(--van-gold);
+      text-align: center;
+      letter-spacing: 0.5px;
+      margin-bottom: 3mm;
+    }
+    .masthead-card-divider {
+      height: 1px;
+      background: color-mix(in srgb, var(--van-gold) 45%, transparent);
+      margin: 3.5mm 0;
+    }
+    .masthead-role-label {
+      font-size: 8pt;
+      font-weight: 700;
+      color: var(--van-gold);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 4mm;
+      margin-bottom: 1mm;
+      opacity: 0.85;
+    }
+    .masthead-name {
+      font-size: 12pt;
+      font-weight: 700;
+      color: var(--van-text-on-dark);
+      margin-bottom: 1mm;
+    }
+    .masthead-contact-heading {
+      font-size: 8pt;
+      font-weight: 700;
+      color: var(--van-gold);
+      letter-spacing: 1px;
+      margin-top: 3mm;
+      opacity: 0.85;
+    }
+    .masthead-contact-text {
+      font-size: 9pt;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 0.5mm;
+      word-break: break-all;
+    }
+    .masthead-card-spacer { flex: 1; }
+    .masthead-board {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .masthead-board-logos {
+      display: flex;
+      gap: 8mm;
+      justify-content: center;
+      align-items: center;
+      padding: 4mm 0 2mm;
+      flex-shrink: 0;
+    }
+    .masthead-logo {
+      height: 32mm;
+      max-height: 32mm;
+      width: auto;
+      max-width: 50mm;
+      object-fit: contain;
+    }
+    .masthead-board-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    .masthead-board-title {
+      font-size: 15pt;
+      font-weight: 800;
+      color: var(--van-deep);
+      margin-bottom: 4mm;
+      text-align: center;
+      border-bottom: 2pt solid color-mix(in srgb, var(--van-gold) 60%, transparent);
+      padding-bottom: 2.5mm;
+      width: 100%;
+    }
+    .masthead-board-list {
+      font-size: 13pt;
+      font-weight: 600;
+      color: var(--van-deepest);
+      line-height: 2.2;
+      padding-left: 7mm;
+      list-style-type: decimal;
+      width: 100%;
+    }
+    .masthead-board-list li { padding-left: 1mm; }
+
   </style>
 </head>
 <body>
@@ -1382,7 +1566,122 @@
 
 
 <!-- ═══════════════════════════════════════════════════════════════
-     PAGE 2 — TABLE OF CONTENTS (பொருளடக்கம்)
+     PAGE 2 — IMPRINT (வெளியீட்டு விவரம்)
+     Publication title page — logos, issue number, Thiruvalluvar year
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="page page-imprint">
+  <div class="glossy"></div>
+  <span class="corner-tl">❈</span>
+  <span class="corner-br">❈</span>
+
+  <div class="imprint-content">
+    <div class="imprint-org-label">பெண்ணாடம் வள்ளலார் அறநிலையம் வழங்கும்</div>
+    <div class="imprint-mag-name">வான் வளரொளி இதழ்</div>
+    <div class="imprint-tagline">செந்தமிழில் அறம் வளர்க்கும் அறிவொளி இதழ்</div>
+    <div class="imprint-rule"></div>
+    <div class="imprint-logos">
+      <img class="imprint-logo" src="Images/van-logo.jpg" alt="வள்ளலார் அறநிலையம்">
+      <img class="imprint-logo" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
+    </div>
+    <div class="imprint-rule"></div>
+    <!-- EDIT: Update issue number (Tamil numeral), Thiruvalluvar year, month -->
+    <div class="imprint-details">
+      <div class="imprint-detail">வான் வளரொளி இதழ் — [TAMIL_ISSUE_NUMERAL]</div>
+      <div class="imprint-detail">திருவள்ளுவர் ஆண்டு [THIRUVALLUVAR_YEAR] — [TAMIL_MONTH]</div>
+      <div class="imprint-detail">[ [TAMIL_MONTH] — [YEAR] ]</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <!-- EDIT: Update issue info -->
+    <span class="issue-info">இதழ் எண்: [N] &nbsp;|&nbsp; [TAMIL_MONTH] [YEAR]</span>
+    <span class="page-number">2</span>
+    <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+  </div>
+</div><!-- PAGE 2 — IMPRINT -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE 3 — MASTHEAD / CREDITS (ஆசிரியர் குழு)
+     Editorial board, roles, contact details — both logos
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="page page-masthead">
+  <div class="glossy"></div>
+  <span class="corner-tl">❈</span>
+  <span class="corner-br">❈</span>
+
+  <div class="page-header">
+    <img class="header-logo-left" src="Images/van-logo.jpg" alt="VAN">
+    <span class="section-name">ஆசிரியர் குழு</span>
+    <img class="header-logo-right" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
+  </div>
+
+  <div class="content-area">
+    <div class="masthead-grid">
+
+      <!-- LEFT — Dark green info card -->
+      <div class="masthead-card">
+        <div class="masthead-card-title">வான் வளரொளி இதழ்</div>
+        <div class="masthead-card-divider"></div>
+
+        <!-- EDIT: Fill editor and managing-editor names -->
+        <div class="masthead-role-label">ஆசிரியர்</div>
+        <div class="masthead-name">[EDITOR NAME]</div>
+
+        <div class="masthead-role-label">பொறுப்பாசிரியர்</div>
+        <div class="masthead-name">[MANAGING EDITOR NAME]</div>
+
+        <div class="masthead-card-divider"></div>
+
+        <div class="masthead-contact-heading">இணையதளம்:</div>
+        <div class="masthead-contact-text">www.vallalar.org</div>
+
+        <div class="masthead-contact-heading">மின்னஞ்சல்:</div>
+        <div class="masthead-contact-text">vallalararanilayampdm@gmail.com</div>
+
+        <div class="masthead-card-spacer"></div>
+
+        <div class="masthead-card-divider"></div>
+        <div class="masthead-role-label">அமைப்பு:</div>
+        <div class="masthead-name" style="font-size:10pt;">பெண்ணாடம் வள்ளலார் அறநிலையம் (VAN)</div>
+        <div class="masthead-role-label">தலைவர்:</div>
+        <div class="masthead-name">மு. முத்துஜோதி</div>
+      </div>
+
+      <!-- RIGHT — Logos + editorial board list -->
+      <div class="masthead-board">
+        <div class="masthead-board-logos">
+          <img class="masthead-logo" src="Images/van-logo.jpg" alt="VAN">
+          <img class="masthead-logo" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
+        </div>
+
+        <div class="masthead-board-main">
+          <div class="masthead-board-title">ஆசிரியர் குழு :</div>
+          <!-- EDIT: Replace with actual contributor names — add/remove <li> as needed -->
+          <ol class="masthead-board-list">
+            <li>[பங்களிப்பாளர் 1]</li>
+            <li>[பங்களிப்பாளர் 2]</li>
+            <li>[பங்களிப்பாளர் 3]</li>
+            <li>[பங்களிப்பாளர் 4]</li>
+            <li>[பங்களிப்பாளர் 5]</li>
+            <li>[பங்களிப்பாளர் 6]</li>
+          </ol>
+        </div>
+      </div>
+
+    </div><!-- /.masthead-grid -->
+  </div><!-- /.content-area -->
+
+  <div class="page-footer">
+    <span class="issue-info">இதழ் எண்: [N] &nbsp;|&nbsp; [TAMIL_MONTH] [YEAR]</span>
+    <span class="page-number">3</span>
+    <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+  </div>
+</div><!-- PAGE 3 — MASTHEAD -->
+
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PAGE 4 — TABLE OF CONTENTS (பொருளடக்கம்)
      EDIT ZONE: toc-rows — update AFTER all page numbers are final
      ═══════════════════════════════════════════════════════════════ -->
 <div class="page">
@@ -1438,7 +1737,7 @@
           <div class="toc-desc">[Editorial topic]</div>
         </div>
         <div class="toc-dots"></div>
-        <div class="toc-page" style="color:#8DC63F;">3</div>
+        <div class="toc-page" style="color:#8DC63F;">5</div>
       </div>
 
       <div class="toc-row row-alt">
@@ -1465,10 +1764,10 @@
 
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: [N] &nbsp;|&nbsp; [TAMIL_MONTH] [YEAR]</span>
-    <span class="page-number">2</span>
+    <span class="page-number">4</span>
     <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
   </div>
-</div><!-- PAGE 2 -->
+</div><!-- PAGE 4 — TOC -->
 
 
 <!-- ═══════════════════════════════════════════════════════════════

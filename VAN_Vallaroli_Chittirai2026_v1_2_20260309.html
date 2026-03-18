@@ -1351,12 +1351,17 @@
     /* ═══════════════════════════════════════════════════════════
        MASTHEAD / CREDITS PAGE (Page 3) — editorial team
     ═══════════════════════════════════════════════════════════ */
+    /* Make the content-area a flex column so masthead-grid can stretch */
+    .page-masthead .content-area {
+      display: flex;
+      flex-direction: column;
+    }
     /* ── Masthead/Credits grid — fills full content-area height ── */
     .masthead-grid {
       display: grid;
       grid-template-columns: 46% 50%;
       gap: 4%;
-      height: 100%;
+      flex: 1;                 /* fills the flex content-area */
       align-items: stretch;    /* both columns stretch to full height */
     }
 
@@ -1423,7 +1428,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;  /* spread content top-to-bottom */
-      height: 100%;
+      /* no height:100% needed — grid stretch gives us full height */
     }
     .masthead-board-logos {
       display: flex;
@@ -1648,7 +1653,7 @@
   </div>
 
   <!-- PAGE 5 — CREDITS / MASTHEAD ════════════════════════════════════ -->
-  <div class="page">
+  <div class="page page-masthead">
     <div class="glossy"></div>
     <span class="corner-tl">❈</span>
     <span class="corner-br">❈</span>
