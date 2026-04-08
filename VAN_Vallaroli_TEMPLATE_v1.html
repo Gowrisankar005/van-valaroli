@@ -1302,6 +1302,52 @@
 
 
     /* ═══════════════════════════════════════════════════════════
+       COVER — issue badge (circular gold stamp bottom-right)
+    ═══════════════════════════════════════════════════════════ */
+    .cover-issue-badge {
+      position: absolute;
+      bottom: 9mm;
+      right: 11mm;
+      width: 20mm;
+      height: 20mm;
+      background: radial-gradient(circle at 40% 40%,
+        color-mix(in srgb, var(--van-gold) 100%, white) 0%,
+        var(--van-gold) 55%,
+        color-mix(in srgb, var(--van-gold) 80%, var(--van-deepest)) 100%);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5),
+                  0 0 0 1.5px color-mix(in srgb, var(--van-gold) 50%, white),
+                  0 0 0 3px color-mix(in srgb, var(--van-deepest) 70%, transparent);
+    }
+    .badge-label-top {
+      font-size: 5pt;
+      font-weight: 700;
+      color: var(--van-deepest);
+      letter-spacing: 0.5px;
+      line-height: 1;
+      opacity: 0.75;
+    }
+    .badge-num {
+      font-size: 18pt;
+      font-weight: 900;
+      color: var(--van-deepest);
+      line-height: 1.0;
+    }
+    .badge-label-bot {
+      font-size: 4.5pt;
+      font-weight: 700;
+      color: var(--van-deepest);
+      letter-spacing: 0.3px;
+      line-height: 1;
+      opacity: 0.75;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
        IMPRINT PAGE (Page 2) — title / publication details
     ═══════════════════════════════════════════════════════════ */
     .page-imprint {
@@ -1560,6 +1606,14 @@
         <div class="publisher-url">www.van.org.in</div>
       </div>
     </div>
+
+      <!-- Issue number badge — circular gold stamp bottom right -->
+      <!-- EDIT: Update badge-num (Arabic numeral) and badge-label-bot (Tamil month) -->
+      <div class="cover-issue-badge">
+        <span class="badge-label-top">இதழ்</span>
+        <span class="badge-num">[ISSUE_NUM]</span>
+        <span class="badge-label-bot">[TAMIL_MONTH_SHORT]</span>
+      </div>
 
   </div><!-- /.cover -->
 </div><!-- /.cover-section -->
