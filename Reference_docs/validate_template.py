@@ -471,13 +471,24 @@ def check_placeholders(html: str, is_template: bool, report: Report):
 
 
 def check_senthamizh(html: str, report: Report):
-    """Scan body text for banned loan words."""
+    """Scan body text for banned loan words.
+
+    Tamil vowel signs (ு, ோ, ா ...) are non-word chars in Python regex, so the
+    word-boundary trick fails at the end of Tamil words.  Instead we tokenise the
+    plain text on whitespace and punctuation, then look for exact-token matches.
+    This correctly catches standalone 'ரோடு' while ignoring the same string
+    when it is a suffix of a legitimate word such as 'உலகத்தாரோடு'.
+    """
     body = extract_body(html)
-    # Strip HTML tags for text scan
+    # Replace HTML tags with spaces so adjacent words don't merge
     text = re.sub(r'<[^>]+>', ' ', body)
+    # Tokenise: split on whitespace, Tamil punctuation, and common punctuation
+    tokens = set(re.split(r'[\s,;.!?()\u0964\u0965\u200b\u00a0\n\t]+', text))
+    # Strip any residual ASCII punctuation from token edges
+    tokens = {t.strip('.,;:!?()"\'-') for t in tokens if t}
     violations = []
     for banned, correct in SENTHAMIZH_VIOLATIONS.items():
-        if banned in text:
+        if banned in tokens:
             violations.append((banned, correct))
 
     if violations:
@@ -668,6 +679,20 @@ SELF_TESTS = [
         "check": "check_senthamizh",
         "html": "<html><body><p>கணினி பயன்படுத்துக</p></body></html>",
         "expect": "pass",
+    },
+    {
+        "id": "STZ-003",
+        "description": "'ரோடு' as suffix of a legitimate Tamil word (உலகத்தாரோடு) must NOT trigger false positive",
+        "check": "check_senthamizh",
+        "html": "<html><body><p>உலகத்தாரோடு நட்பு கொண்டு வாழ்வதே சிறந்த அறிவு.</p></body></html>",
+        "expect": "pass",
+    },
+    {
+        "id": "STZ-004",
+        "description": "Standalone loan word 'ரோடு' (road) as a word must FAIL",
+        "check": "check_senthamizh",
+        "html": "<html><body><p>அந்த ரோடு மிகவும் நீளமானது.</p></body></html>",
+        "expect": "fail",
     },
 
     # ── Images ────────────────────────────────────────────────────────────────
