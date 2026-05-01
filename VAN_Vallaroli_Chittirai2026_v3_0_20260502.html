@@ -903,9 +903,10 @@
     }
 
     @media print {
-  .page { overflow: hidden !important; }
-  .content-area { overflow: hidden !important; }
+  .page { overflow: hidden !important; page-break-after: always !important; break-after: page !important; }
+  .content-area { overflow: hidden !important; max-height: 245mm !important; }
   .body-text { overflow: hidden !important; }
+  .page-footer { position: absolute !important; bottom: 0 !important; left: 0 !important; right: 0 !important; }
       /* ── Root reset ── */
       html {
         width: 210mm;
@@ -1183,9 +1184,10 @@
     margin-top: 10px;
   }
   @media print {
-  .page { overflow: hidden !important; }
-  .content-area { overflow: hidden !important; }
+  .page { overflow: hidden !important; page-break-after: always !important; break-after: page !important; }
+  .content-area { overflow: hidden !important; max-height: 245mm !important; }
   .body-text { overflow: hidden !important; }
+  .page-footer { position: absolute !important; bottom: 0 !important; left: 0 !important; right: 0 !important; }
     #theme-picker { display: none !important; }
   }
 
@@ -1528,7 +1530,14 @@
       opacity: 0.75;
     }
 
-  </style>
+    /* keep cover badge within page */
+  .cover { position: relative !important; overflow: hidden !important; }
+  .cover-issue-badge { right: 14mm !important; bottom: 14mm !important; }
+  /* harmonise lead-para with body text */
+  .lead-para { font-size: 12.5pt !important; line-height: 1.65 !important; }
+  /* issue-banner text always readable on dark background */
+  .issue-badge, .issue-title, .issue-subtitle { color: #fff8e8 !important; }
+</style>
 </head>
 <body>
 
@@ -1583,27 +1592,6 @@
         <div class="teaser-item"><span class="teaser-dot">&#x25C6;</span><span class="teaser-text">இயற்கை தரும் இன்பம் — மலை அழகு</span></div>
         <div class="teaser-item"><span class="teaser-dot">&#x25C6;</span><span class="teaser-text">சிறுகதை &nbsp;•&nbsp; நூல் மதிப்புரை &nbsp;•&nbsp; செய்திகள்</span></div>
       </div>
-        <div class="teaser-item">
-          <span class="teaser-dot">&#x25C6;</span>
-          <span class="teaser-text">சங்க இலக்கியத்தில் தாமரை</span>
-        </div>
-        <div class="teaser-item">
-          <span class="teaser-dot">&#x25C6;</span>
-          <span class="teaser-text">மனம் ஒரு மந்திர சாவி</span>
-        </div>
-        <div class="teaser-item">
-          <span class="teaser-dot">&#x25C6;</span>
-          <span class="teaser-text">கோயில் கட்டமைப்பு</span>
-        </div>
-        <div class="teaser-item">
-          <span class="teaser-dot">&#x25C6;</span>
-          <span class="teaser-text">பாலில்லா புரதம் & கால்சியம்</span>
-        </div>
-        <div class="teaser-item">
-          <span class="teaser-dot">&#x25C6;</span>
-          <span class="teaser-text">கவிதை • சிறுகதை • மதிப்புரை</span>
-        </div>
-      </div>
       <div class="publisher-row">
         <span class="publisher-name">பெண்ணாடம் வள்ளலார் அறநிலையம்</span>
         <img class="van-seal"
@@ -1646,8 +1634,8 @@
       <div class="imprint-rule"></div>
 
       <div class="imprint-details">
-        <div class="imprint-detail">வான் வளரொளி இதழ் — ௧</div>
-        <div class="imprint-detail">திருவள்ளுவர் ஆண்டு ௨௦௫௭ — சித்திரை</div>
+        <div class="imprint-detail">வான் வளரொளி இதழ் — 1</div>
+        <div class="imprint-detail">திருவள்ளுவர் ஆண்டு 2057 — சித்திரை</div>
         <div class="imprint-detail">[ சித்திரை — 2026 ]</div>
       </div>
 
@@ -1714,8 +1702,8 @@
           <div class="masthead-board-main">
             <div class="masthead-board-title">தொகுப்பாசிரியர்கள் :</div>
             <ol class="masthead-board-list">
-              <li>தயவு திருமுருகன்</li>
               <li>தயவு வானதி</li>
+              <li>தயவு திருமுருகன்</li>
               <li>தயவு ஹரிஹரன்</li>
             </ol>
           </div>
@@ -1745,9 +1733,10 @@
     </div>
     <div class="content-area">
       <div class="issue-banner">
-        <div class="issue-badge">இதழ் 1</div>
-        <div class="issue-title">சித்திரை 2026</div>
-        <div class="issue-subtitle">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
+        <div class="banner-text">
+          <div class="banner-title">இதழ் 1 &nbsp;·&nbsp; சித்திரை 2026</div>
+          <div class="banner-sub">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
+        </div>
       </div>
       <div class="toc-list">
         <div class="toc-row">
@@ -1802,25 +1791,25 @@
             <div class="toc-desc">அதிகாலை துயிலெழல் — வள்ளலாரின் நெறி</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#D4AF37;">22</div>
+          <div class="toc-page" style="color:#D4AF37;">21</div>
         </div>
         <div class="toc-row">
           <div class="toc-accent" style="background:#2d7a3e;"></div>
           <div class="toc-content">
             <div class="toc-section">சங்க இலக்கியம்</div>
-            <div class="toc-desc">தாமரையின் அறச்செய்தி</div>
+            <div class="toc-desc">தாமரை மலரின் அறச்செய்தி</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#2d7a3e;">25</div>
+          <div class="toc-page" style="color:#2d7a3e;">24</div>
         </div>
         <div class="toc-row row-alt">
           <div class="toc-accent" style="background:#6BA82F;"></div>
           <div class="toc-content">
             <div class="toc-section">இயற்கை தரும் இன்பம்</div>
-            <div class="toc-desc">மலை அழகு — கௌரிசங்கரனார்</div>
+            <div class="toc-desc">மலை அழகு</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#6BA82F;">28</div>
+          <div class="toc-page" style="color:#6BA82F;">27</div>
         </div>
         <div class="toc-row">
           <div class="toc-accent" style="background:#8DC63F;"></div>
@@ -1829,7 +1818,7 @@
             <div class="toc-desc">வள்ளலார் அறநிலைய நிகழ்வுகள்</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#8DC63F;">29</div>
+          <div class="toc-page" style="color:#8DC63F;">28</div>
         </div>
         <div class="toc-row row-alt">
           <div class="toc-accent" style="background:#D4AF37;"></div>
@@ -1838,7 +1827,7 @@
             <div class="toc-desc">வைகாசி 2026 • வாசகர் குரல்</div>
           </div>
           <div class="toc-dots"></div>
-          <div class="toc-page" style="color:#D4AF37;">31</div>
+          <div class="toc-page" style="color:#D4AF37;">30</div>
         </div>
       </div>
     </div>
@@ -1869,7 +1858,7 @@
       </div>
       <div class="section-divider">&#x2022; &nbsp;&nbsp; &#x2022; &nbsp;&nbsp; &#x2022;</div>
       <div class="body-text">
-        <p class="lead-para">வான் வளரொளி மின்னிதழின் முதல் இதழை உங்கள் கரங்களிலே தவழவிடுவதில் பெருமகிழ்ச்சி அடைகிறோம். இம்மாத கல்வி மாத சிறப்பிதழில், நாம் தமிழர்கள் என்பதில் ஏன் பெருமை கொள்ள வேண்டும் என்பதை ஆழமாக உணர்வோம்.</p>
+        <p class="lead-para">வான் வளரொளி மின்னிதழின் முதல் இதழை உங்கள் கரங்களிலே தவழவிடுவதில் பெருமகிழ்ச்சி அடைகிறோம். இம்மாத இதழில், நாம் தமிழர்கள் என்பதில் ஏன் பெருமை கொள்ள வேண்டும் என்பதை ஆழமாக உணர்வோம்.</p>
         <p>மெக்சிகோவில் 3000-4500 ஆண்டுகளுக்கு முன் வாழ்ந்த மாயா வம்சத்தைப் பற்றி நீங்கள் கேள்விப்பட்டிருப்பீர்கள். 150-200 அடி உயரமுள்ள கற்களால் ஆன செய்குன்றுகளை அமைத்த அந்த நாகரிகம், சூரிய வழிபாட்டிற்காக அடிமைகளின் இதயங்களைப் பிடுங்கி பலி கொடுத்தது. துடிக்கும் இதயத்தைச் சூரியனுக்குக் காட்டினால் மழை பெய்யும் என நம்பினார்கள். மன்னனின் பிள்ளைகள் சிறுவயது முதலே இக்கொடுமையைப் பார்த்துப் பழகினார்கள்.</p>
         <p>இப்படிப்பட்ட காட்டுமிராண்டித்தனமான வழிபாட்டு முறைகள் நிலவிய அதே காலத்தில், "யாதும் ஊரே யாவரும் கேளிர்" என்றும், "உலகத்தில் இருக்கிறவன் எல்லாம் என் உறவினன்" என்றும், "அன்பே இறை வழிபாடு" என்றும் சொன்ன ஒரு நெறி இருந்தது இந்தத் தமிழ் மண்ணில். இப்படி ஒரு சீரிய அன்பு நெறிக்குச் சொந்தக்காரர்கள்தான் நாம் தமிழர்கள்.</p>
         <p>நான் தமிழன் என்று வெறுமனே கூறிக்கொண்டு, கண்டவிதமான கட்டுப்பாடற்ற வாழ்க்கையை வாழ்பவன் தமிழன் அல்ல. உழைப்பவன் தமிழன்; உணர்வோடு இருப்பவன் தமிழன்; உறுதியோடு நன்னெறியில் வாழ்கிறவன் தமிழன்.</p>
@@ -1957,6 +1946,7 @@
       </div>
       <div class="section-divider">&#x2022; &nbsp;&nbsp; &#x2022; &nbsp;&nbsp; &#x2022;</div>
       <div class="body-text">
+        <figure class="article-figure img-half"><img src="data:image/jpeg;base64,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" alt="திருவள்ளுவர்"><figcaption class="img-caption">திருவள்ளுவர்</figcaption></figure>
         <div class="subhead">முன்னுரை</div>
         <p>திருவள்ளுவர் 'பொருட்பால்' பகுதியில், அரசியல் மற்றும் அமைச்சியல் அதிகாரங்களுக்கு அடுத்து 'அறிவுடைமை'யை வைத்துள்ளார். ஒரு நாட்டுக்கும், அந்த நாட்டு மக்களுக்கும் 'அறிவு' என்பது எவ்வளவு வலிமையான ஆயுதம் என்பதை விளக்குவதே இந்த அதிகாரத்தின் நோக்கம். அறிவு என்பது வெறும் தகவல் சேகரிப்பு அல்ல; அது ஒரு வாழ்வியல் கலை என்பதை வள்ளுவம் பறைசாற்றுகிறது. வள்ளுவர் அறிவை ஒரு கவசமாகவும், ஒழுக்கத்தின் அடிப்படையாகவும் வரையறுக்கிறார்.</p>
         <p>“அறிவுடைமை” அதிகாரம் மனித வாழ்க்கையின் மையக் குணமாக அறிவை நிறுவுகிறது. இவ்வதிகாரத்தில் திருவள்ளுவர் அறிவை மூன்று முக்கிய கோணங்களில் விளக்குகிறார்:</p>
@@ -1971,8 +1961,8 @@
         <p>அறிவே அழிவற்ற கருவி</p>
         <div class="slim-quote">
           <div class="quote-text">அறிவற்றங் காக்குங் கருவி செறுவார்க்கும்<br>
-          உள்ளழிக்க லாகா அரண். 421.</div>
-          <div class="quote-source">— திருக்குறள்</div>
+          உள்ளழிக்க லாகா அரண். — 421</div>
+          <div class="quote-source"></div>
         </div>
       </div>
     </div>
@@ -2003,29 +1993,29 @@
         <p>மனதை நல்வழியில் செலுத்துதல்</p>
         <div class="slim-quote">
           <div class="quote-text">சென்ற இடத்தால் செலவிடா தீதொரீஇ<br>
-          நன்றின்பால் உய்ப்ப தறிவு. 422.</div>
-          <div class="quote-source">— திருக்குறள்</div>
+          நன்றின்பால் உய்ப்ப தறிவு. — 422</div>
+          <div class="quote-source"></div>
         </div>
         <p>மனத்தைச் சென்ற இடமெல்லாம் போகவிடாமல், தீமையானவற்றிலிருந்து விலக்கி, நன்மையான வழியில் செலுத்துவதே உண்மையான அறிவாகும்.</p>
         <p>மெய்ப்பொருள் காணுதல்</p>
         <div class="slim-quote">
           <div class="quote-text">எப்பொருள் யார்யார்வாய்க் கேட்பினும் அப்பொருள்<br>
-          மெய்ப்பொருள் காண்ப தறிவு. 423.</div>
-          <div class="quote-source">— திருக்குறள்</div>
+          மெய்ப்பொருள் காண்ப தறிவு. — 423</div>
+          <div class="quote-source"></div>
         </div>
         <p>எந்தவொரு கருத்தையும் எவர் சொன்னாலும், அதை அப்படியே ஏற்றுக்கொள்ளாமல், அந்தச் செய்தியின் உண்மைத் தன்மையை ஆராய்ந்து அறிவதே அறிவு.</p>
         <p>நுட்பமாக உணர்த்துதல்</p>
         <div class="slim-quote">
           <div class="quote-text">எண்பொருள வாகச் செலச்சொல்லித் தான்பிறர்வாய்<br>
-          நுண்பொருள் காண்ப தறிவு. 424.</div>
-          <div class="quote-source">— திருக்குறள்</div>
+          நுண்பொருள் காண்ப தறிவு. — 424</div>
+          <div class="quote-source"></div>
         </div>
         <p>தான் சொல்லும் கருத்துகள் கடினமாக இருந்தாலும் அவற்றை மற்றவர் எளிதில் புரியும்படிச் சொல்வதும், மற்றவர்கள் சொல்லும் நுட்பமான கருத்துகளின் சாரத்தை எளிதாகப் புரிந்து கொள்வதும் அறிவாகும்.</p>
         <p>உலகத்தோடு ஒட்டி வாழ்தல்</p>
         <div class="slim-quote">
           <div class="quote-text">உலகம் தழீஇய தொட்பம் மலர்தலும்<br>
-          கூம்பலும் இல்ல தறிவு. 425.</div>
-          <div class="quote-source">— திருக்குறள்</div>
+          கூம்பலும் இல்ல தறிவு. — 425</div>
+          <div class="quote-source"></div>
         </div>
         <p>உலகத்தாரோடு நட்பு கொண்டு வாழ்வதே சிறந்த அறிவாகும். அந்த நட்பு, செல்வம் வரும்போது மலர்வதும், வறுமை வரும்போது சுருங்குவதுமாக இருக்கக் கூடாது.</p>
       </div>
@@ -2056,29 +2046,29 @@
         <p>சான்றோர் வழி நிற்றல்</p>
         <div class="slim-quote">
           <div class="quote-text">எவ்வ துறைவது உலகம் உலகத்தோடு<br>
-          அவ்வ துறைவது தறிவு. 426.</div>
-          <div class="quote-source">— திருக்குறள்</div>
+          அவ்வ துறைவது தறிவு. — 426</div>
+          <div class="quote-source"></div>
         </div>
         <p>உயர்ந்தோர் செல்லும் வழியில் உலகத்தோடு இணைந்து வாழ்வதே அறிவு. அப்படி வாழாதவர் பல நூல்களைக் கற்றிருந்தாலும் அறிவில்லாதவரே.</p>
         <p>எதிர்காலத்தை உணர்தல்</p>
         <div class="slim-quote">
           <div class="quote-text">அறிவுடையார் ஆவ தறிவார் அறிவிலார்<br>
-          அஃதறி கல்லா தவர். 427.</div>
-          <div class="quote-source">— திருக்குறள்</div>
+          அஃதறி கல்லா தவர். — 427</div>
+          <div class="quote-source"></div>
         </div>
         <p>அறிவுடையவர்கள் எதிர்காலத்தில் என்ன நிகழும் என்பதை முன்கூட்டியே சிந்தித்துச் செயல்படுவார்கள். அறிவில்லாதவர்கள் அதனை அறிய மாட்டார்கள்.</p>
         <p>அஞ்ச வேண்டியவற்றிற்கு அஞ்சுதல்</p>
         <div class="slim-quote">
           <div class="quote-text">அஞ்சுவ தஞ்சாமை பேதைமை அஞ்சுவது<br>
-          அஞ்சல் அறிவார் தொழில். 428.</div>
-          <div class="quote-source">— திருக்குறள்</div>
+          அஞ்சல் அறிவார் தொழில். — 428</div>
+          <div class="quote-source"></div>
         </div>
         <p>அஞ்ச வேண்டிய தீமைகளுக்கு அஞ்சாமல் இருப்பது அறியாமை. அஞ்ச வேண்டியவற்றிற்கு அஞ்சி நடப்பதே அறிவுடையவர்களின் செயலாகும்.</p>
         <p>துன்பத்தை முன்கூட்டியே காத்தல்</p>
         <div class="slim-quote">
           <div class="quote-text">எதிரதாக் காக்கும் அறிவினார்க்கு இல்லை<br>
-          அதிர வருவதோர் நோய். 429.</div>
-          <div class="quote-source">— திருக்குறள்</div>
+          அதிர வருவதோர் நோய். — 429</div>
+          <div class="quote-source"></div>
         </div>
         <p>வரப்போகும் துன்பத்தை முன்கூட்டியே உணர்ந்து தற்காத்துக் கொள்ளும் அறிவுடையவர்களுக்கு, அவர்கள் நடுங்கும்படியான துன்பம் ஒருபோதும் வராது.</p>
         <div class="subhead">10. அறிவு ஒன்றே முழுமையான செல்வம்</div>
@@ -2109,22 +2099,21 @@
       <div class="body-text">
         <div class="slim-quote">
           <div class="quote-text">அறிவுடையார் எல்லாம் உடையார் அறிவிலார்<br>
-          என்னுடைய ரேனும் இலர். 430.</div>
-          <div class="quote-source">— திருக்குறள்</div>
+          என்னுடைய ரேனும் இலர். — 430</div>
+          <div class="quote-source"></div>
         </div>
         <p>அறிவுடையவர்கள் மற்ற செல்வங்கள் இல்லாவிட்டாலும் எல்லாம் உடையவர்களாகவே கருதப்படுவர். அறிவு இல்லாதவர்கள் வேறு என்ன செல்வங்கள் பெற்றிருந்தாலும் அவர்கள் எதுவும் இல்லாதவர்களாகவே கருதப்படுவர்.</p>
-        <div class="subhead">அறிவுடைமையின் பயன்கள்</div>
         <div class="subhead">ஆய்வின் முடிவுரை (Take Home Message)</div>
         <p>“அறிவுடைமை” அதிகாரம் நமக்கு தரும் முக்கியமான செய்தி:</p>
-        <p>• அறிவு என்பது வாழ்க்கையின் மிகப் பெரிய செல்வம்.</p>
-        <p>• அறிவுடன் ஒழுக்கமும் இணைந்தால் மட்டுமே அது முழுமை பெறும்.</p>
-        <p>• ஆராய்ச்சி, சிந்தனை, அனுபவம் – இவை மூன்றும் சேர்ந்ததே உண்மையான அறிவு</p>
-        <p>• அறிவில்லாத வாழ்க்கை தன்னைத்தானே அழிக்கும்.</p>
+        <p>❀ அறிவு என்பது வாழ்க்கையின் மிகப் பெரிய செல்வம்.</p>
+        <p>❀ அறிவுடன் ஒழுக்கமும் இணைந்தால் மட்டுமே அது முழுமை பெறும்.</p>
+        <p>❀ ஆராய்ச்சி, சிந்தனை, அனுபவம் – இவை மூன்றும் சேர்ந்ததே உண்மையான அறிவு</p>
+        <p>❀ அறிவில்லாத வாழ்க்கை தன்னைத்தானே அழிக்கும்.</p>
         <p>எனவே வள்ளுவர் காட்டும் அறிவுடைமை என்பது வெறும் புத்தக அறிவு மட்டும் அல்ல. அது:</p>
-        <p>• சுய கட்டுப்பாடு.</p>
-        <p>• பகுத்தறிவு .</p>
-        <p>• தொலைநோக்கு பார்வை .</p>
-        <p>• சமூக இணக்கம்.</p>
+        <p>&emsp;• சுய கட்டுப்பாடு.</p>
+        <p>&emsp;• பகுத்தறிவு .</p>
+        <p>&emsp;• தொலைநோக்கு பார்வை .</p>
+        <p>&emsp;• சமூக இணக்கம்.</p>
         <p>இவற்றை உள்ளடக்கிய ஒரு முழுமையான வாழ்வியல் தத்துவமாகும். "அறிவுடையார் எல்லாம் உடையார்" என்பதே இந்த அதிகாரத்தின் ஒட்டுமொத்த சாரமாகும். ஒரு மனிதன் தன்னைத் தானே ஆளவும், உலகத்தோடு வெல்லவும் அறிவு ஒன்றே போதுமான கருவி.</p>
       </div>
     </div>
@@ -2704,11 +2693,7 @@
         <div class="subhead">இன்றே தொடங்குவோம்!</div>
         <p>உலகப் பெருஞ்செல்வந்தர்கள் பலரும்  அதிகாலையில் துயில் எழும் பழக்கம் உள்ளவர்கள் என்று அவர்களே சொல்கிறார்கள். அதிகாலையில் விழிப்பது உலகியல், அருளியல் என்ற இரண்டிலும் நமக்குப் பயன் தரும். இப்பழக்கத்தை இன்றே தொடங்குவோம். நன்மைகள் பெறுவோம்.</p>
         <div class="section-divider">&#x2022; &nbsp;&nbsp; &#x2022; &nbsp;&nbsp; &#x2022;</div>
-        <div class="closing">
-          <div class="sign-off">அன்புடன்,</div>
-          <div class="sign-name">ஹரிஹரனார்</div>
-          <div class="lotus-end">❀</div>
-        </div>
+        <div class="lotus-end">❀</div>
       </div>
     </div>
     <div class="page-footer">
@@ -2729,7 +2714,7 @@
     </div>
     <div class="content-area">
       <div class="section-header">
-        <div class="topic-title">சேற்றில் வேரூன்றி ஒளிர்தல்: தாமரையின் அறச்செய்தி</div>
+        <div class="topic-title">தாமரை மலரின் அறச்செய்தி</div>
         <div class="section-label-row">
           <span class="lotus-icon">❀</span>
           <span class="section-label">சங்க இலக்கியம்</span>
@@ -2753,7 +2738,7 @@
           <div class="quote-text">"பனியே வாங்குகதிர் தொகுப்பக் கூம்பி<br>
           ஐயென அலங்கு வெயிற் பொதித்த<br>
           தாமரை உள்ளகத் தன்ன சிறுவெம் மையளே."</div>
-          <div class="quote-source">— (குறுந்தொகை - ௩௭௬:௪–௬)</div>
+          <div class="quote-source"></div>
         </div>
         <p>விளக்கம்: பனியில் கூம்பிய தாமரை உள்ளே சிறு வெப்பம் பொதிந்திருப்பதை தலைவியின் உள்ளத்துடன் ஒப்பிடுகிறது. இது உறுதியை குறிக்கிறது—மலரின் உள்ளே 30-35°C வெப்பம் இருப்பது, குளிரிலும் ஒளிரச் செய்கிறது. சங்கப் புலவர்கள் இந்த இயல்பை அறிந்திருந்தனர் என்பதை இப்பாடல் காட்டுகிறது.</p>
         <p>மேலும், புறநானூறு (27:1–3)யில்:</p>
@@ -2761,7 +2746,7 @@
           <div class="quote-text">"சேற்றுவளர் தாமரை பயந்த ஒண்கேழ்<br>
           நூற்றிதழ் அலரின் நிரை கண் டன்ன<br>
           வேற்றுமை யில்லா விழுத்திணைப் பிறந்து."</div>
-          <div class="quote-source">— (புறநானூறு - ௨௭:௧–௩)</div>
+          <div class="quote-source"></div>
         </div>
         <p>விளக்கம்: சேற்றில் வளரும் நூற்றிதழ் தாமரை கண்களின் நிறையை ஒத்திருப்பதாக ஒப்பிடுகிறது. இது தூய்மையை வலியுறுத்துகிறது—சேற்றிலிருந்து எழுந்தாலும் வேற்றுமை இல்லாத தன்மை.</p>
         <div class="section-divider">&#x2022; &nbsp;&nbsp; &#x2022; &nbsp;&nbsp; &#x2022;</div>
@@ -2772,7 +2757,7 @@
           <div class="quote-text">"மெல்லியல் மேவந்த சீறடித் தாமரை<br>
           அல்லிசேர் ஆயிதழ் அரக்குத் தோய்ந்தவை<br>
           போல்."</div>
-          <div class="quote-source">— (கலித்தொகை - ௧௩:௧௧–௧௩)</div>
+          <div class="quote-source"></div>
         </div>
         <p>விளக்கம்: மென்மையான சிவப்பு இதழ்கள் தலைவியின் உதடுகளை ஒப்பிடுகிறது. செந்தாமரையின் அகவிதழ்கள் கருஞ்சிவப்பு என்பது நுட்பம்.</p>
         <p>சிறுபாணாற்றுப்படை (73–75)யில்:</p>
@@ -2805,14 +2790,14 @@
           <div class="quote-text">"திருமுகம் அவிழ்ந்த தெய்வத் தாமரை<br>
           ஆசில் அங்கை அரக்குத் தோய்ந்தன்ன<br>
           சேயிதழ் பொதிந்த."</div>
-          <div class="quote-source">— (சிறுபாணாற்றுப்படை - ௭௩–௭௫)</div>
+          <div class="quote-source"></div>
         </div>
         <p>விளக்கம்: தெய்வத் தாமரையின் முகம் மலர்வது தலைவியின் சிவந்த இதழ்களை உருவகப்படுத்துகிறது.</p>
         <p>பெரும்பாணாற்றுப்படை (114–115)யில்:</p>
         <div class="slim-quote">
           <div class="quote-text">"முள்ளரைத் தாமரை புல்லிதழ் புரையும்<br>
           நெடுஞ்செவிக் குறுமுயல்."</div>
-          <div class="quote-source">— (பெரும்பாணாற்றுப்படை - ௧௧௪–௧௧௫)</div>
+          <div class="quote-source"></div>
         </div>
         <p>விளக்கம்: முள் நிறைந்த தாமரையின் மென்மை இதழ்கள் குறுமுயலின் நீண்ட செவிகளை ஒப்பிடுகிறது.</p>
         <p>சங்க இலக்கிய ஆய்வுகளின்படி, கண் தாமரை, முகத் தாமரை, உதடு செந்தாமரை, பாதம் தாமரை என்பவை பொதுவானவை. இது பெண்களின் அழகை தூய்மையுடன் இணைக்கிறது, ஆனால் ஆழத்தில் அறநெறியை குறிக்கிறது—தாமரை போல சேற்றிலிருந்து தூய்மையாக இருத்தல்.</p>
@@ -2823,7 +2808,7 @@
         <div class="slim-quote">
           <div class="quote-text">"தாமரை புரையும் காமர் சேவடிப்<br>
           பவளத் தன்ன மேனித் திகழொளிக் குன்றி."</div>
-          <div class="quote-source">— (குறுந்தொகை - கடவுள் வாழ்த்து)</div>
+          <div class="quote-source"></div>
         </div>
         <p>விளக்கம்: முருகனின் திருவடிகள் தாமரை போன்றவை—தூய்மை மற்றும் ஞானத்தை குறிக்கிறது.</p>
         <p>பரிபாடல் திரட்டு (8)யில்:</p>
@@ -2831,7 +2816,7 @@
           <div class="quote-text">"மாயோன் கொப்பூழ் மலர்ந்த தாமரைப்<br>
           பூவொடு புரையும் சீர் ஊர், பூவின்<br>
           இதழகத் தன்ன தெருவம்."</div>
-          <div class="quote-source">— (பரிபாடல் திரட்டு - ௮)</div>
+          <div class="quote-source"></div>
         </div>
         <p>விளக்கம்: மதுரை நகரம் விஷ்ணுவின் தாமரை போல—இதழ்கள் தெருக்கள், பொகுட்டு கோயில்கள். இது அறத்தின் சின்னம்; சேற்றிலிருந்து எழுந்து தூய்மையாக வாழ்தல் போல, தமிழ் தத்துவத்தில் அறநெறி வாழ்க்கை.</p>
         <p>தமிழ் பண்பாட்டில் தாமரை அறநெறியின் குறியீடு: தூய்மை (சேறு தீண்டாத இலைகள்), உறுதி (முட்கள் பாதுகாக்கும்), பிரிவின்மை (நீர் ஒட்டாது), ஞானம் (சூரியனுக்கு மலர்தல்). சங்கத்தில் 'கமலம்' பேரெண்ணை குறிக்கும் (பரிபாடல் 2:14)—ஊழிக் காலம் 'தாமரை பயந்த ஊழி' (திருமுருகாற்றுப்படை 164). நேர அளவீடு: இதழில் ஊசி ஊடுருவும் நேரம் 'கணம்'. இது தமிழரின் காலக் கருத்தியலில் ஆழமான இடம் பெறுகிறது; புத்தர், அருகர் திருவடிகளுக்கும் உவமை.</p>
@@ -2926,7 +2911,6 @@
         </figure>
                 <div class="section-divider">&#x2022; &nbsp;&nbsp; &#x2022; &nbsp;&nbsp; &#x2022;</div>
         <p class="lead-para">இயற்கை கொடுக்கும் இன்பம் வேறு எதுவும் தர இயலாது. மலைகளின் மடியில் படர்ந்து கிடக்கும் மூடுபனி, பச்சை நிற காடுகள், ஓடும் அருவிகள் — இவை நம் உயிரை உற்சாகப்படுத்தும் மூலசக்தி.</p>
-        <p>கௌரிசங்கரனாரின் இயற்கை அனுபவக் கட்டுரை அடுத்த பதிவில் வரும்.</p>
                 <div class="author-byline">கௌரிசங்கரனார்</div>
       </div>
     </div>
@@ -2967,6 +2951,10 @@
         <p>ஆண்டுதோறும் எனப் பல்வேறு நிகழ்வுகள் அறநிலையத்தி லும் zoom</p>
         <p>தளத்திலும் நிகழ்ந்து வருகிறது.அத்தகையநிகழ்வுகள் மாதந்தோறும் வரும் இதழிலும் கண்டு வாசகர்கள் கலந்து கொண்டு பயன்பெறலாம்.</p>
         <p>கோடைக்கால திறனூக்க பயிற்சி</p>
+        <p>ஒரு ஆண்டுக்கு ஒரு முறை நடத்தப்படும் நிகழ்வாகும்.இதில் அறநிலைய மாணவர்கள் மட்டுமல்லாமல் பெண்ணாடத்தைச் சுற்றியுள்ள தனியார் மற்றும் அரசு பள்ளி மாணவர்கள் இதில் பங்கேற்று பயனடைகின்றனர்.</p>
+        <p>இவ்வாண்டு ஏப்ரல்</p>
+        <p>ம் தேதி தொடங்கி இவ்வகுப்பு நடைபெற்று வருகிறது.</p>
+        <p>இதில் யோகா இசை(வாய்ப்பட்டு ) கணினி பயிற்சி எளிய முறை கணிதம் கைவினை பொருட்கள் செய்தல்</p>
       </div>
     </div>
     <div class="page-footer">
@@ -2992,39 +2980,10 @@
       </div>
       <div class="section-divider">&#x2022; &nbsp;&nbsp; &#x2022; &nbsp;&nbsp; &#x2022;</div>
       <div class="body-text">
-        <p>ஒரு ஆண்டுக்கு ஒரு முறை நடத்தப்படும் நிகழ்வாகும்.இதில் அறநிலைய மாணவர்கள் மட்டுமல்லாமல் பெண்ணாடத்தைச் சுற்றியுள்ள தனியார் மற்றும் அரசு பள்ளி மாணவர்கள் இதில் பங்கேற்று பயனடைகின்றனர்.</p>
-        <p>இவ்வாண்டு ஏப்ரல்</p>
-        <p>ம் தேதி தொடங்கி இவ்வகுப்பு நடைபெற்று வருகிறது.</p>
-        <p>இதில் யோகா இசை(வாய்ப்பட்டு ) கணினி பயிற்சி எளிய முறை கணிதம் கைவினை பொருட்கள் செய்தல்</p>
         <p>உணவு பற்றிய விழிப்புணர்வு புத்தகம் வாசிப்பு போன்ற பல்வேறு பயிற்சிகள் மாணவர்களுக்கு வழங்கப்படுகிறது.</p>
         <p>மார்ச்- ஏப்ரல் 2026</p>
         <p>மாதம் இலவச ஹோமியோபதி மருத்துவ முகாம் இது  மாதம் ஒரு முறை</p>
         <p>நடைபெறும் நிகழ்வாகும்.ஒவ்வொரு மாத பூசத்தன்றும் இம்மருத்துவ முகாம் நடைபெற்று வருகிறது. இது திரு Dr.Arul ஓமியோபதி</p>
-      </div>
-    </div>
-    <div class="page-footer">
-      <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-      <span class="page-number">29</span>
-      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
-    </div>
-  </div>
-
-  <!-- PAGE 30 ═══════════════════════════════════════════════════════════ -->
-  <div class="page">
-    <div class="glossy"></div>
-    <span class="corner-tl">❈</span>
-    <span class="corner-br">❈</span>
-    <div class="page-header">
-      <span class="section-name">அறநிலையச் செய்திகள்</span>
-      <span class="mag-name">வான் வளரொளி இதழ்</span>
-    </div>
-    <div class="content-area">
-      <div class="continuation-banner">
-        <span class="cont-section-name">அறநிலையச் செய்திகள்</span>
-        <span class="cont-page-info">தொடர்ச்சி</span>
-      </div>
-      <div class="section-divider">&#x2022; &nbsp;&nbsp; &#x2022; &nbsp;&nbsp; &#x2022;</div>
-      <div class="body-text">
         <p>பட்டம் பெற்ற ஓமியோபதி மருத்துவரால் நடத்தப்படுகிறது.இது பக்க விளைவுகள் இல்லாத மருத்துவமாகும்.பெண்ணாடம் சுற்றுவட்டாரத்தில் உள்ள பொதுமக்கள் பயனடைந்து வருகின்றனர்.இதில் மருந்துகளும் கட்டணமின்றி வழங்கப்படுகிறது.</p>
         <p>மாதப்பூசம் -விளக்கு வழிபாடு மற்றும் மாதப்பூசம் -அன்னதானம் ஏப்ரல் 2026</p>
         <p>இது மாத பூச நாளன்று அறநிலையத்தில் நடைபெறும் நிகழ்வாகும்.</p>
@@ -3038,12 +2997,12 @@
     </div>
     <div class="page-footer">
       <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-      <span class="page-number">30</span>
+      <span class="page-number">29</span>
       <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
     </div>
   </div>
 
-  <!-- PAGE 31 ═══════════════════════════════════════════════════════════ -->
+  <!-- PAGE 30 ═══════════════════════════════════════════════════════════ -->
   <div class="page">
     <div class="glossy"></div>
     <span class="corner-tl">❈</span>
@@ -3096,7 +3055,7 @@
     </div>
     <div class="page-footer">
       <span class="issue-info">இதழ் எண்: 1 &nbsp;|&nbsp; சித்திரை 2026</span>
-      <span class="page-number">31</span>
+      <span class="page-number">30</span>
       <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
     </div>
   </div>

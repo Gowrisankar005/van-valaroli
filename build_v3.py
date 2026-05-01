@@ -39,12 +39,26 @@ TAIL     = ''.join(src_lines[i_theme:])
 HEAD = re.sub(r'<title>[^<]*</title>',
               '<title>வான் வளரொளி இதழ் — சித்திரை 2026 — இதழ் 1</title>', HEAD)
 
-# Patch print CSS — prevent content overflow bleeding into next page
+# Patch print CSS — fixed footer, no overflow, clean A4 pages
 HEAD = HEAD.replace(
     '@media print {',
-    '@media print {\n  .page { overflow: hidden !important; }'
-    '\n  .content-area { overflow: hidden !important; }'
-    '\n  .body-text { overflow: hidden !important; }'
+    '@media print {\n'
+    '  .page { overflow: hidden !important; page-break-after: always !important; break-after: page !important; }\n'
+    '  .content-area { overflow: hidden !important; max-height: 245mm !important; }\n'
+    '  .body-text { overflow: hidden !important; }\n'
+    '  .page-footer { position: absolute !important; bottom: 0 !important; left: 0 !important; right: 0 !important; }'
+)
+
+# Additional CSS patches — fix cover badge clipping and lead-para size
+HEAD = HEAD.replace('</style>',
+    '  /* keep cover badge within page */\n'
+    '  .cover { position: relative !important; overflow: hidden !important; }\n'
+    '  .cover-issue-badge { right: 14mm !important; bottom: 14mm !important; }\n'
+    '  /* harmonise lead-para with body text */\n'
+    '  .lead-para { font-size: 12.5pt !important; line-height: 1.65 !important; }\n'
+    '  /* issue-banner text always readable on dark background */\n'
+    '  .issue-badge, .issue-title, .issue-subtitle { color: #fff8e8 !important; }\n'
+    '</style>'
 )
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -57,7 +71,8 @@ COVER = re.sub(r'\s*<span class="pill pill-special">[^<]*</span>', '', COVER)
 COVER = re.sub(r'(<div class="teasers-label">)[^<]*(</div>)',
                r'\1இந்த இதழில்\2', COVER)
 
-# Replace teaser items inside <div class="teasers"> block
+# Replace ALL teaser items inside <div class="teasers"> block
+# Root cause: old regex stopped at first inner </div>; now match ALL teaser-item divs
 new_teaser_items = (
     '\n        <div class="teaser-item"><span class="teaser-dot">&#x25C6;</span>'
     '<span class="teaser-text">திருக்குறள் — அறிவுடைமை அதிகாரம்</span></div>'
@@ -72,9 +87,12 @@ new_teaser_items = (
     '\n        <div class="teaser-item"><span class="teaser-dot">&#x25C6;</span>'
     '<span class="teaser-text">சிறுகதை &nbsp;•&nbsp; நூல் மதிப்புரை &nbsp;•&nbsp; செய்திகள்</span></div>\n      '
 )
-COVER = re.sub(r'(<div class="teasers">).*?(</div>)',
-               lambda m: m.group(1) + new_teaser_items + m.group(2),
-               COVER, flags=re.DOTALL)
+# Match the FULL teasers block including all nested teaser-item divs, then outer </div>
+COVER = re.sub(
+    r'<div class="teasers">(\s*<div class="teaser-item">.*?</div>\s*)+</div>',
+    '<div class="teasers">' + new_teaser_items + '</div>',
+    COVER, flags=re.DOTALL
+)
 
 # Replace website with YouTube channel everywhere in cover
 COVER = re.sub(
@@ -88,6 +106,20 @@ TAIL = re.sub(
     r'(?:இணையதளம்\s*:\s*)?(?:www\.vallalar\.org|http[^\s<"\']*vallalar[^\s<"\']*)',
     'வலையொளி: https://www.youtube.com/@pennadamvallalararanilayam',
     TAIL
+)
+# Truncate TAIL at first old page content (keep only theme-picker + closing tags)
+tail_page_match = re.search(r'\n\s*<!--\s*PAGE\s*\d+', TAIL)
+if tail_page_match:
+    TAIL = TAIL[:tail_page_match.start()] + '\n</body>\n</html>\n'
+
+# ════════════════════════════════════════════════════════════════════════════
+# 2b. POST-PROCESS MASTHEAD — name order fix
+# ════════════════════════════════════════════════════════════════════════════
+# Swap: வானதி should come before திருமுருகன் in the contributors list
+MASTHEAD = re.sub(
+    r'(<li>தயவு திருமுருகன்</li>\s*<li>தயவு வானதி</li>)',
+    '<li>தயவு வானதி</li>\n              <li>தயவு திருமுருகன்</li>',
+    MASTHEAD
 )
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -314,16 +346,19 @@ def build_kural_html(paras):
     i = 0
     while i < len(paras):
         t = paras[i]
-        # Section headings (short, no punctuation, not a kural line)
+        # Section headings — skip empty ones (immediately followed by another heading)
         if re.match(r'^(முன்னுரை|அறிவுடைமையின்|ஆய்வின்|முடிவுரை)', t):
+            next_t = paras[i+1] if i+1 < len(paras) else ''
+            # Skip அறிவுடைமையின் பயன்கள் if empty (next para is also a heading)
+            if 'அறிவுடைமையின் பயன்கள்' in t and re.match(r'^ஆய்வின்', next_t):
+                i += 1; continue
             html_parts.append(subhead(t))
-        # Kural intro (number + subhead like "10. அறிவு ஒன்றே")
-        elif re.match(r'^\d+\.?\s+\S', t) and len(t) < 50:
+        # Kural intro: numbered (like "1. அறிவின் இயல்பு")
+        elif re.match(r'^\d+\.?\s+\S', t) and len(t) < 60:
             html_parts.append(subhead(t))
         # குறள்: line
         elif t.startswith('குறள்:'):
             kural_text = t.replace('குறள்:', '').strip()
-            # Look ahead for second line and விளக்கம்
             kural_lines = [kural_text] if kural_text else []
             j = i + 1
             while j < len(paras) and not paras[j].startswith('விளக்கம்'):
@@ -334,37 +369,57 @@ def build_kural_html(paras):
             vilagam = ''
             if j < len(paras) and paras[j].startswith('விளக்கம்:'):
                 vilagam = paras[j].replace('விளக்கம்:', '').strip()
-                i = j  # advance to விளக்கம் line
-            # Find kural number from previous subhead context
-            html_parts.append(slim_quote(kural_lines, '— திருக்குறள்'))
+                i = j
+            # Inline kural number: "verse. 422." → "verse. — 422"
+            if kural_lines:
+                last = kural_lines[-1]
+                m_num = re.search(r'\.\s*(\d+)\.\s*$', last)
+                if m_num:
+                    kural_lines[-1] = last[:m_num.start()].rstrip() + f'. — {m_num.group(1)}'
+            html_parts.append(slim_quote(kural_lines, ''))
             if vilagam:
                 html_parts.append(pp(vilagam))
         # விளக்கம் (standalone)
         elif t.startswith('விளக்கம்:'):
             html_parts.append(pp(t.replace('விளக்கம்:', '').strip()))
-        # Three-word bullet items (from ஆய்வின் பயன்கள் section)
+        # Bullet items (முடிவுரை section)
         elif t in ('அறிவு என்பது வாழ்க்கையின் மிகப் பெரிய செல்வம்.',
                    'அறிவுடன் ஒழுக்கமும் இணைந்தால் மட்டுமே அது முழுமை பெறும்.',
                    'ஆராய்ச்சி, சிந்தனை, அனுபவம் – இவை மூன்றும் சேர்ந்ததே உண்மையான அறிவு',
                    'அறிவில்லாத வாழ்க்கை தன்னைத்தானே அழிக்கும்.'):
-            html_parts.append(pp(f'• {t}'))
+            html_parts.append(pp(f'❀ {t}'))
         elif t in ('சுய கட்டுப்பாடு.', 'பகுத்தறிவு .', 'தொலைநோக்கு பார்வை .', 'சமூக இணக்கம்.'):
-            html_parts.append(pp(f'• {t}'))
-        # Normal paragraph
+            html_parts.append(pp(f'&emsp;• {t}'))
         elif len(t) > 10:
             html_parts.append(pp(t))
         i += 1
     return html_parts
 
+# Embed Thiruvalluvar image as base64
+import base64
+_tv_img_path = f'{CONTENT}/thiruvalluvar.jpeg'
+if os.path.exists(_tv_img_path):
+    with open(_tv_img_path, 'rb') as _f:
+        _tv_b64 = base64.b64encode(_f.read()).decode()
+    THIRUVALLUVAR_IMG = (
+        f'        <figure class="article-figure img-half">'
+        f'<img src="data:image/jpeg;base64,{_tv_b64}" alt="திருவள்ளுவர்">'
+        f'<figcaption class="img-caption">திருவள்ளுவர்</figcaption>'
+        f'</figure>'
+    )
+else:
+    THIRUVALLUVAR_IMG = ''
+
 kural_html = build_kural_html(paras_02[1:])  # skip title
 
-# Split across 4 pages (~25% each)
+# Split: page 1 = முன்னுரை + image + first ~3 kurals
+#         pages 2-3 = middle kurals, page 4 = last kurals + முடிவுரை
 chunk = max(1, len(kural_html) // 4)
 kp = [kural_html[:chunk], kural_html[chunk:2*chunk], kural_html[2*chunk:3*chunk], kural_html[3*chunk:]]
 
 pages.append(make_page(pn, 'திருக்குறள் ஆய்வு',
     sec_header('அறிவுடைமை — ஒரு ஆய்வு', 'திருக்குறள் ஆய்வு'),
-    '\n'.join(kp[0])))
+    '\n'.join([THIRUVALLUVAR_IMG] + kp[0])))
 pn += 1
 for part in kp[1:]:
     pages.append(make_page(pn, 'திருக்குறள் ஆய்வு',
@@ -716,11 +771,7 @@ pages.append(make_page(pn, 'ஒரு ஒழுக்கம்',
     cont_banner('ஒரு ஒழுக்கம்'),
     '\n'.join(oz_html[2*chunk5:] + [
         divider(),
-        f'''        <div class="closing">
-          <div class="sign-off">அன்புடன்,</div>
-          <div class="sign-name">ஹரிஹரனார்</div>
-          <div class="lotus-end">❀</div>
-        </div>''',
+        '        <div class="lotus-end">❀</div>',
     ])))
 pn += 1
 
@@ -758,7 +809,8 @@ def md_to_html_thamarai(md_text):
             if i < len(lines):
                 i += 1
             if verse_lines:
-                html.append(slim_quote(verse_lines, f'— {source_line}' if source_line else ''))
+                # Remove source line attribution per editorial policy — saves space
+                html.append(slim_quote(verse_lines, ''))
             continue
 
         # H3 / H4
@@ -788,11 +840,16 @@ def md_to_html_thamarai(md_text):
         if not line.strip():
             i += 1; continue
 
-        # Skip source/reference section
-        if line.strip().startswith('**மூலங்கள்'):
+        # Skip source/reference section and image placeholder paragraphs
+        if line.strip().startswith('**மூலங்கள்') or line.strip().startswith('மூலங்கள்'):
             i += 1; continue
-        if line.strip().startswith('**படங்கள்'):
+        if line.strip().startswith('**படங்கள்') or line.strip().startswith('படங்கள்'):
             break  # Stop before image suggestions
+        # Skip numbered image suggestion lines (௧., ௨., ௩. etc.)
+        if re.match(r'^[௧௨௩௪௫]\.\s', line.strip()):
+            i += 1; continue
+        if line.strip().startswith('குறிப்பு: அனைத்து படங்களும்'):
+            i += 1; continue
 
         # Normal paragraph
         text = line.strip()
@@ -807,7 +864,7 @@ thamarai_html = md_to_html_thamarai(md08)
 chunk_t = max(1, len(thamarai_html) // 3)
 
 pages.append(make_page(pn, 'சங்க இலக்கியம்',
-    sec_header('சேற்றில் வேரூன்றி ஒளிர்தல்: தாமரையின் அறச்செய்தி', 'சங்க இலக்கியம்'),
+    sec_header('தாமரை மலரின் அறச்செய்தி', 'சங்க இலக்கியம்'),
     '\n'.join(thamarai_html[:chunk_t])))
 pn += 1
 
@@ -833,7 +890,6 @@ nature_body = f'''        <figure class="article-figure img-banner">
         </figure>
         {divider()}
         <p class="lead-para">இயற்கை கொடுக்கும் இன்பம் வேறு எதுவும் தர இயலாது. மலைகளின் மடியில் படர்ந்து கிடக்கும் மூடுபனி, பச்சை நிற காடுகள், ஓடும் அருவிகள் — இவை நம் உயிரை உற்சாகப்படுத்தும் மூலசக்தி.</p>
-        <p>கௌரிசங்கரனாரின் இயற்கை அனுபவக் கட்டுரை அடுத்த பதிவில் வரும்.</p>
         {byline('கௌரிசங்கரனார்')}'''
 
 pages.append(make_page(pn, 'இயற்கை தரும் இன்பம்',
@@ -873,7 +929,7 @@ for i, t in enumerate(clean_06[:60]):  # limit to reasonable length
     else:
         act_html.append(pp(t))
 
-chunk6 = max(1, len(act_html) // 3)
+chunk6 = max(1, len(act_html) // 2)  # 2 pages only
 
 pages.append(make_page(pn, 'அறநிலையச் செய்திகள்',
     sec_header('வள்ளலார் அறநிலைய செய்திகள்', 'அறநிலையச் செய்திகள்'),
@@ -882,12 +938,7 @@ pn += 1
 
 pages.append(make_page(pn, 'அறநிலையச் செய்திகள்',
     cont_banner('அறநிலையச் செய்திகள்'),
-    '\n'.join(act_html[chunk6:2*chunk6])))
-pn += 1
-
-pages.append(make_page(pn, 'அறநிலையச் செய்திகள்',
-    cont_banner('அறநிலையச் செய்திகள்'),
-    '\n'.join(act_html[2*chunk6:])))
+    '\n'.join(act_html[chunk6:])))
 pn += 1
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -927,16 +978,16 @@ print(f'  Total content pages: {total_pages} (incl. 4 structural = {total_pages}
 # ════════════════════════════════════════════════════════════════════════════
 # Map section → start page
 toc_entries = [
-    ('தலையங்கம்',               'தமிழர்களின் அறநெறியும் தமிழ் உணர்வும்',       5,  '#8DC63F'),
-    ('திருக்குறள் ஆய்வு',       'அறிவுடைமை — பத்துக் குறட்பாக்கள்',               7,  '#D4AF37'),
-    ('சிறுகதை',                 'பால்வண்ணம் பிள்ளை — புதுமைப்பித்தன்',            11, '#2d7a3e'),
-    ('தமிழகக் கலைகள்',          'கோயிற் கட்டிடக் கலை — ஓர் அறிமுகம்',            14, '#6BA82F'),
-    ('நூல் மதிப்புரை',          'வாசிப்பது எப்படி? — செல்வேந்திரன்',             19, '#8DC63F'),
-    ('ஒரு ஒழுக்கம்',            'அதிகாலை துயிலெழல் — வள்ளலாரின் நெறி',           22, '#D4AF37'),
-    ('சங்க இலக்கியம்',          'தாமரையின் அறச்செய்தி',                           25, '#2d7a3e'),
-    ('இயற்கை தரும் இன்பம்',    'மலை அழகு — கௌரிசங்கரனார்',                      28, '#6BA82F'),
-    ('அறநிலையச் செய்திகள்',    'வள்ளலார் அறநிலைய நிகழ்வுகள்',                   29, '#8DC63F'),
-    ('அடுத்த இதழில்',           'வைகாசி 2026 • வாசகர் குரல்',                     total_pages, '#D4AF37'),
+    ('தலையங்கம்',               'தமிழர்களின் அறநெறியும் தமிழ் உணர்வும்',  5,  '#8DC63F'),
+    ('திருக்குறள் ஆய்வு',       'அறிவுடைமை — பத்துக் குறட்பாக்கள்',        7,  '#D4AF37'),
+    ('சிறுகதை',                 'பால்வண்ணம் பிள்ளை — புதுமைப்பித்தன்',     11, '#2d7a3e'),
+    ('தமிழகக் கலைகள்',          'கோயிற் கட்டிடக் கலை — ஓர் அறிமுகம்',     14, '#6BA82F'),
+    ('நூல் மதிப்புரை',          'வாசிப்பது எப்படி? — செல்வேந்திரன்',      19, '#8DC63F'),
+    ('ஒரு ஒழுக்கம்',            'அதிகாலை துயிலெழல் — வள்ளலாரின் நெறி',    21, '#D4AF37'),
+    ('சங்க இலக்கியம்',          'தாமரை மலரின் அறச்செய்தி',                 24, '#2d7a3e'),
+    ('இயற்கை தரும் இன்பம்',    'மலை அழகு',                                 27, '#6BA82F'),
+    ('அறநிலையச் செய்திகள்',    'வள்ளலார் அறநிலைய நிகழ்வுகள்',            28, '#8DC63F'),
+    ('அடுத்த இதழில்',           'வைகாசி 2026 • வாசகர் குரல்',              total_pages, '#D4AF37'),
 ]
 
 toc_rows = ''
@@ -964,9 +1015,10 @@ TOC_PAGE = f'''
     </div>
     <div class="content-area">
       <div class="issue-banner">
-        <div class="issue-badge">இதழ் 1</div>
-        <div class="issue-title">சித்திரை 2026</div>
-        <div class="issue-subtitle">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
+        <div class="banner-text">
+          <div class="banner-title">இதழ் 1 &nbsp;·&nbsp; சித்திரை 2026</div>
+          <div class="banner-sub">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
+        </div>
       </div>
       <div class="toc-list">
 {toc_rows}      </div>
@@ -1002,6 +1054,14 @@ body = re.sub(r'<span class="page-number">([^<]+)</span>', fix_page_nums, body)
 # Also fix issue-info Tamil numerals
 body = body.replace('இதழ் எண்: ௧', 'இதழ் எண்: 1')
 body = body.replace('சித்திரை ௨௦௨௬', 'சித்திரை 2026')
+
+# Fix Tamil numerals in IMPRINT body text
+body = body.replace('வான் வளரொளி இதழ் — ௧', 'வான் வளரொளி இதழ் — 1')
+body = body.replace('திருவள்ளுவர் ஆண்டு ௨௦௫௭', 'திருவள்ளுவர் ஆண்டு 2057')
+
+# Fix editorial "கல்வி மாத சிறப்பிதழில்" → "இதழில்"
+body = body.replace('இம்மாத கல்வி மாத சிறப்பிதழில்', 'இம்மாத இதழில்')
+body = body.replace('கல்வி மாத சிறப்பிதழில்', 'இதழில்')
 
 # ════════════════════════════════════════════════════════════════════════════
 # செந்தமிழ் POST-PROCESSING — fix loan words carried in from source files
