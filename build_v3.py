@@ -39,25 +39,42 @@ TAIL     = ''.join(src_lines[i_theme:])
 HEAD = re.sub(r'<title>[^<]*</title>',
               '<title>வான் வளரொளி இதழ் — சித்திரை 2026 — இதழ் 1</title>', HEAD)
 
+# Patch print CSS — prevent content overflow bleeding into next page
+HEAD = HEAD.replace(
+    '@media print {',
+    '@media print {\n  .page { overflow: hidden !important; }'
+    '\n  .content-area { overflow: hidden !important; }'
+    '\n  .body-text { overflow: hidden !important; }'
+)
+
 # ════════════════════════════════════════════════════════════════════════════
 # 2. MODIFY COVER PAGE
 # ════════════════════════════════════════════════════════════════════════════
-# Remove கல்வி சிறப்பிதழ் pill
-COVER = re.sub(r'<span class="pill-special">[^<]*</span>\s*[·•]?\s*', '', COVER)
-COVER = re.sub(r'[·•]?\s*<span class="pill-special">[^<]*</span>', '', COVER)
+# Remove கல்வி சிறப்பிதழ் pill — actual class in HTML is "pill pill-special"
+COVER = re.sub(r'\s*<span class="pill pill-special">[^<]*</span>', '', COVER)
 
-# Update cover teasers block
-new_teasers = '''      <div class="cover-teasers">
-        <div class="teaser-item">◆ திருக்குறள் — அறிவுடைமை அதிகாரம்</div>
-        <div class="teaser-item">◆ சங்க இலக்கியம் — தாமரையின் அறச்செய்தி</div>
-        <div class="teaser-item">◆ தமிழகக் கலைகள் — கோயில் கட்டிடக்கலை</div>
-        <div class="teaser-item">◆ ஒழுக்க வாழ்க்கை — வள்ளலாரின் நெறி</div>
-        <div class="teaser-item">◆ இயற்கை தரும் இன்பம் — மலை அழகு</div>
-        <div class="teaser-item">◆ சிறுகதை &nbsp;•&nbsp; நூல் மதிப்புரை &nbsp;•&nbsp; அறநிலையச் செய்திகள்</div>
-      </div>'''
+# Fix teasers-label — strip "கல்வி சிறப்பிதழ் ·" prefix, keep "இந்த இதழில்"
+COVER = re.sub(r'(<div class="teasers-label">)[^<]*(</div>)',
+               r'\1இந்த இதழில்\2', COVER)
 
-COVER = re.sub(r'<div class="cover-teasers">.*?</div>(?=\s*\n\s*(?:<!--|</div>))',
-               new_teasers, COVER, flags=re.DOTALL)
+# Replace teaser items inside <div class="teasers"> block
+new_teaser_items = (
+    '\n        <div class="teaser-item"><span class="teaser-dot">&#x25C6;</span>'
+    '<span class="teaser-text">திருக்குறள் — அறிவுடைமை அதிகாரம்</span></div>'
+    '\n        <div class="teaser-item"><span class="teaser-dot">&#x25C6;</span>'
+    '<span class="teaser-text">சங்க இலக்கியம் — தாமரையின் அறச்செய்தி</span></div>'
+    '\n        <div class="teaser-item"><span class="teaser-dot">&#x25C6;</span>'
+    '<span class="teaser-text">தமிழகக் கலைகள் — கோயில் கட்டிடக்கலை</span></div>'
+    '\n        <div class="teaser-item"><span class="teaser-dot">&#x25C6;</span>'
+    '<span class="teaser-text">ஒழுக்க வாழ்க்கை — வள்ளலாரின் நெறி</span></div>'
+    '\n        <div class="teaser-item"><span class="teaser-dot">&#x25C6;</span>'
+    '<span class="teaser-text">இயற்கை தரும் இன்பம் — மலை அழகு</span></div>'
+    '\n        <div class="teaser-item"><span class="teaser-dot">&#x25C6;</span>'
+    '<span class="teaser-text">சிறுகதை &nbsp;•&nbsp; நூல் மதிப்புரை &nbsp;•&nbsp; செய்திகள்</span></div>\n      '
+)
+COVER = re.sub(r'(<div class="teasers">).*?(</div>)',
+               lambda m: m.group(1) + new_teaser_items + m.group(2),
+               COVER, flags=re.DOTALL)
 
 # Replace website with YouTube channel everywhere in cover
 COVER = re.sub(
@@ -567,32 +584,76 @@ def md_to_html(md_text):
 
     return html
 
-nuul_html = md_to_html(md07)
+# ════════════════════════════════════════════════════════════════════════════
+# PAGES: நூல் மதிப்புரை — 2-page crisp editorial review
+# ════════════════════════════════════════════════════════════════════════════
+nuul_body_p1 = '\n'.join([
+    highlights('நூல் விவரம்', [
+        '<strong>ஆசிரியர்:</strong> செல்வேந்திரன்',
+        '<strong>வெளியீடு:</strong> எழுத்து பிரசுரம்',
+        '<strong>பக்கங்கள்:</strong> 98 &nbsp;·&nbsp; <strong>விலை:</strong> ₹119',
+        '<strong>வகை:</strong> வழிகாட்டி கட்டுரைத் தொகுப்பு',
+        '<strong>மதிப்பீடு:</strong> ★★★★★',
+    ]),
+    pp('இன்று ஒவ்வொரு வீட்டிலும் கைப்பேசி இருக்கிறது; நூல் இல்லை. வீடியோ பார்க்கும் நேரம் மணிக்கணக்கில்; வாசிக்கும் நேரம் நிமிடக்கணக்கில். இந்தச் சூழலில் <em>வாசிப்பது எப்படி?</em> என்று கேட்பது தாமதமான கேள்வி அல்ல — தேவையான கேள்வி.', 'lead-para'),
+    pp('தூத்துக்குடி மாவட்டம் சாத்தான்குளத்தில் வளர்ந்த செல்வேந்திரன் படிப்பில்லாத வீட்டில் பிறந்தார். அப்பாவின் தீப்பெட்டி வணிகத்தில் வேலை பார்த்தார்; தொலைதூரக் கல்வியில் பட்டம் பெற்றார். வாசிப்புதான் அந்த மாற்றத்தைக் கொண்டு வந்தது என்கிறார் — அதனை இந்த 98 பக்க நூலில் அலசுகிறார்.'),
+    pp('"இந்நூலின் நோக்கம் அறிவுரை சொல்லுதல் அல்ல" என்று முன்னுரையிலேயே தெளிவாக்குகிறார். கல்வி, அரசியல், சினிமா, நிர்வாகம் என அனைத்து துறைகளிலும் வாசிப்பு குறைவால் ஏற்படும் சமூக இழப்பை விவரித்து, தீர்வை நோக்கி நம்மை அழைக்கிறார்.'),
+    divider(),
+    subhead('மூன்று வகை வாசிப்புகள்'),
+    pp('நூல் வாசிப்பை மூன்றாக வகைப்படுத்துகிறது: பொழுதுபோக்கு வாசிப்பு, அறிவு பெறும் வாசிப்பு, ஆழ்ந்த சிந்தனைக்கான வாசிப்பு. ஒவ்வொன்றும் தேவை; ஒன்றை மட்டுமே செய்வது முழுமை தராது.'),
+    pp('வீடியோ பார்க்கும்போது காட்சிகள் வருகின்றன; புத்தகம் படிக்கும்போது நாமே காட்சிகளை உருவாக்குகிறோம். கற்பனை ஆற்றல் வளர்வது இங்கேதான். ஆழமான விளக்கங்கள், நுட்பமான சிந்தனைகள் — வீடியோவில் மேலோட்டமாகவும் நூலில் ஆழமாகவும் கிடைக்கும்.'),
+    slim_quote(
+        ['முயலைப் பிடிக்க நினைத்தால் அதன் பின்னால் ஓடாதே;',
+         'முயல் எங்கே ஓடும் எனக் கணித்து அங்கே காத்திரு!'],
+        '— ஆப்பிரிக்கப் பழமொழி (நூலில் மேற்கோள்)'
+    ),
+    pp('வாசிப்பை திட்டமிட்டு நடத்துவதை இந்த உருவகம் அழகாக விளக்குகிறது — எந்த நூல் படிக்க வேண்டும், எப்போது, எப்படி என்ற தெளிவு முக்கியம் என்கிறார்.'),
+])
 
-# Page 1 of review
-nuul_title = 'வாசிப்பது எப்படி?'
 pages.append(make_page(pn, 'நூல் மதிப்புரை',
-    sec_header(nuul_title, 'நூல் மதிப்புரை'),
-    '\n'.join(nuul_html[:len(nuul_html)//3])))
+    sec_header('வாசிப்பது எப்படி?', 'நூல் மதிப்புரை'),
+    nuul_body_p1))
 pn += 1
 
-pages.append(make_page(pn, 'நூல் மதிப்புரை',
-    cont_banner('நூல் மதிப்புரை'),
-    '\n'.join(nuul_html[len(nuul_html)//3:2*len(nuul_html)//3])))
-pn += 1
-
-pages.append(make_page(pn, 'நூல் மதிப்புரை',
-    cont_banner('நூல் மதிப்புரை'),
-    '\n'.join(nuul_html[2*len(nuul_html)//3:] + [
-        divider(),
-        f'''        <div class="closing">
-          <div class="sign-off">அன்புடன்,</div>
-          <div class="sign-name">தயாதேவியார்</div>
-          <div class="sign-title">நூல் மதிப்புரை குழு</div>
+nuul_body_p2 = '\n'.join([
+    subhead('நினைவில் நிற்கும் வரிகள்'),
+    slim_quote(
+        ['பெரியாரையும் அம்பேத்கரையும் படித்த ஒருவன் சாதியைத் தூக்கிப் பிடிக்க மாட்டான்.',
+         'சலீம் அலி படித்தவன் சுற்றுச்சூழலைப் பாதுகாப்பான்.'],
+        '— நூலில் மேற்கோள்'
+    ),
+    pp('வாசிப்பு மனிதனை மாற்றும் சக்தி கொண்டது என்பதை இந்த ஒரு வரி சொல்கிறது. நூலின் கடைசி அத்தியாயம் — <em>வாசகனின் கடமை</em> — மிக நுண்ணிய உண்மை ஒன்றைக் கூறுகிறது:'),
+    slim_quote(
+        ['நீங்கள் நல்ல வாசகன் எனில் இன்னொருவனை வாசிக்கச் சொல்லாதீர்கள்.',
+         'வாசித்ததை சொல்லுங்கள். போதும்.'],
+        '— செல்வேந்திரன்'
+    ),
+    pp('திணிப்பு அல்ல, பகிர்வு — இந்த வித்தியாசம் வாசிப்பு கலாச்சாரை உருவாக்கும்.'),
+    divider(),
+    subhead('நடைமுறை வழிகாட்டல்'),
+    highlights('தொடங்குவோர்க்கு ஐந்து வழிகள்', [
+        'தினமும் 15 நிமிடம் ஒதுக்குங்கள் — பழக்கம் வரும்',
+        'ஆர்வமான விஷயத்தில் தொடங்குங்கள் — சிறுகதை, கட்டுரை, வாழ்க்கை வரலாறு',
+        'கடினமான நூலை அட்டவணையிலிருந்து அணுகுங்கள்',
+        'புரியாத சொற்களை குறித்து வையுங்கள் — அகராதி பழக்கமாகும்',
+        'நூலகம் இலவசம் — வீண் விடாதீர்கள்',
+    ]),
+    pp('நூலின் இறுதியில் வாசிக்கத் தொடங்க விரும்புவோருக்கான பரிந்துரைப் பட்டியல் உள்ளது — தமிழ் இலக்கியம், மொழிபெயர்ப்பு நூல்கள், நாவல்கள் என பல்வேறு தளங்களில்.'),
+    divider(),
+    subhead('மதிப்பீடும் பரிந்துரையும்'),
+    pp('98 பக்கங்களில் ஒரு வாசிப்பு தத்துவம் சொல்வது கஷ்டம். செல்வேந்திரன் அதை செய்திருக்கிறார் — திணிக்காமல், பிரசங்கிக்காமல், தன் வாழ்வின் வழியாக. எழுத்து நடை எளிமையானது; அணுகுமுறை அன்பானது; நடைமுறை வழிகாட்டல் நம்பகமானது.'),
+    pp('வீட்டில் பதின்ம வயதினர் இருந்தால் கட்டாயம் கொடுங்கள். ஆசிரியர்கள் வகுப்பில் வாசித்துக் காட்டலாம். பெற்றோர்கள் குழந்தைகளுடன் விவாதிக்கலாம். ₹119 — ஒரு சிறிய முதலீடு, பெரிய மாற்றம்.'),
+    divider(),
+    '''        <div class="closing">
+          <div class="sign-off">— நூல் மதிப்புரை குழு</div>
           <div class="org-name">வான் வளரொளி இதழ்</div>
           <div class="lotus-end">❀</div>
         </div>''',
-    ])))
+])
+
+pages.append(make_page(pn, 'நூல் மதிப்புரை',
+    cont_banner('நூல் மதிப்புரை'),
+    nuul_body_p2))
 pn += 1
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -764,7 +825,7 @@ pn += 1
 # PAGE (next): இயற்கை தரும் இன்பம் — Munnar photo feature
 # ════════════════════════════════════════════════════════════════════════════
 # Use munnar-nature-images-02.webp (second image = alternate/better choice)
-IMG_NATURE = '../Content/Issue-01/munnar-nature-images-02.webp'
+IMG_NATURE = 'Content/Issue-01/munnar-nature-images-02.webp'
 
 nature_body = f'''        <figure class="article-figure img-banner">
           <img src="{IMG_NATURE}" alt="மலை அழகு — இயற்கை தரும் இன்பம்">
@@ -941,6 +1002,15 @@ body = re.sub(r'<span class="page-number">([^<]+)</span>', fix_page_nums, body)
 # Also fix issue-info Tamil numerals
 body = body.replace('இதழ் எண்: ௧', 'இதழ் எண்: 1')
 body = body.replace('சித்திரை ௨௦௨௬', 'சித்திரை 2026')
+
+# ════════════════════════════════════════════════════════════════════════════
+# செந்தமிழ் POST-PROCESSING — fix loan words carried in from source files
+# ════════════════════════════════════════════════════════════════════════════
+# Story (1934 Pudumaippitthan) uses period vocabulary; magazine policy overrides
+body = body.replace('ஸ்கூல் பைனல் வகுப்பில்', 'பள்ளி இறுதி வகுப்பில்')
+body = body.replace('ஸ்கூல் பைனல்', 'பள்ளி இறுதி')
+# VAN Activities educational table
+body = re.sub(r'<td>ஸ்கூல்</td>', '<td>பள்ளி</td>', body)
 
 final = HEAD + body + '\n' + TAIL
 
