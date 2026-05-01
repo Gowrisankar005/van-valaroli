@@ -9,7 +9,7 @@ import re, sys, os, docx, zipfile
 BASE    = '/Users/gowri/spaceclub/e-magazine'
 CONTENT = f'{BASE}/Content/Issue-01'
 SRC     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v2_0_20260502.html'
-OUT     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v3_0_20260502.html'
+OUT     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v4_0_20260502.html'
 
 # ════════════════════════════════════════════════════════════════════════════
 # 1. EXTRACT STRUCTURAL PARTS FROM v2_0
@@ -107,10 +107,11 @@ TAIL = re.sub(
     'வலையொளி: https://www.youtube.com/@pennadamvallalararanilayam',
     TAIL
 )
-# Truncate TAIL at first old page content (keep only theme-picker + closing tags)
-tail_page_match = re.search(r'\n\s*<!--\s*PAGE\s*\d+', TAIL)
-if tail_page_match:
-    TAIL = TAIL[:tail_page_match.start()] + '\n</body>\n</html>\n'
+# Cut TAIL at the first </html> — everything after is old v2 junk pages
+# The old regex failed because v2 page comments are multi-line (<!-- \n PAGE N)
+html_end = TAIL.find('</html>')
+if html_end != -1:
+    TAIL = TAIL[:html_end + len('</html>')] + '\n'
 
 # ════════════════════════════════════════════════════════════════════════════
 # 2b. POST-PROCESS MASTHEAD — name order fix
@@ -347,14 +348,19 @@ def build_kural_html(paras):
     while i < len(paras):
         t = paras[i]
         # Section headings — skip empty ones (immediately followed by another heading)
-        if re.match(r'^(முன்னுரை|அறிவுடைமையின்|ஆய்வின்|முடிவுரை)', t):
+        if re.match(r'^(முன்னுரை|அறிவுடைமையின்|ஆய்வின்|முடிவுரை|அறிவின்)', t):
             next_t = paras[i+1] if i+1 < len(paras) else ''
             # Skip அறிவுடைமையின் பயன்கள் if empty (next para is also a heading)
             if 'அறிவுடைமையின் பயன்கள்' in t and re.match(r'^ஆய்வின்', next_t):
                 i += 1; continue
             html_parts.append(subhead(t))
-        # Kural intro: numbered (like "1. அறிவின் இயல்பு")
+        # Kural intro: numbered (like "10. அறிவு ஒன்றே...")
         elif re.match(r'^\d+\.?\s+\S', t) and len(t) < 60:
+            html_parts.append(subhead(t))
+        # Kural subheading: short phrase immediately before a குறள்: line
+        # e.g. "அறிவே அழிவற்ற கருவி", "மனதை நல்வழியில் செலுத்துதல்"
+        elif (len(t) <= 45 and not t.endswith('.')
+              and i + 1 < len(paras) and paras[i+1].startswith('குறள்:')):
             html_parts.append(subhead(t))
         # குறள்: line
         elif t.startswith('குறள்:'):
@@ -491,10 +497,10 @@ def build_kalai_html(paras):
         # Short labels (கோட்டம் =, கோயில் =, etc.)
         elif re.match(r'^(கோட்டம்|கோயில்|தளி)\s*=', t):
             html.append(pp(f'<strong>{t}</strong>'))
-        # Section headings
-        elif (len(t) < 60 and not t.endswith('.')
-              and not t.endswith('ம்') and not t.endswith('ர்')
-              and re.match(r'^[0-9.\s]*(கோட்டங்கள்|பழந்|சலுவன்|வேப்பத்|தனித்துவ|மயிலை|குடவாயில்|மேலும்)', t)):
+        # Section headings: lines ending with colon, or specific section-start keywords
+        elif (len(t) < 60
+              and (t.endswith(':')
+                   or re.match(r'^[0-9.\s]*(கோட்டங்கள்|பழந்|சலுவன்|வேப்பத்|தனித்துவ|மயிலை|குடவாயில்|திருமுருகன்\s+கோட்|திருமால்\s+கோட்|அகப்பொருள்)', t))):
             html.append(subhead(t))
         elif i == 0:
             html.append(pp(t, 'lead-para'))
