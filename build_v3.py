@@ -58,6 +58,9 @@ HEAD = HEAD.replace('</style>',
     '  .lead-para { font-size: 12.5pt !important; line-height: 1.65 !important; }\n'
     '  /* issue-banner text always readable on dark background */\n'
     '  .issue-badge, .issue-title, .issue-subtitle { color: #fff8e8 !important; }\n'
+    '  /* larger logos on imprint (page 2) and masthead (page 3) */\n'
+    '  .imprint-logo { height: 44mm !important; max-width: 65mm !important; }\n'
+    '  .masthead-logo { height: 44mm !important; max-height: 44mm !important; max-width: 65mm !important; }\n'
     '</style>'
 )
 
@@ -114,7 +117,7 @@ if html_end != -1:
     TAIL = TAIL[:html_end + len('</html>')] + '\n'
 
 # ════════════════════════════════════════════════════════════════════════════
-# 2b. POST-PROCESS MASTHEAD — name order fix
+# 2b. POST-PROCESS MASTHEAD — name order + YouTube replace
 # ════════════════════════════════════════════════════════════════════════════
 # Swap: வானதி should come before திருமுருகன் in the contributors list
 MASTHEAD = re.sub(
@@ -122,6 +125,13 @@ MASTHEAD = re.sub(
     '<li>தயவு வானதி</li>\n              <li>தயவு திருமுருகன்</li>',
     MASTHEAD
 )
+# Replace website with YouTube channel
+MASTHEAD = MASTHEAD.replace(
+    '<div class="masthead-contact-heading">இணையதளம்:</div>',
+    '<div class="masthead-contact-heading">வலையொளி:</div>'
+)
+MASTHEAD = MASTHEAD.replace('www.vallalar.org',
+    'https://www.youtube.com/@pennadamvallalararanilayam')
 
 # ════════════════════════════════════════════════════════════════════════════
 # 3. PAGE-BUILDING HELPERS
@@ -216,13 +226,22 @@ def nl():
 def read_docx(fname):
     try:
         doc = docx.Document(fname)
-        return [p.text.strip() for p in doc.paragraphs if p.text.strip()]
+        result = []
+        for p in doc.paragraphs:
+            raw = p.text.strip().replace('\xa0', ' ')  # normalise Word nbsp
+            if raw:
+                # Split on internal newlines (some Word paras embed \n for sub-paragraphs)
+                for part in raw.split('\n'):
+                    part = part.strip()
+                    if part:
+                        result.append(part)
+        return result
     except Exception as e:
         print(f'  docx fallback for {os.path.basename(fname)}: {e}')
         with zipfile.ZipFile(fname) as z:
             xml = z.read('word/document.xml').decode('utf-8', errors='ignore')
         raw = re.findall(r'<w:t[^>]*>([^<]+)</w:t>', xml)
-        return [t.strip() for t in raw if t.strip()]
+        return [t.strip().replace('\xa0', ' ') for t in raw if t.strip()]
 
 def read_md(fname):
     with open(fname, encoding='utf-8') as f:
@@ -295,7 +314,7 @@ body_p5 = '\n'.join([
 
 pages.append(make_page(pn,
     'தலையங்கம்',
-    sec_header(subtitle_01, 'தலையங்கம்'),
+    sec_header('தமிழர் மாண்பு', 'தலையங்கம்'),
     body_p5
 ))
 pn += 1
@@ -424,7 +443,7 @@ chunk = max(1, len(kural_html) // 4)
 kp = [kural_html[:chunk], kural_html[chunk:2*chunk], kural_html[2*chunk:3*chunk], kural_html[3*chunk:]]
 
 pages.append(make_page(pn, 'திருக்குறள் ஆய்வு',
-    sec_header('அறிவுடைமை — ஒரு ஆய்வு', 'திருக்குறள் ஆய்வு'),
+    sec_header('திருக்குறள் அறிவுடைமை — ஒர் ஆய்வு', 'திருக்குறள் ஆய்வு'),
     '\n'.join([THIRUVALLUVAR_IMG] + kp[0])))
 pn += 1
 for part in kp[1:]:
@@ -490,18 +509,47 @@ paras_04 = clean_paras(p04)
 
 def build_kalai_html(paras):
     html = []
+    _TEMPLE_IMAGES = {
+        'சலுவன்': ('Content/Issue-01/ancient-tamiltemple-01.jpg',
+                   'சலுவன்குப்பம் முருகன் கோயில்'),
+        'வேப்பத்தூர்': ('Content/Issue-01/ancient-tamiltemple-02.jpg',
+                        'வேப்பத்தூர் பெருமாள் கோயில்'),
+    }
     for i, t in enumerate(paras):
-        # Reference list items (numbered)
-        if re.match(r'^\d+\.\s', t):
+        # ── Section headings (MUST come before numbered-item check) ──────────
+        # Matches: lines ending in ':', or lines starting with known section keywords.
+        # "2. திருமால் கோட்டங்கள் (திருமாலிருங்குன்றம்)" must be a subhead,
+        # not a numbered reference — so we check headings first.
+        if (len(t) < 75
+              and (t.endswith(':')
+                   or re.match(
+                       r'^[0-9.\s]*(கோட்டங்கள்|பழந்|சலுவன்|வேப்பத்|தனித்துவ்|மயிலை'
+                       r'|குடவாயில்|திருமுருகன்\s+கோட்|திருமால்\s+கோட்|அகப்பொருள்'
+                       r'|தமிழர் கோயில்|கோட்டம்\s*\()', t))):
+            html.append(subhead(t))
+            # Attach temple image immediately after its subheading
+            for key, (img_src, caption) in _TEMPLE_IMAGES.items():
+                if key in t:
+                    html.append(
+                        f'        <figure class="article-figure img-right">'
+                        f'<img src="{img_src}" alt="{caption}">'
+                        f'<figcaption class="img-caption">{caption}</figcaption>'
+                        f'</figure>'
+                    )
+                    break
+
+        # ── Numbered reference list items ────────────────────────────────────
+        elif re.match(r'^\d+\.\s', t):
             html.append(pp(f'&emsp;{t}'))
-        # Short labels (கோட்டம் =, கோயில் =, etc.)
+
+        # ── Verse/poem lines: ASCII double-quote + ellipsis ─────────────────
+        elif t[:1] == chr(34) and '...' in t:
+            html.append(slim_quote([t], ''))
+
+        # ── Short definition labels (கோட்டம் = ..., etc.) ───────────────────
         elif re.match(r'^(கோட்டம்|கோயில்|தளி)\s*=', t):
             html.append(pp(f'<strong>{t}</strong>'))
-        # Section headings: lines ending with colon, or specific section-start keywords
-        elif (len(t) < 60
-              and (t.endswith(':')
-                   or re.match(r'^[0-9.\s]*(கோட்டங்கள்|பழந்|சலுவன்|வேப்பத்|தனித்துவ|மயிலை|குடவாயில்|திருமுருகன்\s+கோட்|திருமால்\s+கோட்|அகப்பொருள்)', t))):
-            html.append(subhead(t))
+
         elif i == 0:
             html.append(pp(t, 'lead-para'))
         else:
@@ -516,7 +564,7 @@ kparts.append(kalai_html[4*chunk4:])
 
 pages.append(make_page(pn, 'தமிழகக் கலைகள்',
     sec_header('தமிழகக் கோயிற் கட்டிடக் கலைகள் — ஓர் அறிமுகம்', 'தமிழகக் கலைகள்'),
-    '\n'.join([byline('திருமுருகனார்')] + kparts[0])))
+    '\n'.join([byline('திருமுருகன்')] + kparts[0])))
 pn += 1
 
 for part in kparts[1:]:
@@ -1068,6 +1116,22 @@ body = body.replace('திருவள்ளுவர் ஆண்டு ௨௦
 # Fix editorial "கல்வி மாத சிறப்பிதழில்" → "இதழில்"
 body = body.replace('இம்மாத கல்வி மாத சிறப்பிதழில்', 'இம்மாத இதழில்')
 body = body.replace('கல்வி மாத சிறப்பிதழில்', 'இதழில்')
+
+# Page 5 editorial text corrections (items 4 in feedback)
+body = body.replace(
+    '"வீரத்திற்கும் மறத்திற்கும் அறமே துணை"',
+    '"வீரத்திற்கும் அறமே துணை"')
+body = body.replace(
+    'அறத்தையும் ஒழுக்கத்தையும் வாழ்ந்தவர்கள்,',
+    'அறத்தையும் ஒழுக்கத்தையும் கண்களாக கொண்டு வாழ்ந்தவர்கள்,')
+body = body.replace(
+    'அறத்தையும் ஒழுக்கத்தையும் வாழ்ந்தவர்கள்',
+    'அறத்தையும் ஒழுக்கத்தையும் கண்களாக கொண்டு வாழ்ந்தவர்கள்')
+
+# Page 13 (kalai) greeting comma (item 8)
+body = body.replace(
+    'தமிழ் கூறும் நல்லுலக அன்பர்களுக்கு வணக்கம்</p>',
+    'தமிழ் கூறும் நல்லுலக அன்பர்களுக்கு வணக்கம்,</p>')
 
 # ════════════════════════════════════════════════════════════════════════════
 # செந்தமிழ் POST-PROCESSING — fix loan words carried in from source files
