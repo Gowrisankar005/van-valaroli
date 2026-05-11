@@ -9,7 +9,7 @@ import re, sys, os, docx, zipfile
 BASE    = '/Users/gowri/spaceclub/e-magazine'
 CONTENT = f'{BASE}/Content/Issue-01'
 SRC     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v2_0_20260502.html'
-OUT     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v4_3_20260511.html'
+OUT     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v4_4_20260512.html'
 
 # ════════════════════════════════════════════════════════════════════════════
 # 1. EXTRACT STRUCTURAL PARTS FROM v2_0
@@ -62,9 +62,9 @@ HEAD = HEAD.replace(
 
 # Additional CSS patches — fix cover badge clipping and lead-para size
 HEAD = HEAD.replace('</style>',
-    '  /* keep cover badge within page */\n'
+    '  /* keep cover badge within page — position above bottom-band to avoid teaser overlap */\n'
     '  .cover { position: relative !important; overflow: hidden !important; }\n'
-    '  .cover-issue-badge { right: 14mm !important; bottom: 14mm !important; }\n'
+    '  .cover-issue-badge { right: 10mm !important; bottom: calc(29% + 6mm) !important; }\n'
     '  /* harmonise lead-para with body text */\n'
     '  .lead-para { font-size: 12.5pt !important; line-height: 1.65 !important; }\n'
     '  /* issue-banner text always readable on dark background */\n'
@@ -233,6 +233,75 @@ def byline(text):
 def nl():
     return ''  # blank line in HTML output
 
+# ── Weight-based page splitter ────────────────────────────────────────────
+# Prevents content overflow/clip by estimating rendered height of each item.
+
+def _item_weight(html_item):
+    """Estimate rendered height in units (1 unit ≈ one body text line ~6.4mm).
+    Float images (img-right/left) are assigned lower weight because text wraps
+    alongside them — they share vertical space rather than blocking it fully."""
+    s = html_item
+    if 'article-figure' in s:
+        if 'img-banner' in s:
+            return 10   # full-width banner ~64mm (blocking — no wrap)
+        elif 'img-half' in s:
+            return 8    # centred half-width ~51mm (blocking — no wrap)
+        else:
+            return 5    # floated column img-right/left: text wraps alongside
+    if 'highlights-box' in s:
+        return 3 + s.count('<li>')
+    if 'slim-quote' in s:
+        return 3 + s.count('<br>') + 1
+    if 'numbered-list' in s:
+        return 2 + s.count('<li>')
+    if 'subhead' in s:
+        return 2
+    if 'section-divider' in s:
+        return 1
+    if 'closing' in s:
+        return 5
+    if 'author-byline' in s or 'lotus-end' in s:
+        return 1
+    if 'lead-para' in s:
+        text_len = len(re.sub(r'<[^>]+>', '', s))
+        return max(2, text_len // 38)
+    # Normal paragraph — estimate by character count (Tamil ~38 chars/line)
+    text_len = len(re.sub(r'<[^>]+>', '', s))
+    return max(1, text_len // 38)
+
+# Target ~50 weight units per page:
+# - 35 text lines × (1 unit/line) = 35; allow 15 units for images/verse overhead
+# - Float images reduce effective cost; this calibration gives ~5 pages for thamarai
+_PAGE_MAX_W = 50
+
+def weight_split(items, max_w=_PAGE_MAX_W):
+    """Split items into pages never exceeding max_w weight per page.
+    Orphan guard: never ends a page on a subhead."""
+    pages_out = []
+    current = []
+    current_w = 0
+    for item in items:
+        iw = _item_weight(item)
+        if (current
+                and current_w + iw > max_w
+                and not current[-1].strip().startswith('<div class="subhead">')):
+            pages_out.append(current)
+            current = [item]
+            current_w = iw
+        else:
+            current.append(item)
+            current_w += iw
+    if current:
+        pages_out.append(current)
+    return pages_out
+
+# ── Section start-page tracker (used to build dynamic TOC) ────────────────
+_sec_start = {}
+
+def mark_sec(name):
+    """Record current pn as the start page of a named section."""
+    _sec_start[name] = pn
+
 # ════════════════════════════════════════════════════════════════════════════
 # 4. READ ALL CONTENT FILES
 # ════════════════════════════════════════════════════════════════════════════
@@ -329,6 +398,7 @@ body_p5 = '\n'.join([
     for kind, txt in body_p5_items
 ])
 
+mark_sec('தலையங்கம்')
 pages.append(make_page(pn,
     'தலையங்கம்',
     sec_header('தமிழர் மாண்பு', 'தலையங்கம்'),
@@ -474,6 +544,7 @@ def smart_chunk_kural(items, n_chunks):
 
 kp = smart_chunk_kural(kural_html, 4)
 
+mark_sec('திருக்குறள் ஆய்வு')
 pages.append(make_page(pn, 'திருக்குறள் ஆய்வு',
     sec_header('திருக்குறள் அறிவுடைமை — ஒர் ஆய்வு', 'திருக்குறள் ஆய்வு'),
     '\n'.join([THIRUVALLUVAR_IMG] + kp[0])))
@@ -485,7 +556,7 @@ for part in kp[1:]:
     pn += 1
 
 # ════════════════════════════════════════════════════════════════════════════
-# PAGE 11–13: சிறுகதை — பால்வண்ணம் பிள்ளை
+# PAGE 11–14: சிறுகதை — பால்வண்ணம் பிள்ளை (4 pages — was 3, increased to prevent overflow)
 # ════════════════════════════════════════════════════════════════════════════
 paras_03 = clean_paras(p03)
 # Structure: title, (pen-name), story paras..., citation, author bio paras
@@ -509,10 +580,14 @@ for i, t in enumerate(story_paras):
     else:
         story_html.append(pp(t))
 
-# Split: page 11 = first 12 paras, page 12 = next 12, page 13 = rest + bio
-sp = max(1, len(story_html) // 3)
-s1, s2, s3 = story_html[:sp], story_html[sp:2*sp], story_html[2*sp:]
+# Split into 4 pages (v4.4: was 3 — increased to fix content overflow/cut-off)
+sp = max(1, len(story_html) // 4)
+s1 = story_html[:sp]
+s2 = story_html[sp:2*sp]
+s3 = story_html[2*sp:3*sp]
+s4 = story_html[3*sp:]
 
+mark_sec('சிறுகதை')
 pages.append(make_page(pn, 'சிறுகதை',
     sec_header('பால்வண்ணம் பிள்ளை', 'சிறுகதை'),
     '\n'.join([byline('புதுமைப்பித்தன்')] + s1)))
@@ -523,11 +598,16 @@ pages.append(make_page(pn, 'சிறுகதை',
     '\n'.join(s2)))
 pn += 1
 
-# Page 13: story end + citation + bio
+pages.append(make_page(pn, 'சிறுகதை',
+    cont_banner('சிறுகதை'),
+    '\n'.join(s3)))
+pn += 1
+
+# Last story page: story end + citation + bio
 bio_html = [pp(t) for t in bio_paras]
 pages.append(make_page(pn, 'சிறுகதை',
     cont_banner('சிறுகதை'),
-    '\n'.join(s3 + [
+    '\n'.join(s4 + [
         divider(),
         pp(citation) if citation else '',
         subhead('புதுமைப்பித்தன் — ஒரு அறிமுகம்'),
@@ -594,6 +674,7 @@ chunk4 = max(1, len(kalai_html) // 5)
 kparts = [kalai_html[i*chunk4:(i+1)*chunk4] for i in range(4)]
 kparts.append(kalai_html[4*chunk4:])
 
+mark_sec('தமிழகக் கலைகள்')
 pages.append(make_page(pn, 'தமிழகக் கலைகள்',
     sec_header('தமிழகக் கோயிற் கட்டிடக் கலைகள் — ஓர் அறிமுகம்', 'தமிழகக் கலைகள்'),
     '\n'.join([byline('திருமுருகன்')] + kparts[0])))
@@ -751,6 +832,7 @@ nuul_body_p1 = '\n'.join([
     pp('வாசிப்பை திட்டமிட்டு நடத்துவதை இந்த உருவகம் அழகாக விளக்குகிறது — எந்த நூல் படிக்க வேண்டும், எப்போது, எப்படி என்ற தெளிவு முக்கியம் என்கிறார்.'),
 ])
 
+mark_sec('நூல் மதிப்புரை')
 pages.append(make_page(pn, 'நூல் மதிப்புரை',
     sec_header('வாசிப்பது எப்படி?', 'நூல் மதிப்புரை'),
     nuul_body_p1))
@@ -843,6 +925,7 @@ def build_ozhukkam_html(paras):
 oz_html = build_ozhukkam_html(paras_05)
 chunk5 = max(1, len(oz_html) // 3)
 
+mark_sec('ஓர் ஒழுக்கம்')
 pages.append(make_page(pn, 'ஓர் ஒழுக்கம்',
     sec_header('அதிகாலை துயிலெழல்', 'ஓர் ஒழுக்கம்'),
     '\n'.join([byline('ஹரிஹரனார்')] + oz_html[:chunk5])))
@@ -973,22 +1056,22 @@ def md_to_html_thamarai(md_text):
     return html
 
 thamarai_html = md_to_html_thamarai(md08)
-chunk_t = max(1, len(thamarai_html) // 3)
+# v4.4: use weight_split — images + verse boxes make element-count splits unreliable
+th_pages = weight_split(thamarai_html)
+print(f'  Thamarai: {len(thamarai_html)} items → {len(th_pages)} pages '
+      f'(weights: {[sum(_item_weight(x) for x in p) for p in th_pages]})')
 
+mark_sec('சங்க இலக்கியம்')
 pages.append(make_page(pn, 'சங்க இலக்கியம்',
     sec_header('தாமரை மலரின் அறச்செய்தி', 'சங்க இலக்கியம்'),
-    '\n'.join([byline('கௌரிசங்கர்')] + thamarai_html[:chunk_t])))
+    '\n'.join([byline('கௌரிசங்கர்')] + th_pages[0])))
 pn += 1
-
-pages.append(make_page(pn, 'சங்க இலக்கியம்',
-    cont_banner('சங்க இலக்கியம்'),
-    '\n'.join(thamarai_html[chunk_t:2*chunk_t])))
-pn += 1
-
-pages.append(make_page(pn, 'சங்க இலக்கியம்',
-    cont_banner('சங்க இலக்கியம்'),
-    '\n'.join(thamarai_html[2*chunk_t:])))
-pn += 1
+for th_part in th_pages[1:]:
+    if th_part:
+        pages.append(make_page(pn, 'சங்க இலக்கியம்',
+            cont_banner('சங்க இலக்கியம்'),
+            '\n'.join(th_part)))
+        pn += 1
 
 # ════════════════════════════════════════════════════════════════════════════
 # PAGE (next): இயற்கை தரும் இன்பம் — Munnar photo feature
@@ -1004,6 +1087,7 @@ nature_body = f'''        <figure class="article-figure img-banner">
         <p class="lead-para">இயற்கை கொடுக்கும் இன்பம் வேறு எதுவும் தர இயலாது. மலைகளின் மடியில் படர்ந்து கிடக்கும் மூடுபனி, பச்சை நிற காடுகள், ஓடும் அருவிகள் — இவை நம் உயிரை உற்சாகப்படுத்தும் மூலசக்தி.</p>
         {byline('கௌரிசங்கர்')}'''
 
+mark_sec('இயற்கை தரும் இன்பம்')
 pages.append(make_page(pn, 'இயற்கை தரும் இன்பம்',
     sec_header('இயற்கை தரும் இன்பம்', 'இயற்கை தரும் இன்பம்'),
     nature_body))
@@ -1077,6 +1161,7 @@ act_p2 = [
        'அழைத்துச் செல்லப்பட்டனர்.'),
 ]
 
+mark_sec('அறநிலையச் செய்திகள்')
 pages.append(make_page(pn, 'அறநிலையச் செய்திகள்',
     sec_header('வள்ளலார் அறநிலைய செய்திகள்', 'அறநிலையச் செய்திகள்'),
     '\n'.join([byline('குமாரவேல்')] + act_p1)))
@@ -1106,27 +1191,32 @@ closing_page_body = f'''
           <div class="lotus-end">❀</div>
         </div>'''
 
+mark_sec('அடுத்த இதழில்')
 pages.append(make_page(pn, 'அடுத்த இதழில்',
     sec_header('வைகாசி 2026 — இதழ் 2', 'அடுத்த இதழில் • வாசகர் குரல்'),
     closing_page_body))
 total_pages = pn
 print(f'  Total content pages: {total_pages} (incl. 4 structural = {total_pages} pages)')
+print(f'  Section start pages: {_sec_start}')
 
 # ════════════════════════════════════════════════════════════════════════════
-# 6. BUILD TOC
+# 6. BUILD TOC — page numbers derived dynamically from _sec_start
 # ════════════════════════════════════════════════════════════════════════════
-# Map section → start page
+def sp(name, fallback):
+    """Look up section start page, falling back if mark_sec wasn't called."""
+    return _sec_start.get(name, fallback)
+
 toc_entries = [
-    ('தலையங்கம்',               'தமிழர்களின் அறநெறியும் தமிழ் உணர்வும்',  5,  '#8DC63F'),
-    ('திருக்குறள் ஆய்வு',       'அறிவுடைமை — பத்துக் குறட்பாக்கள்',        7,  '#D4AF37'),
-    ('சிறுகதை',                 'பால்வண்ணம் பிள்ளை — புதுமைப்பித்தன்',     11, '#2d7a3e'),
-    ('தமிழகக் கலைகள்',          'கோயிற் கட்டிடக் கலை — ஓர் அறிமுகம்',     14, '#6BA82F'),
-    ('நூல் மதிப்புரை',          'வாசிப்பது எப்படி? — செல்வேந்திரன்',      19, '#8DC63F'),
-    ('ஓர் ஒழுக்கம்',            'அதிகாலை துயிலெழல் — வள்ளலாரின் நெறி',    21, '#D4AF37'),
-    ('சங்க இலக்கியம்',          'தாமரை மலரின் அறச்செய்தி',                 24, '#2d7a3e'),
-    ('இயற்கை தரும் இன்பம்',    'மலை அழகு',                                 27, '#6BA82F'),
-    ('அறநிலையச் செய்திகள்',    'வள்ளலார் அறநிலைய நிகழ்வுகள்',            28, '#8DC63F'),
-    ('அடுத்த இதழில்',           'வைகாசி 2026 • வாசகர் குரல்',              total_pages, '#D4AF37'),
+    ('தலையங்கம்',               'தமிழர்களின் அறநெறியும் தமிழ் உணர்வும்',  sp('தலையங்கம்', 5),   '#8DC63F'),
+    ('திருக்குறள் ஆய்வு',       'அறிவுடைமை — பத்துக் குறட்பாக்கள்',        sp('திருக்குறள் ஆய்வு', 7),  '#D4AF37'),
+    ('சிறுகதை',                 'பால்வண்ணம் பிள்ளை — புதுமைப்பித்தன்',     sp('சிறுகதை', 11),    '#2d7a3e'),
+    ('தமிழகக் கலைகள்',          'கோயிற் கட்டிடக் கலை — ஓர் அறிமுகம்',     sp('தமிழகக் கலைகள்', 14),   '#6BA82F'),
+    ('நூல் மதிப்புரை',          'வாசிப்பது எப்படி? — செல்வேந்திரன்',      sp('நூல் மதிப்புரை', 19),   '#8DC63F'),
+    ('ஓர் ஒழுக்கம்',            'அதிகாலை துயிலெழல் — வள்ளலாரின் நெறி',    sp('ஓர் ஒழுக்கம்', 21),     '#D4AF37'),
+    ('சங்க இலக்கியம்',          'தாமரை மலரின் அறச்செய்தி',                 sp('சங்க இலக்கியம்', 24),   '#2d7a3e'),
+    ('இயற்கை தரும் இன்பம்',    'மலை அழகு',                                 sp('இயற்கை தரும் இன்பம்', 27), '#6BA82F'),
+    ('அறநிலையச் செய்திகள்',    'வள்ளலார் அறநிலைய நிகழ்வுகள்',            sp('அறநிலையச் செய்திகள்', 28), '#8DC63F'),
+    ('அடுத்த இதழில்',           'வைகாசி 2026 • வாசகர் குரல்',              sp('அடுத்த இதழில்', total_pages), '#D4AF37'),
 ]
 
 toc_rows = ''
