@@ -9,7 +9,7 @@ import re, sys, os, docx, zipfile
 BASE    = '/Users/gowri/spaceclub/e-magazine'
 CONTENT = f'{BASE}/Content/Issue-01'
 SRC     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v2_0_20260502.html'
-OUT     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v4_2_20260511.html'
+OUT     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v4_3_20260511.html'
 
 # ════════════════════════════════════════════════════════════════════════════
 # 1. EXTRACT STRUCTURAL PARTS FROM v2_0
@@ -44,14 +44,20 @@ IMPRINT = IMPRINT.replace('திருவள்ளுவர் ஆண்டு 
 HEAD = re.sub(r'<title>[^<]*</title>',
               '<title>வான் வளரொளி இதழ் — சித்திரை 2026 — இதழ் 1</title>', HEAD)
 
-# Patch print CSS — fixed footer, no overflow, clean A4 pages
+# Patch print CSS — ROOT CAUSE FIX (v4.3):
+# The source CSS already uses flexbox on .page (display:flex, flex-direction:column)
+# with .content-area { flex:1 } and .page-footer { margin-top:auto }.
+# We must NOT override with max-height or position:absolute — those break the layout
+# and clip bottom content (the "last few lines cut off" bug).
+# Only add: overflow:hidden on page (boundary clip) + ensure page-break is set.
 HEAD = HEAD.replace(
     '@media print {',
     '@media print {\n'
-    '  .page { overflow: hidden !important; page-break-after: always !important; break-after: page !important; }\n'
-    '  .content-area { overflow: hidden !important; max-height: 245mm !important; }\n'
-    '  .body-text { overflow: hidden !important; }\n'
-    '  .page-footer { position: absolute !important; bottom: 0 !important; left: 0 !important; right: 0 !important; }'
+    '  /* v4.3 fix: let source flexbox layout control height — no max-height override */\n'
+    '  .page { overflow: hidden !important; }\n'
+    '  /* content-area fills space between header and footer via flex:1 — no clip needed */\n'
+    '  .content-area { overflow: hidden !important; }\n'
+    '  /* footer stays at bottom via margin-top:auto — no position:absolute needed */\n'
 )
 
 # Additional CSS patches — fix cover badge clipping and lead-para size
@@ -67,7 +73,7 @@ HEAD = HEAD.replace('</style>',
     '  .imprint-logo { height: 44mm !important; max-width: 65mm !important; }\n'
     '  .masthead-logo { height: 44mm !important; max-height: 44mm !important; max-width: 65mm !important; }\n'
     '  /* Fix word-spacing in justified Tamil text — prevent stretched inter-word gaps */\n'
-    '  .body-text p { word-spacing: normal !important; letter-spacing: normal !important; }\n'
+    '  .body-text p { word-spacing: normal !important; letter-spacing: normal !important; overflow-wrap: anywhere !important; }\n'
     '</style>'
 )
 
@@ -923,36 +929,38 @@ def md_to_html_thamarai(md_text):
                     break
             i += 1; continue
 
+        # ── Skip / stop guards — MUST come before any formatting checks ────────
+        # (The bold-pattern check below would otherwise render **படங்கள்...** as
+        # a paragraph before the break condition is ever reached.)
+        stripped = line.strip()
+        if stripped.startswith('**மூலங்கள்') or stripped.startswith('மூலங்கள்'):
+            i += 1; continue
+        if stripped.startswith('**படங்கள்') or stripped.startswith('படங்கள்'):
+            break  # Everything from here onwards is image editorial commentary
+        if re.match(r'^[௧௨௩௪௫]\.\s', stripped):
+            i += 1; continue
+        if stripped.startswith('குறிப்பு: அனைத்து படங்களும்'):
+            i += 1; continue
+
         # Bold intro line
-        if re.match(r'^\*\*[^*]+\*\*$', line.strip()):
-            text = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', line.strip())
+        if re.match(r'^\*\*[^*]+\*\*$', stripped):
+            text = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', stripped)
             html.append(pp(text))
             i += 1; continue
 
         # Numbered practical tips (**௧.** etc.)
-        if re.match(r'^\*\*[௧௨௩௪௫1-9]', line.strip()):
-            text = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', line.strip())
+        if re.match(r'^\*\*[௧௨௩௪௫1-9]', stripped):
+            text = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', stripped)
             html.append(pp(text))
             i += 1; continue
 
         # Horizontal rule
-        if re.match(r'^---+$', line.strip()):
+        if re.match(r'^---+$', stripped):
             html.append(divider())
             i += 1; continue
 
         # Empty
-        if not line.strip():
-            i += 1; continue
-
-        # Skip source/reference section and image placeholder paragraphs
-        if line.strip().startswith('**மூலங்கள்') or line.strip().startswith('மூலங்கள்'):
-            i += 1; continue
-        if line.strip().startswith('**படங்கள்') or line.strip().startswith('படங்கள்'):
-            break  # Stop before image suggestions
-        # Skip numbered image suggestion lines (௧., ௨., ௩. etc.)
-        if re.match(r'^[௧௨௩௪௫]\.\s', line.strip()):
-            i += 1; continue
-        if line.strip().startswith('குறிப்பு: அனைத்து படங்களும்'):
+        if not stripped:
             i += 1; continue
 
         # Normal paragraph
@@ -1202,13 +1210,16 @@ body = body.replace(
     '<p class="lead-para">அன்பார்ந்த வாசகர்களே\n</p>',
     '<p class="lead-para">அன்பார்ந்த வாசகர்களே,</p>')
 
-# Fix 3 — Page 5 editorial: வீரத்திற்கும் text correction
+# Fix 3 — Page 5 editorial: final corrected form (with அறமே)
 body = body.replace(
     '"வீரத்திற்கும் மறத்திற்கும் அறமே துணை"',
-    '"வீரத்திற்கும் கருணைக்கும் துணை"')
+    '"வீரத்திற்கும் கருணைக்கும் அறமே துணை"')
 body = body.replace(
     '"வீரத்திற்கும் அறமே துணை"',
-    '"வீரத்திற்கும் கருணைக்கும் துணை"')
+    '"வீரத்திற்கும் கருணைக்கும் அறமே துணை"')
+body = body.replace(
+    '"வீரத்திற்கும் கருணைக்கும் துணை"',
+    '"வீரத்திற்கும் கருணைக்கும் அறமே துணை"')
 
 body = body.replace(
     'அறத்தையும் ஒழுக்கத்தையும் வாழ்ந்தவர்கள்,',
@@ -1216,6 +1227,14 @@ body = body.replace(
 body = body.replace(
     'அறத்தையும் ஒழுக்கத்தையும் வாழ்ந்தவர்கள்',
     'அறத்தையும் ஒழுக்கத்தையும் கண்களாக கொண்டு வாழ்ந்தவர்கள்')
+
+# Fix — Page 21: ஹரிஹரனார் → ஹரிஹரன்
+body = body.replace('ஹரிஹரனார்', 'ஹரிஹரன்')
+
+# Fix — Page 10: remove "(Take Home Message)" from subhead
+body = body.replace(
+    'ஆய்வின் முடிவுரை (Take Home Message)',
+    'ஆய்வின் முடிவுரை:')
 
 # Fix 7 — Page 14: சொலவடை → பழக்கம்
 body = body.replace('சொலவடை', 'பழக்கம்')
