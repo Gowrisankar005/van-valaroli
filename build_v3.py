@@ -9,7 +9,7 @@ import re, sys, os, docx, zipfile
 BASE    = '/Users/gowri/spaceclub/e-magazine'
 CONTENT = f'{BASE}/Content/Issue-01'
 SRC     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v2_0_20260502.html'
-OUT     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v4_0_20260502.html'
+OUT     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v4_2_20260511.html'
 
 # ════════════════════════════════════════════════════════════════════════════
 # 1. EXTRACT STRUCTURAL PARTS FROM v2_0
@@ -34,6 +34,11 @@ COVER    = ''.join(src_lines[i_cover:i_imprint])
 IMPRINT  = ''.join(src_lines[i_imprint:i_masthead])
 MASTHEAD = ''.join(src_lines[i_masthead:i_toc])
 TAIL     = ''.join(src_lines[i_theme:])
+
+# Fix 1 — Imprint date: சித்திரை → மே
+IMPRINT = IMPRINT.replace('[ சித்திரை — 2026 ]', '[ மே — 2026 ]')
+IMPRINT = IMPRINT.replace('திருவள்ளுவர் ஆண்டு ௨௦௫௭ — சித்திரை',
+                           'திருவள்ளுவர் ஆண்டு ௨௦௫௭ — வைகாசி')
 
 # Fix title
 HEAD = re.sub(r'<title>[^<]*</title>',
@@ -61,6 +66,8 @@ HEAD = HEAD.replace('</style>',
     '  /* larger logos on imprint (page 2) and masthead (page 3) */\n'
     '  .imprint-logo { height: 44mm !important; max-width: 65mm !important; }\n'
     '  .masthead-logo { height: 44mm !important; max-height: 44mm !important; max-width: 65mm !important; }\n'
+    '  /* Fix word-spacing in justified Tamil text — prevent stretched inter-word gaps */\n'
+    '  .body-text p { word-spacing: normal !important; letter-spacing: normal !important; }\n'
     '</style>'
 )
 
@@ -278,9 +285,13 @@ def clean_paras(paras):
 paras_01 = clean_paras(p01)
 
 # Identify sections
+# After clean_paras: [0]=title, [1]=subtitle, [2]="அன்பார்ந்த வாசகர்களே,", [3..]=body
 title_01   = paras_01[0]   # வான் வளரொளி இதழ் - தலையங்கம்
-subtitle_01 = paras_01[2]  # தமிழர்களின் அறநெறியும்...
-salut_01   = paras_01[3]   # அன்பார்ந்த வாசகர்களே
+subtitle_01 = paras_01[1]  # தமிழர்களின் அறநெறியும்...
+salut_01   = paras_01[2]   # அன்பார்ந்த வாசகர்களே,
+# Ensure salutation ends with comma
+if not salut_01.endswith(','):
+    salut_01 = salut_01.rstrip() + ','
 
 # Body paragraphs before 'இவ்விதழில்'
 body_paras = []
@@ -288,7 +299,7 @@ list_paras = []
 closing_started = False
 in_list = False
 
-for i, t in enumerate(paras_01[4:], 4):
+for i, t in enumerate(paras_01[3:], 3):
     if 'இவ்விதழில்' in t:
         in_list = True
         continue
@@ -333,7 +344,6 @@ list_clean = [t for t in list_paras if t and not is_deco(t) and t[0] in '🪷◆
 list_clean = [re.sub(r'^[🪷◆❀•]\s*', '', t) for t in list_clean if t]
 
 body_p6 = '\n'.join(body_p6_parts + [
-    subhead('இவ்விதழில்:'),
     highlights('இந்த இதழில்...', list_clean) if list_clean else '',
     divider(),
     pp(closing_para) if closing_para else '',
@@ -437,10 +447,26 @@ else:
 
 kural_html = build_kural_html(paras_02[1:])  # skip title
 
-# Split: page 1 = முன்னுரை + image + first ~3 kurals
-#         pages 2-3 = middle kurals, page 4 = last kurals + முடிவுரை
-chunk = max(1, len(kural_html) // 4)
-kp = [kural_html[:chunk], kural_html[chunk:2*chunk], kural_html[2*chunk:3*chunk], kural_html[3*chunk:]]
+def smart_chunk_kural(items, n_chunks):
+    """Split kural HTML into n_chunks, never ending a chunk on a subhead line
+    (which would orphan the kural verse + explanation on the next page)."""
+    target = max(1, len(items) // n_chunks)
+    chunks, current = [], []
+    for item in items:
+        current.append(item)
+        if (len(current) >= target
+                and len(chunks) < n_chunks - 1
+                and not current[-1].strip().startswith('<div class="subhead">')):
+            chunks.append(current)
+            current = []
+    if current:
+        chunks.append(current)
+    # Pad to n_chunks if needed
+    while len(chunks) < n_chunks:
+        chunks.append([])
+    return chunks
+
+kp = smart_chunk_kural(kural_html, 4)
 
 pages.append(make_page(pn, 'திருக்குறள் ஆய்வு',
     sec_header('திருக்குறள் அறிவுடைமை — ஒர் ஆய்வு', 'திருக்குறள் ஆய்வு'),
@@ -766,7 +792,7 @@ pages.append(make_page(pn, 'நூல் மதிப்புரை',
 pn += 1
 
 # ════════════════════════════════════════════════════════════════════════════
-# PAGE (next): ஒரு ஒழுக்கம்
+# PAGE (next): ஓர் ஒழுக்கம்
 # ════════════════════════════════════════════════════════════════════════════
 paras_05 = clean_paras(p05)
 
@@ -811,18 +837,18 @@ def build_ozhukkam_html(paras):
 oz_html = build_ozhukkam_html(paras_05)
 chunk5 = max(1, len(oz_html) // 3)
 
-pages.append(make_page(pn, 'ஒரு ஒழுக்கம்',
-    sec_header('அதிகாலை துயிலெழல்', 'ஒரு ஒழுக்கம்'),
+pages.append(make_page(pn, 'ஓர் ஒழுக்கம்',
+    sec_header('அதிகாலை துயிலெழல்', 'ஓர் ஒழுக்கம்'),
     '\n'.join([byline('ஹரிஹரனார்')] + oz_html[:chunk5])))
 pn += 1
 
-pages.append(make_page(pn, 'ஒரு ஒழுக்கம்',
-    cont_banner('ஒரு ஒழுக்கம்'),
+pages.append(make_page(pn, 'ஓர் ஒழுக்கம்',
+    cont_banner('ஓர் ஒழுக்கம்'),
     '\n'.join(oz_html[chunk5:2*chunk5])))
 pn += 1
 
-pages.append(make_page(pn, 'ஒரு ஒழுக்கம்',
-    cont_banner('ஒரு ஒழுக்கம்'),
+pages.append(make_page(pn, 'ஓர் ஒழுக்கம்',
+    cont_banner('ஓர் ஒழுக்கம்'),
     '\n'.join(oz_html[2*chunk5:] + [
         divider(),
         '        <div class="lotus-end">❀</div>',
@@ -833,7 +859,25 @@ pn += 1
 # PAGE (next): சங்க இலக்கியம் — தாமரை
 # ════════════════════════════════════════════════════════════════════════════
 def md_to_html_thamarai(md_text):
-    """Special parser for தாமரை article that handles verse box markup."""
+    """Special parser for தாமரை article that handles verse box markup.
+    Inserts lotus images after each section heading (fix 12)."""
+    IC = 'Content/Issue-01'
+
+    def lotus_img(src, caption):
+        return (f'        <figure class="article-figure img-right">'
+                f'<img src="{IC}/{src}" alt="{caption}">'
+                f'<figcaption class="img-caption">{caption}</figcaption></figure>')
+
+    # Map section keywords → lotus image to insert after heading
+    _LOTUS_MAP = {
+        'இயற்கையும் தாவரமும்':        ('lotus-sangam-painting-01.jpg', 'சங்ககால தாமரை — சித்திர பாணி'),
+        'கவிதையின் உவமைகள்':          ('lotus-01.jpg',                  'தாமரை மலர்'),
+        'ஆன்மீகச் சின்னம்':            ('lotus-02.jpg',                  'தாமரை — ஆன்மீக சின்னம்'),
+        'அறிவியலும் பாரம்பரியமும்':    ('lotus-03.jpg',                  'தாமரை இலையில் நீர்த்துளி — தாமரை விளைவு'),
+        'பண்பாட்டு மரபும் மருத்துவமும்':('lotus-04.jpg',                 'கோயில் குளத்தில் தாமரை'),
+        'நடைமுறைப் பயன்':             ('lotus-05.jpg',                  'தாமரை — வாழ்வின் நெறி'),
+    }
+
     lines = md_text.split('\n')
     html = []
     i = 0
@@ -867,10 +911,16 @@ def md_to_html_thamarai(md_text):
                 html.append(slim_quote(verse_lines, ''))
             continue
 
-        # H3 / H4
+        # H3 / H4 — and insert lotus image after matching section headings
         if line.startswith('### ') or line.startswith('#### '):
             text = re.sub(r'^#+\s+', '', line).strip()
+            # Strip numbering prefix ("1. ", "2. " etc.) for matching
+            text_bare = re.sub(r'^\d+\.\s+', '', text)
             html.append(subhead(text))
+            for kw, (img_src, caption) in _LOTUS_MAP.items():
+                if kw in text_bare:
+                    html.append(lotus_img(img_src, caption))
+                    break
             i += 1; continue
 
         # Bold intro line
@@ -919,7 +969,7 @@ chunk_t = max(1, len(thamarai_html) // 3)
 
 pages.append(make_page(pn, 'சங்க இலக்கியம்',
     sec_header('தாமரை மலரின் அறச்செய்தி', 'சங்க இலக்கியம்'),
-    '\n'.join(thamarai_html[:chunk_t])))
+    '\n'.join([byline('கௌரிசங்கர்')] + thamarai_html[:chunk_t])))
 pn += 1
 
 pages.append(make_page(pn, 'சங்க இலக்கியம்',
@@ -944,7 +994,7 @@ nature_body = f'''        <figure class="article-figure img-banner">
         </figure>
         {divider()}
         <p class="lead-para">இயற்கை கொடுக்கும் இன்பம் வேறு எதுவும் தர இயலாது. மலைகளின் மடியில் படர்ந்து கிடக்கும் மூடுபனி, பச்சை நிற காடுகள், ஓடும் அருவிகள் — இவை நம் உயிரை உற்சாகப்படுத்தும் மூலசக்தி.</p>
-        {byline('கௌரிசங்கரனார்')}'''
+        {byline('கௌரிசங்கர்')}'''
 
 pages.append(make_page(pn, 'இயற்கை தரும் இன்பம்',
     sec_header('இயற்கை தரும் இன்பம்', 'இயற்கை தரும் இன்பம்'),
@@ -953,66 +1003,93 @@ pn += 1
 
 # ════════════════════════════════════════════════════════════════════════════
 # PAGE (next): அறநிலையச் செய்திகள்
+# Fully structured builder — handles bold headings, images, date/text fixes
+# (Fixes 10, 16, 19, 21, 22, 23)
 # ════════════════════════════════════════════════════════════════════════════
-paras_06 = p06  # already cleaned via XML extraction
+IC6 = 'Content/Issue-01'
 
-# Clean and filter the XML-extracted fragments
-clean_06 = []
-current = ''
-for t in paras_06:
-    t = t.strip()
-    if not t or len(t) < 3:
-        continue
-    # If looks like continuation of previous (no sentence ending)
-    if current and not re.search(r'[.!?।]$', current) and len(t) < 30:
-        current += ' ' + t
-    else:
-        if current:
-            clean_06.append(current)
-        current = t
-if current:
-    clean_06.append(current)
+def _van_img_right(src, caption):
+    return (f'        <figure class="article-figure img-right">'
+            f'<img src="{IC6}/{src}" alt="{caption}">'
+            f'<figcaption class="img-caption">{caption}</figcaption></figure>')
 
-# Build activities HTML
-act_html = []
-for i, t in enumerate(clean_06[:60]):  # limit to reasonable length
-    if len(t) < 15:
-        act_html.append(subhead(t))
-    elif i == 0:
-        act_html.append(pp(t, 'lead-para'))
-    else:
-        act_html.append(pp(t))
+def _van_img_half(src, caption):
+    return (f'        <figure class="article-figure img-half">'
+            f'<img src="{IC6}/{src}" alt="{caption}">'
+            f'<figcaption class="img-caption">{caption}</figcaption></figure>')
 
-chunk6 = max(1, len(act_html) // 2)  # 2 pages only
+act_p1 = [
+    pp('பெண்ணாடம் வள்ளலார் அறநிலையம் கடலூர் மாவட்டம் திட்டக்குடி வட்டத்திலுள்ள '
+       'பெண்ணாடம் என்னும் ஊரில் இயங்கிவரும் ஆதரவற்ற முதியோர் மற்றும் மாணவர் '
+       'வாழ்விடமாகும்.', 'lead-para'),
+    pp('இவ்வறநிலையம் இங்கு வசிக்கும் முதியவர் மற்றும் மாணவர் நலனை பேணுவதோடு '
+       'தமிழ்வளர்ச்சி, மருத்துவம், சுற்றுப்புற மாணவர் நலன், சுற்றுசூழல் நலன் '
+       'குறித்து பல்வேறு சமூக தொண்டுகள் ஆற்றும் நிறுவனமாகும்.'),
+    pp('இங்கு மாத மாதம், ஆண்டுதோறும் எனப் பல்வேறு நிகழ்வுகள் அறநிலையத்திலும் '
+       'Zoom தளத்திலும் நிகழ்ந்து வருகிறது. அத்தகைய நிகழ்வுகள் மாதந்தோறும் வரும் '
+       'இதழிலும் கண்டு வாசகர்கள் கலந்து கொண்டு பயன்பெறலாம்.'),
+    divider(),
+    subhead('<strong>கோடைக்கால திறனூக்க பயிற்சி:</strong>'),
+    _van_img_right('VAN-kids-01.jpg', 'கோடைக்கால திறனூக்க பயிற்சி — மாணவர்கள்'),
+    pp('ஒரு ஆண்டுக்கு ஒரு முறை நடத்தப்படும் நிகழ்வாகும். இதில் அறநிலைய மாணவர்கள் '
+       'மட்டுமல்லாமல் பெண்ணாடத்தைச் சுற்றியுள்ள தனியார் மற்றும் அரசு பள்ளி மாணவர்கள் '
+       'இதில் பங்கேற்றுப் பயனடைகின்றனர்.'),
+    pp('இவ்வாண்டு ஏப்ரல் 24-ம் தேதி தொடங்கி மே 2ம் தேதி வரை நடந்தது.'),
+    _van_img_right('VAN-kids-02.jpg', 'கைவினை செயல்பாடு — கோடைப் பயிற்சி'),
+    pp('இதில் யோகா, இசை (வாய்ப்பட்டு), கணினி பயிற்சி, எளிய முறை கணிதம், '
+       'கைவினை பொருட்கள் செய்தல், உணவு பற்றிய விழிப்புணர்வு, புத்தகம் வாசிப்பு '
+       'போன்ற பல்வேறு பயிற்சிகள் மாணவர்களுக்கு வழங்கப்படுகிறது.'),
+]
+
+act_p2 = [
+    subhead('இலவச ஹோமியோபதி மருத்துவ முகாம்'),
+    _van_img_right('VAN-MedCamp-001.jpg', 'மருத்துவ முகாம் — Dr. அருள்'),
+    pp('இது மாதம் ஒரு முறை நடைபெறும் நிகழ்வாகும். ஒவ்வொரு மாத பூசத்தன்றும் '
+       'இம்மருத்துவ முகாம் நடைபெற்று வருகிறது.'),
+    _van_img_right('VAN-MedCamp-002.jpg', 'மருத்துவ முகாம் — நோயாளிகள்'),
+    pp('இது Dr. அருள் MD (ஓமியோபதி) பட்டம் பெற்ற மருத்துவரால் நடத்தப்படுகிறது. '
+       'பக்க விளைவுகள் இல்லாத இம்மருத்துவத்தில் பெண்ணாடம் சுற்றுவட்டாரத்தில் '
+       'உள்ள பொதுமக்கள் பயனடைந்து வருகின்றனர். மருந்துகளும் கட்டணமின்றி '
+       'வழங்கப்படுகிறது.'),
+    divider(),
+    subhead('மாதப்பூசம் — விளக்கு வழிபாடும் அன்னதானமும்'),
+    _van_img_right('VAN-LampLit-01.jpg', 'மாதப்பூசம் — விளக்கேற்றல்'),
+    pp('இது மாத பூச நாளன்று அறநிலையத்தில் நடைபெறும் நிகழ்வாகும். இதில் '
+       'பெண்ணாடம் சுற்றுவட்டாரத்திலுள்ள மகளிர் கலந்து கொள்கின்றனர்.'),
+    _van_img_right('VAN-Feeding-01.jpg', 'அன்னதானம்'),
+    pp('இவ்வழிபாட்டுக்கு தேவையான பொருட்களை அறநிலையமே வழங்குகிறது. '
+       'வழிபாட்டு நிறைவில் பொதுமக்களுக்கும் வழிபாட்டில் கலந்துகொள்வோருக்கும் '
+       'அன்னதானம் வழங்கப்படுகிறது.'),
+    divider(),
+    subhead('<strong>மாணவர்களின் கோடைக்கால சுற்றுலா ஏப்ரல் 2026</strong>'),
+    _van_img_right('VAN-kidsTour-01.jpg', 'சுற்றுலா — ஏற்காடு'),
+    pp('இதுவும் ஆண்டுக்கு ஒருமுறை நடக்கும் நிகழ்வு. இது அறநிலைய மாணவர்களுக்கானது.'),
+    _van_img_right('VAN-kidsTour-02.jpg', 'மாணவர்கள் — மலை இயற்கை மடியில்'),
+    pp('இவ்வருடம் ஏப்ரல் மாதம் மாணவர்கள் மலைப் பிரதேசமான ஏற்காட்டுக்கு '
+       'அழைத்துச் செல்லப்பட்டனர்.'),
+]
 
 pages.append(make_page(pn, 'அறநிலையச் செய்திகள்',
     sec_header('வள்ளலார் அறநிலைய செய்திகள்', 'அறநிலையச் செய்திகள்'),
-    '\n'.join([byline('குமாரவேலனார்')] + act_html[:chunk6])))
+    '\n'.join([byline('குமாரவேல்')] + act_p1)))
 pn += 1
 
 pages.append(make_page(pn, 'அறநிலையச் செய்திகள்',
     cont_banner('அறநிலையச் செய்திகள்'),
-    '\n'.join(act_html[chunk6:])))
+    '\n'.join(act_p2)))
 pn += 1
 
 # ════════════════════════════════════════════════════════════════════════════
 # PAGE (last): அடுத்த இதழில் + வாசகர் குரல்
 # ════════════════════════════════════════════════════════════════════════════
 closing_page_body = f'''
-{highlights('வைகாசி 2026 — இதழ் 2-ல் எதிர்பாருங்கள்', [
-    '❀ தலையங்கம் — வைகாசி சிறப்பு',
-    '❀ திருக்குறள் — நட்பு அதிகாரம் ஆய்வு',
-    '❀ சங்க இலக்கியம் — பறவைகளின் குரல்கள்',
-    '❀ தமிழகக் கலைகள் — மதுரை மீனாட்சி இசைத் தூண்கள்',
-    '❀ வள்ளலார் ஒழுக்கம் — இரண்டாம் ஒழுக்கம்',
-    '❀ நூல் மதிப்புரை — புதிய தேர்வு',
-])}
-{divider()}
 {subhead('வாசகர் குரல்')}
         <p>உங்கள் கருத்துகள், எண்ணங்கள், பாராட்டுகள், திருத்தங்கள் — அனைத்தும் இந்த இதழின் உயிரோட்டம்! அடுத்த இதழில் உங்கள் கருத்துகளை வெளியிடுவோம்.</p>
+{divider()}
 {highlights('இதழில் பங்களிக்க / தொடர்புகொள்ள', [
     'கட்டுரைகள், கவிதைகள், இயற்கை படங்கள் அனுப்பலாம்',
     '<strong>மின்னஞ்சல்:</strong> vallalararanilayampdm@gmail.com',
+    '<strong>WhatsApp:</strong> +91 97880 33666',
     '<strong>வலையொளி:</strong> https://www.youtube.com/@pennadamvallalararanilayam',
     f'அடுத்த இதழ் வெளியீடு: <strong>வைகாசி 2026 — ஜூன் 2026</strong>',
 ])}
@@ -1037,7 +1114,7 @@ toc_entries = [
     ('சிறுகதை',                 'பால்வண்ணம் பிள்ளை — புதுமைப்பித்தன்',     11, '#2d7a3e'),
     ('தமிழகக் கலைகள்',          'கோயிற் கட்டிடக் கலை — ஓர் அறிமுகம்',     14, '#6BA82F'),
     ('நூல் மதிப்புரை',          'வாசிப்பது எப்படி? — செல்வேந்திரன்',      19, '#8DC63F'),
-    ('ஒரு ஒழுக்கம்',            'அதிகாலை துயிலெழல் — வள்ளலாரின் நெறி',    21, '#D4AF37'),
+    ('ஓர் ஒழுக்கம்',            'அதிகாலை துயிலெழல் — வள்ளலாரின் நெறி',    21, '#D4AF37'),
     ('சங்க இலக்கியம்',          'தாமரை மலரின் அறச்செய்தி',                 24, '#2d7a3e'),
     ('இயற்கை தரும் இன்பம்',    'மலை அழகு',                                 27, '#6BA82F'),
     ('அறநிலையச் செய்திகள்',    'வள்ளலார் அறநிலைய நிகழ்வுகள்',            28, '#8DC63F'),
@@ -1117,10 +1194,22 @@ body = body.replace('திருவள்ளுவர் ஆண்டு ௨௦
 body = body.replace('இம்மாத கல்வி மாத சிறப்பிதழில்', 'இம்மாத இதழில்')
 body = body.replace('கல்வி மாத சிறப்பிதழில்', 'இதழில்')
 
-# Page 5 editorial text corrections (items 4 in feedback)
+# Fix 2 — Editorial lead-para: ensure salutation ends with comma
+body = body.replace(
+    '<p class="lead-para">அன்பார்ந்த வாசகர்களே</p>',
+    '<p class="lead-para">அன்பார்ந்த வாசகர்களே,</p>')
+body = body.replace(
+    '<p class="lead-para">அன்பார்ந்த வாசகர்களே\n</p>',
+    '<p class="lead-para">அன்பார்ந்த வாசகர்களே,</p>')
+
+# Fix 3 — Page 5 editorial: வீரத்திற்கும் text correction
 body = body.replace(
     '"வீரத்திற்கும் மறத்திற்கும் அறமே துணை"',
-    '"வீரத்திற்கும் அறமே துணை"')
+    '"வீரத்திற்கும் கருணைக்கும் துணை"')
+body = body.replace(
+    '"வீரத்திற்கும் அறமே துணை"',
+    '"வீரத்திற்கும் கருணைக்கும் துணை"')
+
 body = body.replace(
     'அறத்தையும் ஒழுக்கத்தையும் வாழ்ந்தவர்கள்,',
     'அறத்தையும் ஒழுக்கத்தையும் கண்களாக கொண்டு வாழ்ந்தவர்கள்,')
@@ -1128,7 +1217,18 @@ body = body.replace(
     'அறத்தையும் ஒழுக்கத்தையும் வாழ்ந்தவர்கள்',
     'அறத்தையும் ஒழுக்கத்தையும் கண்களாக கொண்டு வாழ்ந்தவர்கள்')
 
-# Page 13 (kalai) greeting comma (item 8)
+# Fix 7 — Page 14: சொலவடை → பழக்கம்
+body = body.replace('சொலவடை', 'பழக்கம்')
+
+# Fix 13 — Dr.Arul → Dr. அருள் (also any remaining raw form)
+body = body.replace('Dr.Arul', 'Dr. அருள்')
+body = body.replace('Dr. Arul', 'Dr. அருள்')
+
+# Fix — கி பி abbreviation spacing (content from docx fragments)
+body = re.sub(r'\bகி\s+பி\b', 'கி.பி.', body)
+body = re.sub(r'\bகி\.\s+பி\.', 'கி.பி.', body)
+
+# Fix — kalai article greeting comma
 body = body.replace(
     'தமிழ் கூறும் நல்லுலக அன்பர்களுக்கு வணக்கம்</p>',
     'தமிழ் கூறும் நல்லுலக அன்பர்களுக்கு வணக்கம்,</p>')
