@@ -9,7 +9,7 @@ import re, sys, os, docx, zipfile
 BASE    = '/Users/gowri/spaceclub/e-magazine'
 CONTENT = f'{BASE}/Content/Issue-01'
 SRC     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v2_0_20260502.html'
-OUT     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v4_4_20260512.html'
+OUT     = f'{BASE}/VAN_Vallaroli_Chittirai2026_v4_6_20260512.html'
 
 # ════════════════════════════════════════════════════════════════════════════
 # 1. EXTRACT STRUCTURAL PARTS FROM v2_0
@@ -274,14 +274,36 @@ def _item_weight(html_item):
 # - Float images reduce effective cost; this calibration gives ~5 pages for thamarai
 _PAGE_MAX_W = 50
 
-def weight_split(items, max_w=_PAGE_MAX_W):
+def weight_split(items, max_w=_PAGE_MAX_W, lookahead=False):
     """Split items into pages never exceeding max_w weight per page.
-    Orphan guard: never ends a page on a subhead."""
+
+    Orphan guard (default): never ends a page on a subhead — the subhead and
+    its following paragraph stay together on the current page even if that
+    slightly exceeds max_w.  Works well when pages have float images that
+    'absorb' some overflow.
+
+    lookahead=True: break BEFORE a subhead when (subhead + next item) would
+    overflow max_w.  Use this for pure-text sections where there are no float
+    images to compensate for the sec_header overhead on page 1.  Produces a
+    clean paragraph-end page break instead of a lone-subhead widow.
+    """
     pages_out = []
     current = []
     current_w = 0
-    for item in items:
+    for k, item in enumerate(items):
         iw = _item_weight(item)
+        # ── Lookahead break (pure-text sections) ──────────────────────────
+        if (lookahead
+                and current
+                and item.strip().startswith('<div class="subhead">')
+                and k + 1 < len(items)):
+            next_w = _item_weight(items[k + 1])
+            if current_w + iw + next_w > max_w:
+                pages_out.append(current)
+                current = [item]
+                current_w = iw
+                continue
+        # ── Normal overflow check (with orphan guard) ─────────────────────
         if (current
                 and current_w + iw > max_w
                 and not current[-1].strip().startswith('<div class="subhead">')):
@@ -861,6 +883,14 @@ nuul_body_p2 = '\n'.join([
         'புரியாத சொற்களை குறித்து வையுங்கள் — அகராதி பழக்கமாகும்',
         'நூலகம் இலவசம் — வீண் விடாதீர்கள்',
     ]),
+])
+
+pages.append(make_page(pn, 'நூல் மதிப்புரை',
+    cont_banner('நூல் மதிப்புரை'),
+    nuul_body_p2))
+pn += 1
+
+nuul_body_p3 = '\n'.join([
     pp('நூலின் இறுதியில் வாசிக்கத் தொடங்க விரும்புவோருக்கான பரிந்துரைப் பட்டியல் உள்ளது — தமிழ் இலக்கியம், மொழிபெயர்ப்பு நூல்கள், நாவல்கள் என பல்வேறு தளங்களில்.'),
     divider(),
     subhead('மதிப்பீடும் பரிந்துரையும்'),
@@ -876,7 +906,7 @@ nuul_body_p2 = '\n'.join([
 
 pages.append(make_page(pn, 'நூல் மதிப்புரை',
     cont_banner('நூல் மதிப்புரை'),
-    nuul_body_p2))
+    nuul_body_p3))
 pn += 1
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -922,27 +952,23 @@ def build_ozhukkam_html(paras):
         html.append(slim_quote(kural_lines, ''))
     return html
 
-oz_html = build_ozhukkam_html(paras_05)
-chunk5 = max(1, len(oz_html) // 3)
+oz_html_full = [byline('ஹரிஹரனார்')] + build_ozhukkam_html(paras_05) + [
+    divider(),
+    '        <div class="lotus-end">❀</div>',
+]
+oz_pages = weight_split(oz_html_full, max_w=33, lookahead=True)  # 33: tighter budget for pure-text pages; 5-verse slim_quote underweighted by ~2 units at 38
 
 mark_sec('ஓர் ஒழுக்கம்')
 pages.append(make_page(pn, 'ஓர் ஒழுக்கம்',
     sec_header('அதிகாலை துயிலெழல்', 'ஓர் ஒழுக்கம்'),
-    '\n'.join([byline('ஹரிஹரனார்')] + oz_html[:chunk5])))
+    '\n'.join(oz_pages[0])))
 pn += 1
-
-pages.append(make_page(pn, 'ஓர் ஒழுக்கம்',
-    cont_banner('ஓர் ஒழுக்கம்'),
-    '\n'.join(oz_html[chunk5:2*chunk5])))
-pn += 1
-
-pages.append(make_page(pn, 'ஓர் ஒழுக்கம்',
-    cont_banner('ஓர் ஒழுக்கம்'),
-    '\n'.join(oz_html[2*chunk5:] + [
-        divider(),
-        '        <div class="lotus-end">❀</div>',
-    ])))
-pn += 1
+for oz_part in oz_pages[1:]:
+    if oz_part:
+        pages.append(make_page(pn, 'ஓர் ஒழுக்கம்',
+            cont_banner('ஓர் ஒழுக்கம்'),
+            '\n'.join(oz_part)))
+        pn += 1
 
 # ════════════════════════════════════════════════════════════════════════════
 # PAGE (next): சங்க இலக்கியம் — தாமரை
