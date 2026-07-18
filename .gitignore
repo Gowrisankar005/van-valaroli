@@ -1,2 +1,32 @@
+# macOS
 .DS_Store
 *.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# Build intermediates
+_pipeline_step*.html
+*.bak.html
+step1.html
+step2.html
+
+# Playwright browser cache
+ms-playwright/
+
+# Editor scratch
+.vscode/
+.idea/
+*.swp
+
+# Docx artifacts (temporary extraction folders)
+06-VAN-Activities.docx/
+*.docx.zip
+
+# Local Claude cache
+.claude/
