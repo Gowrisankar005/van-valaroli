@@ -30,3 +30,18 @@ ms-playwright/
 
 # Local Claude cache
 .claude/
+
+# Intermediate/experimental artifacts for Issue-01 (keep only *_step2.html + *_final.pdf)
+Final Drafts/Grok/VAN_Vallaroli_screenshot.pdf
+Final Drafts/Grok/VAN_Vallaroli_peacock.pdf
+Final Drafts/Grok/VAN_Vallaroli_text.pdf
+Final Drafts/Grok/VAN_Vallaroli_fixed.html
+Final Drafts/Grok/VAN_Vallaroli_balanced.html
+Final Drafts/Grok/VAN_Vallaroli_step1.html
+Final Drafts/Grok/VAN_Vallaroli_Chittirai2026_v4_6_20260512-working.html
+Final Drafts/Grok/output/
+
+# HowTO pipeline outputs (regeneratable)
+HowTO/output/*.pdf
+HowTO/source/_pipeline_step*.html
+HowTO/source/*_base.html
