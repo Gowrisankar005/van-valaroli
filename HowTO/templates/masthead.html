@@ -1,0 +1,33 @@
+  <!-- PAGE 3 — CREDITS / MASTHEAD ═══════════════════════════════════════════════ -->
+  <div class="page page-masthead">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">ஆசிரியர் குழு</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="masthead-grid">
+        <div class="masthead-card">
+          <div class="masthead-card-title">வான் வளரொளி இதழ்</div>
+          <div class="masthead-card-divider"></div>
+          {% for role in masthead.roles %}
+          <div class="masthead-role-label">{{ role.label }}</div>
+          <div class="masthead-name">{{ role.name }}</div>
+          {% endfor %}
+          <div class="masthead-card-spacer"></div>
+          <div class="masthead-contact-heading">வெளியீட்டாளர்</div>
+          <div class="masthead-contact-text">{{ masthead.publisher }}</div>
+          <div class="masthead-contact-text">{{ masthead.address }}</div>
+          <div class="masthead-contact-heading">தொடர்புகொள்ள:</div>
+          <div class="masthead-contact-text">{{ masthead.email }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: {{ issue_number }} &nbsp;|&nbsp; {{ tamil_month }} {{ year }}</span>
+      <span class="page-number">3</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  </div>

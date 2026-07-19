@@ -1,0 +1,25 @@
+  <!-- COVER ═══════════════════════════════════════════════ -->
+  <div class="cover-section">
+    <div class="cover">
+      <img class="cover-image" src="{{ cover_image }}" alt="">
+      <div class="masthead">
+        <span class="pill">இதழ் {{ issue_number }} &nbsp;·&nbsp; {{ tamil_month }} {{ year }}</span>
+        {% if special_label %}<span class="pill-special">{{ special_label }}</span>{% endif %}
+      </div>
+      <div class="quote-float">
+        <div class="quote-text">"எல்லா உயிர்களும் இன்புற்று வாழ்க"</div>
+        <div class="quote-attr">— வள்ளலார்</div>
+      </div>
+      <div class="teaser-list">
+        <div class="teasers-label">இந்த இதழில்</div>
+        <div class="teasers">
+          {% for teaser in teasers %}
+          <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">{{ teaser }}</span></div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="publisher-row">
+        <span class="publisher-name">பெண்ணாடம் வள்ளலார் அறநிலையம்</span>
+      </div>
+    </div>
+  </div>

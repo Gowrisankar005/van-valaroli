@@ -1,0 +1,36 @@
+  <!-- PAGE 4 — TABLE OF CONTENTS ══════════════════════════════════════════ -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">பொருளடக்கம்</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="issue-banner">
+        <div class="banner-text">
+          <div class="banner-title">இதழ் {{ issue_number }} &nbsp;·&nbsp; {{ tamil_month }} {{ year }}</div>
+          <div class="banner-sub">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
+        </div>
+      </div>
+      <div class="toc-list">
+        {% for entry in toc_entries %}
+        <div class="toc-row{% if loop.index0 % 2 %} row-alt{% endif %}">
+          <div class="toc-accent" style="background:{{ entry.color }};"></div>
+          <div class="toc-content">
+            <div class="toc-section">{{ entry.section_name }}</div>
+            <div class="toc-desc">{{ entry.topic_title }}</div>
+          </div>
+          <div class="toc-dots"></div>
+          <div class="toc-page" style="color:{{ entry.color }};">{{ entry.page }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: {{ issue_number }} &nbsp;|&nbsp; {{ tamil_month }} {{ year }}</span>
+      <span class="page-number">4</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  </div>

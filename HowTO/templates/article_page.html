@@ -1,0 +1,31 @@
+  <!-- {{ section_name }} — page (placeholder; rebalance will distribute) -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">{{ section_name }}</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="section-header">
+        <div class="topic-title">{{ topic_title }}</div>
+        <div class="section-label-row">
+          <span class="lotus-icon">❀</span>
+          <span class="section-label">{{ section_name }}</span>
+          <span class="lotus-icon">❀</span>
+        </div>
+        <div class="title-underline"></div>
+      </div>
+      <div class="section-divider">•&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;•</div>
+      <div class="body-text">
+        {% if author %}<div class="author-byline">{{ author }}</div>{% endif %}
+{{ body_html }}
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: {{ issue_number }} &nbsp;|&nbsp; {{ tamil_month }} {{ year }}</span>
+      <span class="page-number">{{ page_number }}</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  </div>

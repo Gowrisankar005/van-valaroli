@@ -1,0 +1,6 @@
+playwright>=1.50
+img2pdf>=0.5
+Pillow>=10.0
+lxml>=5.0
+python-docx>=1.0
+pikepdf>=8.0
