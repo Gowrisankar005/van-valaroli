@@ -126,11 +126,20 @@ def check_directives(body: str, file: str) -> list:
     return issues
 
 
+# Tamil letters + vowel signs/virama — used to build word-boundary lookarounds,
+# since \b relies on \w and doesn't reliably split Tamil combining marks.
+_TAMIL_CHAR = r'஀-௿'
+_LOAN_WORD_RE = {
+    bad: re.compile(rf'(?<![{_TAMIL_CHAR}]){re.escape(bad)}(?![{_TAMIL_CHAR}])')
+    for bad in LOAN_WORDS
+}
+
+
 def check_loan_words(body: str, file: str) -> list:
     issues = []
     for i, line in enumerate(body.splitlines(), start=1):
         for bad, good in LOAN_WORDS.items():
-            if bad in line:
+            if _LOAN_WORD_RE[bad].search(line):
                 issues.append(Issue('warning', file, i,
                     f"English loan word '{bad}' — use செந்தமிழ் '{good}'"))
     return issues
