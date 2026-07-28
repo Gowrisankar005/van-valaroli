@@ -234,10 +234,10 @@ def create_continuation_page(template_page, section_name_text: str):
     if ca is None:
         return new
 
-    # Remove any section-header (the new page is a continuation, not a start)
+    # Remove section-header and author-byline (first-page only chrome)
     for ch in list(ca):
         cls = (ch.get('class') or '').split()
-        if 'section-header' in cls:
+        if 'section-header' in cls or 'author-byline' in cls:
             ca.remove(ch)
 
     # Ensure a continuation-banner exists at the top of content-area

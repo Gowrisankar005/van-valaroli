@@ -10,6 +10,7 @@
     <div class="content-area">
       <div class="section-header">
         <div class="topic-title">{{ topic_title }}</div>
+        {% if topic_subtitle %}<div class="topic-subtitle">{{ topic_subtitle }}</div>{% endif %}
         <div class="section-label-row">
           <span class="lotus-icon">❀</span>
           <span class="section-label">{{ section_name }}</span>
@@ -18,8 +19,8 @@
         <div class="title-underline"></div>
       </div>
       <div class="section-divider">•&nbsp;&nbsp;&nbsp;•&nbsp;&nbsp;&nbsp;•</div>
+      {% if author %}<div class="author-byline">{{ author }}</div>{% endif %}
       <div class="body-text">
-        {% if author %}<div class="author-byline">{{ author }}</div>{% endif %}
 {{ body_html }}
       </div>
     </div>

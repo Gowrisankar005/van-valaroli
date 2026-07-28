@@ -441,10 +441,16 @@ def tag_sangam_section(doc) -> int:
 # ─── 5. Page-36 image reorganization ──────────────────────────────────────────
 
 def reorganize_activities_page(doc) -> int:
-    """Find the அறநிலையச் செய்திகள் continuation page (the one with multiple
-    article-figure img-right) and group each subhead's pair of images into a
-    single 2-column .activities-image-grid container placed right after the
-    subhead. Paragraphs follow below the grid.
+    """Find the அறநிலையச் செய்திகள் page(s) and group any run of 2+
+    CONSECUTIVE float figures (nothing else between them — no subhead, no
+    paragraph) into a 2-column .activities-image-grid, in place.
+
+    Only truly-adjacent figures are grouped; document order is otherwise
+    left untouched, so each subsection's own heading/images/paragraphs stay
+    together. (An earlier version of this function grouped EVERY figure on
+    the page into one grid regardless of position, which scattered a page
+    with several subsections into "all headings, one giant image block,
+    all paragraphs" — see PART 9 lesson in CLAUDE.md.)
 
     Returns number of grids created (0 if not found / nothing to do).
     """
@@ -461,70 +467,49 @@ def reorganize_activities_page(doc) -> int:
         if body is None:
             continue
 
-        # Only reorganize pages that have multiple float-right figures
-        figures = body.findall('.//figure[@class]')
-        float_figs = [f for f in figures if 'img-right' in (f.get('class') or '')
-                                          or 'img-left' in (f.get('class') or '')]
-        if len(float_figs) < 2:
-            continue
-
-        # Walk children, group into [subhead, [figs...], [paras...]] segments
-        # delimited by <div class="section-divider">.
         children = list(body)
-        segments = []  # list of lists of elements
-        current_segment = []
-        for ch in children:
-            cls = set((ch.get('class') or '').split())
-            if 'section-divider' in cls:
-                if current_segment:
-                    segments.append(current_segment)
-                    current_segment = []
-                segments.append([ch])  # keep divider as its own marker
-                continue
-            current_segment.append(ch)
-        if current_segment:
-            segments.append(current_segment)
-
-        # Now rebuild: for any segment that contains >=2 figures, group them.
         new_children = []
-        for seg in segments:
-            seg_figs = [el for el in seg if el.tag == 'figure']
-            if len(seg_figs) >= 2:
-                # Build new order:  subhead → image-grid → paragraphs
-                non_fig = [el for el in seg if el.tag != 'figure']
-                # Find subhead and other content
-                subheads = [el for el in non_fig if 'subhead' in (el.get('class') or '').split()]
-                others = [el for el in non_fig if 'subhead' not in (el.get('class') or '').split()]
-
-                # Build a fresh grid container
-                grid = lxml_html.Element('div', attrib={'class': 'activities-image-grid'})
-                for fig in seg_figs:
-                    # Strip floating class so it sits naturally inside the grid
-                    fig_classes = (fig.get('class') or '').split()
-                    fig_classes = [c for c in fig_classes
-                                   if c not in ('img-right', 'img-left',
-                                                'article-figure')]
-                    fig.set('class', ' '.join(fig_classes))
-                    grid.append(fig)
-                grids_created += 1
-
-                # Emit subhead(s), grid, then paragraphs
-                new_children.extend(subheads)
-                new_children.append(grid)
-                new_children.extend(others)
+        i = 0
+        page_grids = 0
+        while i < len(children):
+            ch = children[i]
+            cls = set((ch.get('class') or '').split())
+            is_float_fig = ch.tag == 'figure' and ({'img-right', 'img-left'} & cls)
+            if is_float_fig:
+                run = [ch]
+                j = i + 1
+                while j < len(children):
+                    cls2 = set((children[j].get('class') or '').split())
+                    if children[j].tag == 'figure' and ({'img-right', 'img-left'} & cls2):
+                        run.append(children[j])
+                        j += 1
+                    else:
+                        break
+                if len(run) >= 2:
+                    grid = lxml_html.Element('div', attrib={'class': 'activities-image-grid'})
+                    for fig in run:
+                        fig_classes = [c for c in (fig.get('class') or '').split()
+                                       if c not in ('img-right', 'img-left', 'article-figure')]
+                        fig.set('class', ' '.join(fig_classes))
+                        grid.append(fig)
+                    new_children.append(grid)
+                    grids_created += 1
+                    page_grids += 1
+                else:
+                    new_children.append(ch)
+                i = j
             else:
-                new_children.extend(seg)
+                new_children.append(ch)
+                i += 1
 
-        # Replace body's children
-        for ch in list(body):
-            body.remove(ch)
-        for ch in new_children:
-            body.append(ch)
-
-        page_no = page.find('.//span[@class="page-number"]')
-        page_label = (page_no.text if page_no is not None else '?')
-        print(f"  ✓ Page {page_label}: regrouped images into "
-              f"{grids_created} grid(s)")
+        if page_grids:
+            for ch in list(body):
+                body.remove(ch)
+            for ch in new_children:
+                body.append(ch)
+            page_no = page.find('.//span[@class="page-number"]')
+            page_label = (page_no.text if page_no is not None else '?')
+            print(f"  ✓ Page {page_label}: grouped {page_grids} adjacent image pair(s) into grid(s)")
 
     return grids_created
 

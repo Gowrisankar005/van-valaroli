@@ -618,6 +618,16 @@
       line-height: 1.2;
       margin-bottom: 2.5mm;
     }
+    /* Optional second line under title (e.g. பகுதி 1) — smaller, not shouting */
+    .section-header .topic-subtitle {
+      font-size: 12pt;
+      font-weight: 600;
+      color: var(--van-deep);
+      opacity: 0.85;
+      letter-spacing: 0.4px;
+      line-height: 1.35;
+      margin: -1mm 0 2.5mm 0;
+    }
 
     .section-header .section-label-row {
       display: flex;
@@ -726,12 +736,20 @@
       vertical-align: -3px;
     }
 
+    /* Poem / kural citation — end of last verse line, smaller than verse */
+    /* e.g.  …உயிரினும் ஓம்பப் படும்.  — திருக்குறள்   (9pt on line 2)   */
+    .slim-quote .quote-cite,
     .slim-quote .quote-source {
-      font-size: 10pt;
-      color: var(--van-deep);
+      display: inline;
+      font-size: 9pt;
+      font-style: normal;
       font-weight: 600;
-      margin-top: 3mm;
-      letter-spacing: 0.3px;
+      color: var(--van-deep);
+      opacity: 0.88;
+      letter-spacing: 0.15px;
+      white-space: nowrap;
+      margin-left: 0.35em;
+      vertical-align: baseline;
     }
 
     /* ── Auto-compact when two quotes are adjacent ── */
@@ -754,7 +772,8 @@
     .slim-quote-compact .quote-text { font-size: 12pt; line-height: 1.6; }
     .slim-quote-compact .quote-text::before,
     .slim-quote-compact .quote-text::after { font-size: 13pt; }
-    .slim-quote-compact .quote-source { font-size: 9pt; margin-top: 2mm; }
+    .slim-quote-compact .quote-cite,
+    .slim-quote-compact .quote-source { font-size: 8pt; }
 
     .highlights-box {
       background: var(--van-bg-light);
@@ -810,8 +829,8 @@
       color: #2B2B2B;
       line-height: 1.65;
       margin-bottom: 3.5mm;
-      font-style: normal;       
-      text-align: justify;      
+      font-style: normal;
+      text-align: center;
     }
 
     .closing .sign-off {
@@ -1187,15 +1206,17 @@
     #theme-picker { display: none !important; }
   }
 
-    /* ── 1. Author byline (was missing entirely) ──────────────────────────── */
+    /* ── 1. Author byline — pinned under section title on page 1 only ───── */
+    /* Lives outside .body-text so rebalance never moves it to continuations. */
     .author-byline {
       font-size: 11pt;
       font-weight: 700;
       color: var(--van-deep);
       text-align: right;
-      margin-top: 5mm;
-      padding-top: 2.5mm;
-      border-top: 0.75pt solid color-mix(in srgb, var(--van-primary) 35%, transparent);
+      margin: 0 0 3.5mm 0;
+      padding: 0 0 2mm 0;
+      border-top: none;
+      border-bottom: 0.75pt solid color-mix(in srgb, var(--van-primary) 35%, transparent);
       letter-spacing: 0.3px;
     }
 
@@ -1373,57 +1394,79 @@
     .masthead-card {
       background: var(--van-deepest);
       border-radius: 8px;
-      padding: 6mm 6mm 7mm;
+      padding: 6mm 6mm 6mm;
       color: white;
       display: flex;
       flex-direction: column;
     }
     .masthead-card-title {
-      font-size: 14pt;
+      font-size: 13pt;
       font-weight: 800;
       color: var(--van-gold);
       text-align: center;
       letter-spacing: 0.5px;
-      margin-bottom: 3mm;
+      margin-bottom: 2mm;
+      flex-shrink: 0;
     }
     .masthead-card-divider {
       height: 1px;
       background: color-mix(in srgb, var(--van-gold) 45%, transparent);
-      margin: 3.5mm 0;
+      margin: 3mm 0;
+      flex-shrink: 0;
+    }
+    /* Equal-weight role blocks — same rhythm for every name */
+    .masthead-roles {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      flex: 1 1 auto;
+      gap: 0;
+      min-height: 0;
+    }
+    .masthead-role-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2.5mm 0;
     }
     .masthead-role-label {
       font-size: 8pt;
       font-weight: 700;
       color: var(--van-gold);
-      letter-spacing: 1.5px;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
-      margin-top: 4mm;
-      margin-bottom: 1mm;
-      opacity: 0.85;
+      margin: 0 0 1.2mm 0;
+      opacity: 0.9;
     }
+    /* All primary names — identical size/weight/colour */
     .masthead-name {
-      font-size: 12pt;
+      font-size: 13pt;
       font-weight: 700;
       color: var(--van-text-on-dark);
-      margin-bottom: 1mm;
+      margin: 0 0 1mm 0;
+      line-height: 1.35;
+      letter-spacing: 0.2px;
     }
     .masthead-contact-heading {
       font-size: 8pt;
       font-weight: 700;
       color: var(--van-gold);
       letter-spacing: 1px;
-      margin-top: 3mm;
+      margin-top: 2mm;
       opacity: 0.85;
+      flex-shrink: 0;
     }
+    /* Secondary lines under a name (title, address) — same for every role */
     .masthead-contact-text {
       font-size: 9pt;
-      color: rgba(255,255,255,0.85);
-      margin-bottom: 0.5mm;
-      word-break: break-all;
+      font-weight: 500;
+      color: rgba(255,255,255,0.82);
+      margin: 0 0 0.4mm 0;
+      line-height: 1.45;
+      word-break: break-word;
     }
-    /* spacer that pushes remaining card content to top & bottom */
     .masthead-card-spacer {
-      flex: 1;
+      display: none; /* equal role spacing replaces the old spacer */
     }
 
     /* ── Right: logos on top, editorial board fills space ── */
@@ -1458,7 +1501,7 @@
       width: 100%;
     }
     .masthead-board-title {
-      font-size: 15pt;
+      font-size: 13pt;
       font-weight: 800;
       color: var(--van-deep);
       margin-bottom: 4mm;
@@ -1467,17 +1510,19 @@
       padding-bottom: 2.5mm;
       width: 100%;
     }
+    /* Compiler names match left-card name weight (13pt / 700) */
     .masthead-board-list {
       font-size: 13pt;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--van-deepest);
-      line-height: 2.2;
+      line-height: 2.15;
       padding-left: 7mm;
       list-style-type: decimal;
       width: 100%;
     }
     .masthead-board-list li {
       padding-left: 1mm;
+      margin: 1mm 0;
     }
 
     /* ═══════════════════════════════════════════════════════════

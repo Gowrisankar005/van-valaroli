@@ -57,6 +57,18 @@ Lines starting with `- ` become an unordered list.
 - Third item
 ```
 
+### 3b. Numbered list
+Lines starting with `1. `, `2. ` … become an ordered list. Use for step-by-step
+instructions or a references/ஆதாரம் list — do NOT use plain `1. text` lines
+back to back with no list markup expectation; the parser only recognizes this
+exact `N. ` prefix pattern.
+
+```markdown
+1. First step
+2. Second step
+3. Third step
+```
+
 ### 4. Slim quote (verse / pull-quote)
 A `:::quote` directive with optional `source` attribute.
 
@@ -91,8 +103,11 @@ A `:::image` directive with `src` and `caption` attributes. Optional `type` sele
 | `type=` | Visual | When to use |
 |---|---|---|
 | `float` (default) | 60×45mm right-floated thumbnail | Most images |
+| `float-left` | 60×45mm left-floated thumbnail | Second image in a row — alternate sides so text doesn't get squeezed into a narrow column between two same-side floats |
 | `banner` | Full-width hero | Section openers, dramatic shots |
 | `half` | 100mm centered | Diagrams, single objects |
+
+**Never put two consecutive `float` (or two consecutive `float-left`) images back to back with only a short paragraph between them** — the paragraph gets squeezed into a narrow ragged column between the stacked floats. Alternate `float` / `float-left`, or separate them with enough body text / a `half` image to clear the float before the next one starts.
 
 The `src` must match a filename in the issue's `images/` folder.
 

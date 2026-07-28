@@ -33,7 +33,9 @@ author: கு. திருமுருகன்
 :::image src="05-adichanallur-figurine-03.jpeg" caption="ஆதிச்சநல்லூர் சுடுமண் சிற்பம்" type="float"
 :::
 
-:::image src="05-adichanallur-excavation-04.jpeg" caption="ஆதிச்சநல்லூர் - அகழாய்வு" type="float"
+இந்த அகழாய்வுத் தளத்தில் கண்டெடுக்கப்பட்ட மட்பாண்டங்களும், அடக்கநிலைக் கருவிகளும் ஆதிச்சநல்லூர் மக்களின் அன்றாட வாழ்வையும் அறச் சடங்குகளையும் விளக்குகின்றன.
+
+:::image src="05-adichanallur-excavation-04.jpeg" caption="ஆதிச்சநல்லூர் - அகழாய்வு" type="float-left"
 :::
 
 ஆதிச்சநல்லூர் தாய் வழிபாட்டு சிற்பங்கள் சிந்துவெளி பெண் உருவஉலோக சிலைக்கு நெருக்கமாக உள்ளது என்பதை கருத்தில் கொள்ளவேண்டும்
@@ -126,7 +128,7 @@ author: கு. திருமுருகன்
 
 ## ஆதாரம்:
 
-1. ஆதாரம் தமிழர் வாழ்வியல் - பகுதி -79 U-tube
-2. The Hindu an Times of India
+1. ஆதாரம் தமிழர் வாழ்வியல் - பகுதி:79  https://youtu.be/ViUm4ZhyvYs?si=X6GuPHfES4UdNX65
+2. The Hindu and Times of India
 3. https://www.konarkotram.com/news/nadukal-worship/
-4. //efaidnbmnnnibpcajpcglclefindmkaj/https://www.shcpub.edu.in/web/binary/view_document/?model=ir.attachment&id=35848
+4. https://www.shcpub.edu.in/web/binary/view_document/?model=ir.attachment&id=35848

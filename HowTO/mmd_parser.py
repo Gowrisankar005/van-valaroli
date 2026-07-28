@@ -27,6 +27,9 @@ import sys
 from pathlib import Path
 from html import escape
 
+# Matches "1. text", "2. text" … at the start of a stripped line.
+NUMBERED_ITEM_RE = re.compile(r'^\d+\.\s+(.*)$')
+
 
 # ─── Frontmatter parsing (mini YAML — handles flat key: value lines) ────────
 
@@ -123,6 +126,16 @@ def parse_body(body: str, warnings: list) -> str:
             out.append(f'<ul>{li_html}</ul>')
             continue
 
+        # Numbered list — collect consecutive `1. `, `2. ` … lines
+        if NUMBERED_ITEM_RE.match(stripped):
+            items = []
+            while i < n and NUMBERED_ITEM_RE.match(lines[i].strip()):
+                items.append(NUMBERED_ITEM_RE.match(lines[i].strip()).group(1).strip())
+                i += 1
+            li_html = ''.join(f'<li>{escape(it)}</li>' for it in items)
+            out.append(f'<ol class="numbered-list">{li_html}</ol>')
+            continue
+
         # Article title (single #) — bypass (already in frontmatter)
         if stripped.startswith('# '):
             i += 1
@@ -139,6 +152,8 @@ def parse_body(body: str, warnings: list) -> str:
             if s.startswith(':::'):
                 break
             if s.startswith('- '):
+                break
+            if NUMBERED_ITEM_RE.match(s):
                 break
             para_lines.append(s)
             i += 1
@@ -161,12 +176,20 @@ def render_directive(name: str, attrs: dict, lines: list, warnings: list) -> str
         source = attrs.get('source', '')
         # Each non-blank line becomes a verse line, joined by <br>
         verse_lines = [escape(L.strip()) for L in lines if L.strip()]
+        # Poem / kural citation — same small-font style everywhere, placed at
+        # the end of the *last* verse line (for a 2-line kural: end of line 2).
+        if source and verse_lines:
+            cite = source.strip()
+            if not cite.startswith('—') and not cite.startswith('–'):
+                cite = f'— {cite}'
+            verse_lines[-1] = (
+                f'{verse_lines[-1]}'
+                f'<span class="quote-cite"> {escape(cite)}</span>'
+            )
         verse_html = '<br>'.join(verse_lines)
-        src_html = (f'<div class="quote-source">— {escape(source)}</div>'
-                    if source else '')
         return (f'<div class="slim-quote">'
                 f'<div class="quote-text">{verse_html}</div>'
-                f'{src_html}</div>')
+                f'</div>')
 
     if name == 'box':
         title = attrs.get('title', '')
@@ -187,9 +210,10 @@ def render_directive(name: str, attrs: dict, lines: list, warnings: list) -> str
     if name == 'image':
         src = attrs.get('src', '')
         caption = attrs.get('caption', '')
-        img_type = attrs.get('type', 'float')   # float | banner | half
+        img_type = attrs.get('type', 'float')   # float | float-left | banner | half
         type_class = {
             'float': 'img-right',
+            'float-left': 'img-left',
             'banner': 'img-banner',
             'half': 'img-half',
         }.get(img_type, 'img-right')
@@ -202,20 +226,33 @@ def render_directive(name: str, attrs: dict, lines: list, warnings: list) -> str
                 f'</figure>')
 
     if name == 'closing':
-        # Each line becomes a closing-row; em-dash lines become sign-off
+        # Prose lines (intro remarks, end in ./!/?) stay as plain <p> text.
+        # The first line that ISN'T a full sentence starts the signature
+        # block; from there lines fill sign-off, sign-name, sign-title, then
+        # org-name — matching Issue 01's signature card (greeting/name/title/
+        # org). A leading em-dash still works (spec-documented) but isn't
+        # required — a short label-like line (no ./!/? ending) is enough.
         rows = []
+        started = False
+        sig_idx = 0
         for L in lines:
             s = L.strip()
             if not s:
                 continue
-            if s.startswith('—') or s.startswith('-'):
-                # sign-off block
-                rows.append(f'<div class="sign-off">{escape(s)}</div>')
-            elif rows and 'sign-off' in rows[-1]:
-                # name following sign-off
-                rows.append(f'<div class="sign-name">{escape(s)}</div>')
-            else:
+            if not started and not s.endswith(('.', '!', '?', '।')):
+                started = True
+            if not started:
                 rows.append(f'<p>{escape(s)}</p>')
+                continue
+            if sig_idx == 0:
+                rows.append(f'<div class="sign-off">{escape(s)}</div>')
+            elif sig_idx == 1:
+                rows.append(f'<div class="sign-name">{escape(s)}</div>')
+            elif sig_idx == 2:
+                rows.append(f'<div class="sign-title">{escape(s)}</div>')
+            else:
+                rows.append(f'<div class="org-name">{escape(s)}</div>')
+            sig_idx += 1
         rows.append('<div class="lotus-end">❀</div>')
         return f'<div class="closing">{"".join(rows)}</div>'
 
