@@ -5,7 +5,20 @@ Technical overview for developers maintaining or extending the system.
 ## End-to-end flow
 
 ```
-SOURCE (HTML or MMD)
+SOURCE (author MMD or hand-built HTML)
+      │
+      ▼
+┌──────────────────────────────────────────────────────────────────┐
+│  Step 0 — build_issue_html.py (MMD mode only)                     │
+│  • Parses issue_meta.json + articles/*.md via mmd_parser.py       │
+│  • Renders page fragments (templates/*.html) through an in-house  │
+│        template engine — {{ var }}, {% for %} (balanced nested-   │
+│        block matching), {% if %} (supports literal % in condition │
+│        expressions, e.g. loop.index0 % 2)                         │
+│  • Computes derived fields: tiruvalluvar_year, release_month       │
+│  • Merges magazine_defaults.json masthead roles                   │
+│  • Assembles cover/imprint/masthead/TOC/article pages → base HTML │
+└──────────────────────────────────────────────────────────────────┘
       │
       ▼
 ┌──────────────────────────────────────────────────────────────────┐
@@ -13,8 +26,12 @@ SOURCE (HTML or MMD)
 │  • Image path rewrite (Issue-NN/ → Images/)                       │
 │  • Hanging-subhead detection + move-to-next-page                  │
 │  • '----' caption normalization → .subhead-caption                │
-│  • Activities-page image grid creation (2-col)                    │
-│  • Sangam section tagging (alternating image floats)              │
+│  • Activities-page image grid creation (2-col) — only groups      │
+│        immediately-consecutive same-direction floats, not every   │
+│        image on the page (see Architecture note below)            │
+│  • Adjacent .img-half pairing into .image-pair-row (side-by-side, │
+│        height-capped, object-fit:contain — never crops)           │
+│  • Sangam section tagging (alternating image floats)               │
 │  • Top-right + bottom-left corner motifs (full set of 4)          │
 │  • CSS injection: 11pt body, slim-quote redesign, image sizing    │
 │  • Stray trailing character cleanup                               │
@@ -23,14 +40,26 @@ SOURCE (HTML or MMD)
       ▼
 ┌──────────────────────────────────────────────────────────────────┐
 │  Step 2 — rebalance_sections.py (uses Playwright for measurement)│
-│  • Measure each element's rendered height in real browser         │
+│  • Measure each element's rendered height in real browser —       │
+│        temp measurement file is written NEXT TO the source HTML   │
+│        (never to /tmp), so relative Images/ paths still resolve   │
 │  • Per-section page count adjustment using capacity model:         │
-│        section_start_capacity = 850px, continuation = 990px        │
+│        section_start_capacity = 850px, continuation = 990px;      │
+│        3% overfill tolerance before adding a page (not 20% —      │
+│        no longer relies on visual zoom-shrink to hide overflow)   │
 │  • Content redistribution (greedy with overshoot/underfill        │
 │        heuristic, respecting logical units)                       │
 │  • Logical-closure rules: never split a quote/highlights-box;     │
-│        keep subheads with their following content; prefer breaks  │
-│        after section-divider                                      │
+│        keep subheads with their following content — including a  │
+│        second pass that merges any subhead-only unit (no real     │
+│        content, e.g. a nested ## immediately before a ###) into   │
+│        the next unit, so a heading can never end up stranded      │
+│        alone at a page bottom; prefer breaks after section-divider │
+│  • Backfill pass: after redistribution, re-measure REAL rendered  │
+│        gaps in the browser and greedily pull the next page's      │
+│        first block forward into any page with real slack — only   │
+│        when it's a genuine net improvement (never just relocating │
+│        the same deficit to the following page)                    │
 │  • Page renumbering across whole document                         │
 │  • TOC auto-update from new section start positions               │
 └──────────────────────────────────────────────────────────────────┘
@@ -51,9 +80,16 @@ SOURCE (HTML or MMD)
 │                                                                   │
 │  TEXT-PDF (default):                                              │
 │  • Playwright opens HTML in headless Chromium                     │
-│  • Inject @page A4 + page-break CSS                               │
+│  • page.emulate_media('print') set immediately, BEFORE any        │
+│        measurement — so measured heights match what page.pdf()    │
+│        actually renders under @media print rules                  │
+│  • Inject @page A4 + page-break CSS (flex column layout, not      │
+│        block — block silently breaks footer-pinned-to-bottom)     │
 │  • Per-page zoom for residual overfill (measures total page H,    │
-│        shrinks body-text by exact overshoot amount)               │
+│        shrinks body-text by exact overshoot amount) — applied via │
+│        element.style.setProperty(prop, val, 'important'), since   │
+│        magazine.css sets these same properties with !important    │
+│        and a bare inline-style assignment is silently ignored     │
 │  • page.pdf() → Chrome print engine → searchable text-PDF         │
 │                                                                   │
 │  IMAGE-PDF (--format image):                                      │
@@ -66,6 +102,9 @@ SOURCE (HTML or MMD)
       ▼
    OUTPUT.pdf
 ```
+
+For the concrete bugs each of these fixes traces back to, see CLAUDE.md
+PART 9 "System B (HowTO pipeline) — Lessons Learned".
 
 ## Why the pipeline is split this way
 
@@ -184,21 +223,22 @@ Text-PDF wins on all other measures.
 
 ## What's intentionally NOT in the toolkit
 
-- **No build_v3.py equivalent** — the current source HTML was hand-built
-  for Issue 1. Future issues need `build_issue_html.py` (NOT yet built)
-  to convert author markdown → source HTML.
-- **No web preview server** — author preview script (Phase 2) is also
-  not yet built. Open the HTML in a browser for now.
-- **No automated upload/email** — distribution is a manual step.
+- **No author-facing web preview server** — authors/editors open the built
+  HTML or PDF directly to review. `validate_mmd.py` catches format errors
+  pre-flight but there's no live-preview-while-typing tool.
+- **No automated upload/email** — distribution (Phase 8 of
+  `PRODUCTION_WORKFLOW.md`) is a manual step.
 
 ## Future roadmap (suggested)
 
-| Phase | Build | Effort |
-|---|---|---|
-| 1 | `build_issue_html.py` + Magazine Markdown spec + templates | ~6 hours |
-| 2 | `validate_mmd.py` + `preview_article.py` for authors | ~3 hours |
-| 3 | Wire all of above into `make_magazine.py` (Step 0) | ~1 hour |
-| 4 | (optional) Web-based preview server | ~4 hours |
-| 5 | (optional) Auto-distribution scripts | ~2 hours |
+`build_issue_html.py` + MMD spec/templates + `validate_mmd.py`, wired into
+`make_magazine.py` as Step 0, are all built and in active use since Issue 02
+— that closes what used to be Phases 1-3 here. Remaining optional ideas:
+
+| Idea | Effort |
+|---|---|
+| `preview_article.py` — live-render a single article's HTML for an author without running the full pipeline | ~2 hours |
+| Web-based preview server | ~4 hours |
+| Auto-distribution scripts (email/upload) | ~2 hours |
 
 See `README.md` for the high-level architecture diagram.

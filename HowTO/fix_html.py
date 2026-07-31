@@ -185,23 +185,45 @@ CSS_INJECTION = """
        Added subtle LEFT vertical accent bar (typographic anchor without
        enclosure). Strip background tint for clean white. Better breathing
        room via increased outer margin, tighter inner padding.
-       Captions/quotes now never overlap with floated images: clear:both. */
+       Captions/quotes now never overlap with floated images: clear:both.
+
+       Poem alignment: centre the quote *block* on the page, but every
+       verse line shares the same left edge as the first line
+       (.verse-line blocks + text-align:left). Do NOT centre / justify
+       each line (body-text justify must not stretch Tamil in poems). */
     .slim-quote {
+        display: flex !important;
+        justify-content: center !important;  /* centres the poem unit */
         margin: 6mm 14mm !important;
         padding: 2mm 0 2mm 6mm !important;
         border: none !important;
         border-left: 2pt solid var(--van-gold, #D4AF37) !important;
         border-radius: 0 !important;
         background: none !important;
-        text-align: left !important;
-        clear: both !important;       /* never overlap with floats */
+        text-align: left !important;         /* never centre verse lines */
+        clear: both !important;              /* never overlap with floats */
     }
     .slim-quote .quote-text {
+        display: inline-block !important;
+        text-align: left !important;         /* all lines start at same point */
+        text-align-last: left !important;
+        max-width: 100% !important;
         font-size: 11pt !important;
         line-height: 1.55 !important;
         font-style: italic !important;
         color: var(--van-deep, #2d7a3e) !important;   /* theme green */
         text-shadow: none !important;
+        word-spacing: normal !important;
+        letter-spacing: normal !important;
+        overflow-wrap: normal !important;
+        word-break: normal !important;
+        hyphens: none !important;
+    }
+    .slim-quote .verse-line {
+        display: block !important;
+        text-align: left !important;
+        text-align-last: left !important;
+        white-space: normal !important;
     }
     .slim-quote .quote-text::before,
     .slim-quote .quote-text::after {
@@ -327,6 +349,54 @@ CSS_INJECTION = """
         float: none !important;
     }
     .activities-image-grid figcaption {
+        font-size: 8pt !important;
+        color: #666 !important;
+        margin-top: 1mm !important;
+        text-align: center !important;
+        line-height: 1.3 !important;
+    }
+    /* Shared caption spans full width under both photos */
+    .activities-image-grid > .activities-grid-caption,
+    .activities-image-grid > figcaption.activities-grid-caption {
+        grid-column: 1 / -1 !important;
+        margin-top: 2mm !important;
+        font-size: 9pt !important;
+        font-weight: 600 !important;
+        color: #444 !important;
+    }
+
+    /* Side-by-side pair for two .img-half images of differing aspect
+       ratio (artifact/portrait photos) — height-capped, width follows
+       naturally, nothing gets cropped. See .activities-image-grid above
+       for the fixed-box variant used for same-shaped event photos. */
+    .image-pair-row {
+        display: flex !important;
+        gap: 4mm !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
+        margin: 4mm 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    .image-pair-row figure {
+        margin: 0 !important;
+        text-align: center;
+        flex: 0 1 auto !important;
+        max-width: 48% !important;
+    }
+    .image-pair-row img {
+        height: 55mm !important;
+        max-height: 55mm !important;
+        width: auto !important;
+        max-width: 100% !important;
+        object-fit: contain !important;
+        display: block !important;
+        margin: 0 auto !important;
+        border: none !important;
+        border-radius: 0 !important;
+        float: none !important;
+    }
+    .image-pair-row figcaption {
         font-size: 8pt !important;
         color: #666 !important;
         margin-top: 1mm !important;
@@ -487,11 +557,24 @@ def reorganize_activities_page(doc) -> int:
                         break
                 if len(run) >= 2:
                     grid = lxml_html.Element('div', attrib={'class': 'activities-image-grid'})
+                    # One shared caption under the whole pair (first non-empty wins)
+                    shared_caption = ''
                     for fig in run:
+                        for cap in fig.findall('.//figcaption'):
+                            t = (cap.text or '').strip()
+                            if t and not shared_caption:
+                                shared_caption = t
+                            fig.remove(cap)
                         fig_classes = [c for c in (fig.get('class') or '').split()
                                        if c not in ('img-right', 'img-left', 'article-figure')]
-                        fig.set('class', ' '.join(fig_classes))
+                        fig.set('class', ' '.join(fig_classes) if fig_classes else 'article-figure')
                         grid.append(fig)
+                    if shared_caption:
+                        cap_el = lxml_html.Element(
+                            'figcaption',
+                            attrib={'class': 'img-caption activities-grid-caption'})
+                        cap_el.text = shared_caption
+                        grid.append(cap_el)
                     new_children.append(grid)
                     grids_created += 1
                     page_grids += 1
@@ -510,6 +593,86 @@ def reorganize_activities_page(doc) -> int:
             page_no = page.find('.//span[@class="page-number"]')
             page_label = (page_no.text if page_no is not None else '?')
             print(f"  ✓ Page {page_label}: grouped {page_grids} adjacent image pair(s) into grid(s)")
+
+    return grids_created
+
+
+# ─── 6. Pair up adjacent .img-half images anywhere in the document ───────────
+
+def pair_adjacent_half_images(doc) -> int:
+    """Group any run of 2+ CONSECUTIVE .img-half figures (nothing else
+    between them) into the same 2-column grid used on the activities page
+    — but document-wide, not just there. Two full-width-centered images
+    stacked vertically each leave ~50mm of dead space on both sides and
+    read inconsistently; side by side uses the width and reads as a
+    deliberate comparison instead of two separate afterthought photos.
+
+    Odd runs leave the last image out of the grid (stays solo/full-width)
+    rather than forcing an awkward 3-up.
+    """
+    pages = doc.xpath('//div[contains(concat(" ", normalize-space(@class), " "), " page ")]')
+    grids_created = 0
+
+    for page in pages:
+        ca = find_content_area(page)
+        if ca is None:
+            continue
+        body = find_body_text(ca)
+        if body is None:
+            continue
+
+        children = list(body)
+        new_children = []
+        i = 0
+        page_grids = 0
+        while i < len(children):
+            ch = children[i]
+            cls = set((ch.get('class') or '').split())
+            is_half_fig = ch.tag == 'figure' and 'img-half' in cls
+            if is_half_fig:
+                run = [ch]
+                j = i + 1
+                while j < len(children):
+                    cls2 = set((children[j].get('class') or '').split())
+                    if children[j].tag == 'figure' and 'img-half' in cls2:
+                        run.append(children[j])
+                        j += 1
+                    else:
+                        break
+                pair_count = len(run) - (len(run) % 2)
+                for k in range(0, pair_count, 2):
+                    # NOT .activities-image-grid — that forces a fixed
+                    # 48mm height with object-fit:cover, tuned for same-
+                    # ish landscape event photos. Artifact/portrait photos
+                    # here vary wildly in aspect ratio (a tall figurine
+                    # next to a squarish one); cropping to a fixed box
+                    # would cut off real content. .image-pair-row instead
+                    # caps height and lets width follow naturally, so nothing
+                    # gets cropped.
+                    grid = lxml_html.Element('div', attrib={'class': 'image-pair-row'})
+                    for fig in run[k:k + 2]:
+                        fig_classes = [c for c in (fig.get('class') or '').split()
+                                       if c not in ('img-half', 'article-figure')]
+                        fig.set('class', ' '.join(fig_classes))
+                        grid.append(fig)
+                    new_children.append(grid)
+                    grids_created += 1
+                    page_grids += 1
+                for leftover in run[pair_count:]:
+                    new_children.append(leftover)
+                i = j
+            else:
+                new_children.append(ch)
+                i += 1
+
+        if page_grids:
+            for ch in list(body):
+                body.remove(ch)
+            for ch in new_children:
+                body.append(ch)
+            page_no = page.find('.//span[@class="page-number"]')
+            page_label = (page_no.text if page_no is not None else '?')
+            print(f"  ✓ Page {page_label}: paired {page_grids} adjacent .img-half image(s) into grid(s)")
 
     return grids_created
 
@@ -556,6 +719,10 @@ def main():
     print("[5/9] Reorganizing Activities-page images into 2-column grids…")
     n_grids = reorganize_activities_page(doc)
     print(f"      Created {n_grids} image grid(s)\n")
+
+    print("[5c/9] Pairing adjacent .img-half images document-wide…")
+    n_pairs = pair_adjacent_half_images(doc)
+    print(f"      Paired {n_pairs} image(s) into side-by-side row(s)\n")
 
     print("[5b/9] Stripping stray trailing characters from paragraphs…")
     n_stray = fix_stray_characters(doc)

@@ -41,7 +41,11 @@ Edit `issues/Issue-03/issue_meta.json`:
 - Bump `issue_number`
 - Set `tamil_month`, `year`, `year_tamil`, `english_dates`
 - Update the `sections` list to match this issue's content
-- Optionally update `masthead.roles` if editorial team changes
+  (cover teasers are **auto-built** from each section's `topic_title` —
+  no separate teaser list needed; optional `cover_teasers` override in meta)
+- Masthead senior roles / publisher can stay as in the previous issue;
+  **தொகுப்பாசிரியர்கள்** are shared for every issue via
+  `HowTO/magazine_defaults.json` (edit there once, not per issue)
 
 ## Phase 3 — Drop in author content
 
@@ -89,10 +93,20 @@ This runs all 5 steps automatically:
 | Step | What happens | Time |
 |---|---|---|
 | 0 | `build_issue_html.py` — Magazine Markdown → base HTML | <1 s |
-| 1 | `fix_html.py` — image paths, hanging subheads, image grids, CSS | 0.1 s |
-| 2 | `rebalance_sections.py` — per-section page count + content distribution + TOC | 4-6 s |
+| 1 | `fix_html.py` — image paths, hanging subheads, image grids/pairing, CSS | 0.1 s |
+| 2 | `rebalance_sections.py` — per-section page count + content distribution + real-rendered-gap backfill + TOC | 4-6 s |
 | 3 | `compare_html.py` — integrity audit | 0.3 s |
 | 4 | `build_text_pdf.py` — Playwright → searchable text-PDF | 3-6 s |
+
+If you'd rather run the stages by hand (useful when debugging one stage), the
+equivalent manual sequence is:
+```bash
+python build_issue_html.py issues/Issue-03 source/VAN_Vallaroli_<Month><Year>_base.html
+python fix_html.py source/VAN_Vallaroli_<Month><Year>_base.html source/VAN_Vallaroli_<Month><Year>_fixed.html
+python rebalance_sections.py source/VAN_Vallaroli_<Month><Year>_fixed.html source/VAN_Vallaroli_<Month><Year>.html
+python build_text_pdf.py source/VAN_Vallaroli_<Month><Year>.html output/VAN_Vallaroli_<Month><Year>.pdf
+python compare_html.py source/VAN_Vallaroli_<Month><Year>_fixed.html source/VAN_Vallaroli_<Month><Year>.html
+```
 
 ## Phase 5 — Review PDF
 
@@ -101,9 +115,9 @@ Open `output/VAN_Vallaroli_<Month><Year>.pdf` and verify:
 ### Cover & front matter
 - [ ] Cover image displays correctly
 - [ ] Issue number + Tamil month + year on cover pill
-- [ ] Teaser list shows first 6 article titles
+- [ ] Teaser list shows up to 6 dynamic lines (`section — topic_title` from this issue)
 - [ ] Page 2 (imprint) — issue info correct
-- [ ] Page 3 (masthead) — editor names + contact correct
+- [ ] Page 3 (masthead) — senior roles + **தொகுப்பாசிரியர்கள்** + contact correct
 - [ ] Page 4 (TOC) — every section listed with reasonable page number
 
 ### Articles (spot-check 3)
@@ -111,13 +125,25 @@ Open `output/VAN_Vallaroli_<Month><Year>.pdf` and verify:
 - [ ] Author byline visible on page 1
 - [ ] Body text reads naturally, no orphan subheads
 - [ ] Slim quotes: green left bar, italic verse, source citation
-- [ ] Images: uniform 60×45mm with caption centered below
+- [ ] Images: portraits use `type="portrait"` (45mm, no border) — never `type="half"`, which is for diagrams/artifacts (80mm, no border)
+- [ ] No two same-side floats (`float`/`float-left`) stacked back to back — check the alternation held
 - [ ] Page footers: number centered, issue info left, logo right
+- [ ] No page has a large blank area at the bottom mid-article (the `rebalance_sections.py` backfill pass should have caught this — see below). A blank area right at a section's *last* page, after a natural closing/rating line, is fine.
 
 ### PDF integrity
 - [ ] Cmd+F search works (try a known Tamil word)
 - [ ] Text select-and-copy works
 - [ ] File size 5–20 MB (depending on image count)
+
+### Pipeline log sanity check
+While the build runs, glance at the `rebalance_sections.py` output:
+- `[3/5] Verifying real rendered fill + backfilling underfilled pages…` should print
+  `✓ Backfilled N element(s)` lines if any page had genuine slack — 0 is fine too,
+  it just means nothing needed moving.
+- If a page still looks empty at the bottom *after* this step ran, it's most likely
+  the natural end of that section (confirm by checking the last visible line isn't
+  cut off), not a bug — but if in doubt, re-run with `--keep-intermediates` and
+  inspect `_pipeline_step2.html` for that page directly.
 
 ## Phase 6 — Iterate if needed
 
@@ -131,12 +157,15 @@ Common fixes:
 
 | Issue | Fix |
 |---|---|
-| Empty space at page bottom | Ask author to expand that section |
+| Empty space at page bottom, mid-section | Should mostly self-correct via the `rebalance_sections.py` backfill pass — re-check the log for `Backfilled N element(s)`. If the gap remains because the next page's first block is one large paragraph (too big to move whole), split that paragraph at a natural sentence break in the source `.md` — the pipeline doesn't split paragraphs automatically, that's an intentional limit on the pagination rule (never split a paragraph mid-sentence programmatically) |
+| Empty space at bottom of a section's *last* page | Usually just the natural end of the article — not a bug. Confirm the last visible line ends the piece (closing sign-off, rating, etc.) |
 | Section content overflows | Trim text or split into more pages (auto-handled by rebalance) |
 | Wrong section page in TOC | Re-run pipeline; TOC is auto-generated |
-| Image cropped weirdly | Replace photo with one centered better |
-| Tiny text on a few pages | Section is over-dense; consider splitting |
+| Image cropped weirdly | Check `type=` — `half`/`portrait` never crop (contain, no border); `float`/`float-left`/`banner` do object-fit crop, so pick a photo that's already close to the target aspect ratio |
+| Two images look squeezed with a narrow ragged text column between them | You have two same-side floats back to back — alternate `float`/`float-left`, or move one to `half`/`portrait` |
+| Tiny text on a few pages | Section is over-dense; consider splitting. (Page-count tolerance is 3% over capacity before a new page is added — this should be rare now) |
 | Quote/image overlap | Should never happen — file a bug |
+| Footer not pinned to page bottom in the PDF | A print-CSS `display` override broke the page's flex layout — see CLAUDE.md PART 9, System B Lesson 7 |
 
 ## Phase 7 — Try different themes
 

@@ -175,8 +175,14 @@ def measure_element_heights(html_path: Path, doc) -> dict:
             ch.set('data-rebal', f'{pi}-{ei}')
             tagged += 1
 
-    # Write tagged copy to temp
-    tmp_path = Path('/tmp/rebalance_measure.html')
+    # Write tagged copy next to the real source file — NOT /tmp. Images are
+    # referenced with relative paths ("Images/foo.jpg"), which only resolve
+    # against the source directory. A copy written to /tmp/ 404s on every
+    # image, and each falls back to the browser's tiny broken-image size —
+    # silently under-measuring every image-bearing element by 60-70%, which
+    # then lets rebalance pack far more content onto a page than actually
+    # fits once printed.
+    tmp_path = html_path.resolve().parent / '_rebalance_measure_tmp.html'
     tagged_html = lxml_html.tostring(
         doc, encoding='unicode', method='html', doctype='<!DOCTYPE html>')
     tmp_path.write_text(tagged_html, encoding='utf-8')
@@ -191,6 +197,14 @@ def measure_element_heights(html_path: Path, doc) -> dict:
         page.goto(tmp_path.as_uri(), wait_until='networkidle')
         page.add_style_tag(content=MEASUREMENT_CSS)
         page.evaluate("document.fonts.ready")
+        # .img-half/.img-right/.img-left all use height:auto with no
+        # aspect-ratio reservation, so a not-yet-loaded <img> measures as
+        # 0-height. networkidle doesn't guarantee decoded/laid-out images
+        # for file:// pages, so without this wait, image-heavy pages get
+        # under-counted and rebalance overpacks them — they then overflow
+        # once actually printed. Wait for every image to finish loading.
+        page.wait_for_function(
+            "Array.from(document.images).every(img => img.complete)")
         page.wait_for_timeout(200)
 
         # Query every tagged element and record its offsetHeight + margins
@@ -208,6 +222,8 @@ def measure_element_heights(html_path: Path, doc) -> dict:
             }
         """)
         browser.close()
+
+    tmp_path.unlink(missing_ok=True)
 
     # Strip the tag attributes now that we're done
     for p in pages:
@@ -261,12 +277,12 @@ def create_continuation_page(template_page, section_name_text: str):
     return new
 
 
-def adjust_page_count(doc, verbose=True) -> tuple[int, int]:
+def adjust_page_count(doc, html_path: Path, verbose=True) -> tuple[int, int]:
     """For each section, compute ideal page count and add/remove pages so
     each page lands at ≈ IDEAL_DENSITY_PX. Returns (added, removed)."""
     pages = all_pages(doc)
     page_index_of = {id(p): i for i, p in enumerate(pages)}
-    heights = measure_element_heights(Path(''), doc)
+    heights = measure_element_heights(html_path, doc)
     groups = group_into_sections(pages)
 
     added = removed = 0
@@ -299,11 +315,19 @@ def adjust_page_count(doc, verbose=True) -> tuple[int, int]:
         if floor_p == ceil_p:
             ideal = floor_p
         else:
-            # Bias toward fewer (denser) pages — better reading flow.
-            # Accept up to 20 % overfill at floor before preferring ceil.
+            # Only stay at the denser floor page-count if content fits
+            # (near) exactly — otherwise prefer ceil (one more page).
+            # This used to tolerate up to 20% overfill at floor, relying
+            # on build_text_pdf.py's per-page zoom to shrink text back
+            # to fit. That zoom mechanism is a last-resort safety net for
+            # small measurement error, not a layout strategy — leaning on
+            # it this heavily produced visibly smaller type AND leftover
+            # blank space (zoom shrinks the box without anything else
+            # growing to fill the page), which reads as inconsistent
+            # across the issue. Add the extra page instead.
             cap_floor = SECTION_START_CAPACITY_PX + max(0, floor_p - 1) * CONTINUATION_CAPACITY_PX
             ratio = total / cap_floor
-            ideal = floor_p if ratio <= 1.20 else ceil_p
+            ideal = floor_p if ratio <= 1.03 else ceil_p
 
         if ideal == current:
             continue
@@ -415,6 +439,15 @@ def split_logical_units(elements):
             unit = [(el, h)]
             while j < n:
                 next_el, next_h = elements[j]
+                if is_subhead(next_el):
+                    # A nested heading (## immediately followed by ###,
+                    # say) — don't consume it as this subhead's "content".
+                    # Each subhead glues only to its OWN following content;
+                    # otherwise two adjacent subheads glue to each other,
+                    # both end up stranded without their real content, and
+                    # rebalancing leaves a large under-filled gap on the
+                    # page before whatever comes next.
+                    break
                 if is_section_divider(next_el):
                     # Glue divider too (it might be subsection start marker)
                     unit.append((next_el, next_h))
@@ -437,7 +470,24 @@ def split_logical_units(elements):
         else:
             units.append([(el, h)])
             i += 1
-    return units
+
+    # Second pass: a unit made ENTIRELY of subheads/dividers (no real
+    # content) must never be left to stand alone — distribute_units could
+    # place it at the very bottom of a page and defer the next unit (its
+    # real content) to the following page, stranding the heading by
+    # itself. Merge any such unit forward into whatever unit follows it.
+    merged = []
+    pending = []
+    for u in units:
+        combined = pending + u
+        pending = []
+        if all(is_subhead(e) or is_section_divider(e) for e, _h in combined):
+            pending = combined
+            continue
+        merged.append(combined)
+    if pending:
+        merged.append(pending)
+    return merged
 
 
 def distribute_units(units, page_targets):
@@ -499,13 +549,13 @@ def rebalance_with_known_indices(section_name_str, section_pages, heights, verbo
     raise RuntimeError("use rebalance() top-level instead")
 
 
-def rebalance(doc, verbose=True) -> int:
+def rebalance(doc, html_path: Path, verbose=True) -> int:
     """Top-level rebalance. Returns number of element moves made."""
     pages = all_pages(doc)
     page_index_of = {id(p): i for i, p in enumerate(pages)}
 
     # 1. Measure heights once for the whole doc
-    heights = measure_element_heights(Path(''), doc)
+    heights = measure_element_heights(html_path, doc)
 
     # 2. Group into sections
     groups = group_into_sections(pages)
@@ -587,6 +637,134 @@ def rebalance(doc, verbose=True) -> int:
     return moves
 
 
+# ─── Post-redistribution verification / backfill ──────────────────────────────
+
+def backfill_underfilled_pages(doc, html_path: Path, threshold_px: float = 60,
+                                max_rounds: int = 4, verbose: bool = True) -> int:
+    """rebalance() decides page boundaries using PRE-measured element heights
+    (measured while each element still sits in its ORIGINAL position, before
+    anything moved). That estimate can diverge from the truth — text wrapping
+    around a floated figure measures differently depending on what float
+    context it's actually rendered next to, margins collapse differently once
+    neighbours change, etc. The result: a page can end up with real, rendered
+    blank space at the bottom even though the estimate said it was full.
+
+    This does the opposite of estimation: render the ACTUAL current doc,
+    measure the real gap between each page's body-text and its footer, and
+    if that gap is large enough to fit the next page's leading paragraph(s)
+    (never a subhead — that must stay glued to its own content), move them
+    up. Repeats a few rounds since one move can free room for another.
+
+    Returns total number of elements moved.
+    """
+    total_moved = 0
+
+    for round_i in range(max_rounds):
+        tmp_path = html_path.resolve().parent / '_rebalance_backfill_tmp.html'
+        tagged_html = lxml_html.tostring(
+            doc, encoding='unicode', method='html', doctype='<!DOCTYPE html>')
+        tmp_path.write_text(tagged_html, encoding='utf-8')
+
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            ctx = browser.new_context(
+                viewport={'width': 900, 'height': 1300},
+                device_scale_factor=1,
+            )
+            page = ctx.new_page()
+            page.goto(tmp_path.as_uri(), wait_until='networkidle')
+            page.evaluate("document.fonts.ready")
+            page.wait_for_function(
+                "Array.from(document.images).every(img => img.complete)")
+            page.wait_for_timeout(200)
+            # For each page: real gap to footer, PLUS the actual rendered
+            # height of its own first body-text child (the pull candidate
+            # if some earlier page wants to backfill FROM this page).
+            # Using this page's real measured height — not a guessed
+            # constant — is what keeps a pull from silently overflowing
+            # the page it lands on.
+            info = page.evaluate("""
+                () => Array.from(document.querySelectorAll('.page')).map(p => {
+                    const bt = p.querySelector('.body-text');
+                    const footer = p.querySelector('.page-footer');
+                    if (!bt || !footer) return null;
+                    const btRect = bt.getBoundingClientRect();
+                    const footerRect = footer.getBoundingClientRect();
+                    const gap = Math.round(footerRect.top - btRect.bottom);
+                    const first = bt.firstElementChild;
+                    if (!first) return {gap, firstH: null, firstIsSubhead: false};
+                    const cs = getComputedStyle(first);
+                    const h = first.getBoundingClientRect().height
+                        + parseFloat(cs.marginTop) + parseFloat(cs.marginBottom);
+                    const isSubhead = (first.className || '').split(' ').includes('subhead');
+                    return {gap, firstH: Math.round(h), firstIsSubhead: isSubhead};
+                })
+            """)
+            browser.close()
+        tmp_path.unlink(missing_ok=True)
+
+        pages = all_pages(doc)
+        page_index_of = {id(p): i for i, p in enumerate(pages)}
+        groups = group_into_sections(pages)
+
+        moved_this_round = 0
+        for name, sect_pages in groups:
+            if len(sect_pages) < 2:
+                continue
+            for idx in range(len(sect_pages) - 1):
+                cur = sect_pages[idx]
+                nxt = sect_pages[idx + 1]
+                cur_i = page_index_of[id(cur)]
+                nxt_i = page_index_of[id(nxt)]
+                if cur_i >= len(info) or info[cur_i] is None:
+                    continue
+                if nxt_i >= len(info) or info[nxt_i] is None:
+                    continue
+                gap = info[cur_i]['gap']
+                if gap < threshold_px:
+                    continue
+                nxt_first_h = info[nxt_i]['firstH']
+                nxt_first_is_subhead = info[nxt_i]['firstIsSubhead']
+                # A subhead must stay glued to its own content (handled by
+                # the earlier rebalance pass) — don't drag it along by
+                # height alone, that would strand it again elsewhere.
+                if nxt_first_h is None or nxt_first_is_subhead:
+                    continue
+                # Real measured height, with a small safety margin, must
+                # actually fit the real gap — no guessing.
+                if nxt_first_h + 10 > gap:
+                    continue
+                # Net-improvement check: pulling this element empties it out
+                # of nxt, so nxt's OWN gap grows by roughly nxt_first_h. If
+                # that would leave nxt worse off than cur is right now, this
+                # isn't fixing anything — it's just relocating the same
+                # blank space one page later (and across several rounds,
+                # cascading it all the way to the section's last page,
+                # which is worse than where it started).
+                nxt_gap_after = info[nxt_i]['gap'] + nxt_first_h
+                if nxt_gap_after >= gap:
+                    continue
+                cur_body = find_body_text(cur)
+                nxt_body = find_body_text(nxt)
+                if cur_body is None or nxt_body is None or len(nxt_body) <= 1:
+                    continue  # never fully drain nxt — that leaves a blank page
+                first = nxt_body[0]
+                cur_body.append(first)  # lxml re-parents (moves) the node
+                moved_this_round += 1
+                if verbose:
+                    # Page-number text isn't finalized until renumber_pages()
+                    # runs later in the pipeline, so use document position
+                    # here rather than the (still stale) printed number.
+                    print(f"  ✓ Backfilled 1 element ({nxt_first_h}px) in "
+                          f"[{name}]: doc-page {nxt_i} → doc-page {cur_i}")
+
+        total_moved += moved_this_round
+        if moved_this_round == 0:
+            break
+
+    return total_moved
+
+
 # ─── Driver ───────────────────────────────────────────────────────────────────
 
 def main():
@@ -606,19 +784,23 @@ def main():
     html_str = in_path.read_text(encoding='utf-8')
     doc = lxml_html.fromstring(html_str)
 
-    print("[1/4] Adjusting per-section page count to match content density…")
-    added, removed = adjust_page_count(doc)
+    print("[1/5] Adjusting per-section page count to match content density…")
+    added, removed = adjust_page_count(doc, in_path)
     print(f"      +{added} pages, -{removed} pages\n")
 
-    print("[2/4] Rebalancing content within each section…")
-    moves = rebalance(doc)
+    print("[2/5] Rebalancing content within each section…")
+    moves = rebalance(doc, in_path)
     print(f"      Rebalanced {moves} section(s)\n")
 
-    print("[3/4] Renumbering pages sequentially…")
+    print("[3/5] Verifying real rendered fill + backfilling underfilled pages…")
+    n_backfilled = backfill_underfilled_pages(doc, in_path)
+    print(f"      Backfilled {n_backfilled} element(s)\n")
+
+    print("[4/5] Renumbering pages sequentially…")
     total = renumber_pages(doc)
     print(f"      {total} pages numbered\n")
 
-    print("[4/4] Updating TOC page numbers…")
+    print("[5/5] Updating TOC page numbers…")
     n_toc = update_toc(doc)
     print(f"      Updated {n_toc} TOC row(s)\n")
 

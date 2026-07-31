@@ -30,6 +30,27 @@ from html import escape
 # Matches "1. text", "2. text" … at the start of a stripped line.
 NUMBERED_ITEM_RE = re.compile(r'^\d+\.\s+(.*)$')
 
+# Matches "## text" through "###### text" — any CommonMark subhead level.
+# The design has only one visual subhead style, so ##-###### all render
+# the same; this just stops deeper levels (### etc.) from falling through
+# to plain-paragraph handling and printing their literal hashes.
+SUBHEAD_RE = re.compile(r'^(#{2,6})\s+(.*)$')
+
+# Inline **bold** — the only inline emphasis MMD supports.
+BOLD_RE = re.compile(r'\*\*(.+?)\*\*')
+
+
+def render_inline(text: str) -> str:
+    """Escape text for HTML, converting **bold** spans to <strong>."""
+    parts = []
+    last = 0
+    for m in BOLD_RE.finditer(text):
+        parts.append(escape(text[last:m.start()]))
+        parts.append(f'<strong>{escape(m.group(1))}</strong>')
+        last = m.end()
+    parts.append(escape(text[last:]))
+    return ''.join(parts)
+
 
 # ─── Frontmatter parsing (mini YAML — handles flat key: value lines) ────────
 
@@ -109,9 +130,10 @@ def parse_body(body: str, warnings: list) -> str:
             out.append(render_directive(name, attrs, block_lines, warnings))
             continue
 
-        # Subhead
-        if stripped.startswith('## '):
-            text = stripped[3:].strip()
+        # Subhead (## through ######  — one visual style for all levels)
+        sub_m = SUBHEAD_RE.match(stripped)
+        if sub_m:
+            text = sub_m.group(2).strip()
             out.append(f'<div class="subhead">{escape(text)}</div>')
             i += 1
             continue
@@ -122,7 +144,7 @@ def parse_body(body: str, warnings: list) -> str:
             while i < n and lines[i].strip().startswith('- '):
                 items.append(lines[i].strip()[2:].strip())
                 i += 1
-            li_html = ''.join(f'<li>{escape(it)}</li>' for it in items)
+            li_html = ''.join(f'<li>{render_inline(it)}</li>' for it in items)
             out.append(f'<ul>{li_html}</ul>')
             continue
 
@@ -132,7 +154,7 @@ def parse_body(body: str, warnings: list) -> str:
             while i < n and NUMBERED_ITEM_RE.match(lines[i].strip()):
                 items.append(NUMBERED_ITEM_RE.match(lines[i].strip()).group(1).strip())
                 i += 1
-            li_html = ''.join(f'<li>{escape(it)}</li>' for it in items)
+            li_html = ''.join(f'<li>{render_inline(it)}</li>' for it in items)
             out.append(f'<ol class="numbered-list">{li_html}</ol>')
             continue
 
@@ -147,7 +169,7 @@ def parse_body(body: str, warnings: list) -> str:
             s = lines[i].strip()
             if not s:
                 break
-            if s.startswith('## ') or s.startswith('# '):
+            if SUBHEAD_RE.match(s) or s.startswith('# '):
                 break
             if s.startswith(':::'):
                 break
@@ -161,7 +183,7 @@ def parse_body(body: str, warnings: list) -> str:
         if para_text:
             # First paragraph of body gets lead-para class
             cls = ' class="lead-para"' if not any('<p ' in o or '<p>' in o for o in out) else ''
-            out.append(f'<p{cls}>{escape(para_text)}</p>')
+            out.append(f'<p{cls}>{render_inline(para_text)}</p>')
 
     return '\n        '.join(out)
 
@@ -174,7 +196,8 @@ def render_directive(name: str, attrs: dict, lines: list, warnings: list) -> str
 
     if name == 'quote':
         source = attrs.get('source', '')
-        # Each non-blank line becomes a verse line, joined by <br>
+        # Each non-blank line becomes its own left-aligned verse block
+        # (not <br> + text-align:center, which centres every line).
         verse_lines = [escape(L.strip()) for L in lines if L.strip()]
         # Poem / kural citation — same small-font style everywhere, placed at
         # the end of the *last* verse line (for a 2-line kural: end of line 2).
@@ -186,7 +209,9 @@ def render_directive(name: str, attrs: dict, lines: list, warnings: list) -> str
                 f'{verse_lines[-1]}'
                 f'<span class="quote-cite"> {escape(cite)}</span>'
             )
-        verse_html = '<br>'.join(verse_lines)
+        verse_html = ''.join(
+            f'<div class="verse-line">{line}</div>' for line in verse_lines
+        )
         return (f'<div class="slim-quote">'
                 f'<div class="quote-text">{verse_html}</div>'
                 f'</div>')
@@ -201,7 +226,7 @@ def render_directive(name: str, attrs: dict, lines: list, warnings: list) -> str
                 items.append(s[2:].strip())
             elif s:
                 items.append(s)
-        li_html = ''.join(f'<li>{escape(it)}</li>' for it in items)
+        li_html = ''.join(f'<li>{render_inline(it)}</li>' for it in items)
         title_html = (f'<div class="box-title">{escape(title)}</div>'
                       if title else '')
         return (f'<div class="highlights-box">'
@@ -216,14 +241,17 @@ def render_directive(name: str, attrs: dict, lines: list, warnings: list) -> str
             'float-left': 'img-left',
             'banner': 'img-banner',
             'half': 'img-half',
+            'portrait': 'img-portrait',
         }.get(img_type, 'img-right')
         if not src:
             warnings.append("image directive missing src=")
             return ''
+        alt = escape(caption) if caption else escape(src)
+        cap_html = (f'<figcaption class="img-caption">{escape(caption)}</figcaption>'
+                    if caption.strip() else '')
         return (f'<figure class="article-figure {type_class}">'
-                f'<img src="Images/{escape(src)}" alt="{escape(caption)}">'
-                f'<figcaption class="img-caption">{escape(caption)}</figcaption>'
-                f'</figure>')
+                f'<img src="Images/{escape(src)}" alt="{alt}">'
+                f'{cap_html}</figure>')
 
     if name == 'closing':
         # Prose lines (intro remarks, end in ./!/?) stay as plain <p> text.

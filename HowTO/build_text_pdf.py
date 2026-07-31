@@ -59,7 +59,8 @@ PRINT_CSS = """
             box-shadow: none !important;
             border-radius: 0 !important;
             position: relative !important;
-            display: block !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
         /* Drop the screen-only cover-section wrapper background/padding */
         .cover-section {
@@ -110,6 +111,16 @@ def build(html_file: Path, output_pdf: Path, theme: str = 'default') -> None:
 
         page.goto(html_file.as_uri(), wait_until='networkidle')
 
+        # Switch to print media BEFORE measuring anything. page.pdf() always
+        # renders using @media print, regardless of this setting — but the
+        # per-page zoom measurement below runs against the live page, which
+        # defaults to screen media. Without this, the measurement sees a
+        # slightly different CSS than what actually gets printed (the
+        # @media print block below never applied during measurement), so a
+        # page sitting just under the A4 threshold on screen could still
+        # overflow — and clip into the footer — once actually printed.
+        page.emulate_media(media='print')
+
         # Apply requested theme via the source's theme-picker mechanism
         if theme != 'default':
             page.evaluate(
@@ -119,30 +130,39 @@ def build(html_file: Path, output_pdf: Path, theme: str = 'default') -> None:
         # Inject print CSS overrides (forces each .page to A4 with overflow:hidden)
         page.add_style_tag(content=PRINT_CSS)
 
-        # Wait for fonts (Noto Sans Tamil)
+        # Wait for fonts (Noto Sans Tamil) and images — a not-yet-loaded
+        # <img> under height:auto measures as 0-height, which would let an
+        # image-heavy page slip past the overflow check below undetected.
         page.evaluate("document.fonts.ready")
+        page.wait_for_function(
+            "Array.from(document.images).every(img => img.complete)")
         page.wait_for_timeout(300)
 
         # PER-PAGE ZOOM: same logic as build_screenshot_pdf.py.
         # We measure each .page's NATURAL rendered height (would be taller
         # than A4 if content overflows the 297mm cap), then zoom .body-text
         # by the precise amount needed to bring the page down to A4.
-        # NOTE: at this point .page has max-height: 297mm + overflow:hidden,
-        # so offsetHeight will be capped at 1123px. We need to temporarily
-        # release the cap to measure natural height.
+        # NOTE: PRINT_CSS sets max-height/height/overflow with !important,
+        # so a plain `p.style.maxHeight = 'none'` CANNOT override it — the
+        # stylesheet !important always wins over a normal-priority inline
+        # style. That silently capped every measurement at exactly 1123px
+        # (i.e. "never overflowing"), so this safety net never actually
+        # caught anything. Must use setProperty(..., 'important') to win.
         print("\n  Measuring overflow + applying per-page zoom…")
         page.evaluate("""
             () => {
                 document.querySelectorAll('.cover, .page').forEach(p => {
-                    p.style.maxHeight = 'none';
-                    p.style.height = 'auto';
+                    p.style.setProperty('max-height', 'none', 'important');
+                    p.style.setProperty('height', 'auto', 'important');
+                    p.style.setProperty('overflow', 'visible', 'important');
                 });
             }
         """)
         page.wait_for_timeout(150)
 
         A4_TOTAL_PX = 1123    # 297mm × 96/25.4
-        A4_TARGET_PX = 1115   # 1% safety margin
+        A4_TARGET_PX = 1100   # ~2% safety margin — extra buffer against
+                              # screen/print font-hinting rounding
         n_zoomed = page.evaluate(f"""
             () => {{
                 let count = 0;
@@ -165,12 +185,16 @@ def build(html_file: Path, output_pdf: Path, theme: str = 'default') -> None:
         if n_zoomed:
             print(f"  ✓ Zoomed {n_zoomed} overfilled page(s) to fit A4")
 
-        # Reapply the height cap so PDF respects page boundaries
+        # Reapply the height cap so PDF respects page boundaries — same
+        # setProperty(..., 'important') requirement as above, and overflow
+        # must be explicitly put back to hidden since we forced it visible
+        # for measurement (an inline !important otherwise keeps winning).
         page.evaluate("""
             () => {
                 document.querySelectorAll('.cover, .page').forEach(p => {
-                    p.style.maxHeight = '297mm';
-                    p.style.height = '297mm';
+                    p.style.setProperty('max-height', '297mm', 'important');
+                    p.style.setProperty('height', '297mm', 'important');
+                    p.style.setProperty('overflow', 'hidden', 'important');
                 });
             }
         """)

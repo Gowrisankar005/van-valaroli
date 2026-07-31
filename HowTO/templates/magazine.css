@@ -703,8 +703,13 @@
       line-height: 1.4;
     }
 
+    /* Poem / kural block: centre the unit on the page, but keep every
+       verse line left-aligned to the same start (do NOT centre each line).
+       Each .verse-line is a block so lines share one left edge. */
     .slim-quote {
-      text-align: center;
+      display: flex;
+      justify-content: center;   /* centres the poem unit on the page */
+      text-align: left;          /* do not centre individual lines */
       margin: 6mm 10mm;
       padding: 5mm 6mm;
       border-top: 1.5pt solid color-mix(in srgb, var(--van-gold) 65%, transparent);
@@ -714,12 +719,27 @@
     }
 
     .slim-quote .quote-text {
+      display: inline-block;
+      text-align: left;
+      max-width: 100%;
       font-size: 14pt;
       font-style: italic;
       font-weight: 600;
       color: var(--van-deep);
       line-height: 1.75;
       text-shadow: none;
+      word-spacing: normal;
+      letter-spacing: normal;
+      overflow-wrap: normal;
+      word-break: normal;
+      hyphens: none;
+    }
+
+    .slim-quote .verse-line {
+      display: block;
+      text-align: left;
+      text-align-last: left;
+      white-space: normal;
     }
     .slim-quote .quote-text::before {
       content: '❝ ';
@@ -1269,12 +1289,35 @@
       clear: both;
     }
 
-    /* ── Mode 4: Half-width centered — 100mm, no float ─────────── */
+    /* ── Mode 4: Half-width centered, no float ─────────────────────
+       Was 100mm with the standard gold-bordered frame — too dominant
+       for a single artifact/diagram photo and the border read as a
+       heavy box around it. Sized down and unframed to match the
+       quieter .img-portrait treatment. */
     .img-half {
       display: block;
-      width: 100mm;
-      margin: 5mm auto;
+      width: 80mm;
+      margin: 4mm auto;
       clear: both;
+    }
+    .img-half img {
+      border: none !important;
+      border-radius: 0 !important;
+    }
+
+    /* ── Mode 5: Small centered portrait — 45mm, no border ───────
+       For a single author/subject portrait at an article's top (before
+       the lead paragraph) — smaller and plainer than .img-half so it
+       reads as a quiet identity photo, not a framed illustration. */
+    .img-portrait {
+      display: block;
+      width: 45mm;
+      margin: 3mm auto 5mm;
+      clear: both;
+    }
+    .img-portrait img {
+      border: none !important;
+      border-radius: 0 !important;
     }
 
     /* Image itself: maintain aspect ratio, thin gold border */

@@ -20,7 +20,7 @@
     {
       "file": "02-thirukkural.md",
       "section_name": "திருக்குறள் ஆய்வு",
-      "topic_title": "ஆறுவது சினம்"
+      "topic_title": "அறம் செய விரும்பு"
     },
     {
       "file": "03-sirukathai.md",
@@ -35,7 +35,7 @@
     {
       "file": "05-kalai.md",
       "section_name": "தமிழகக் கலைகள்",
-      "topic_title": "தமிழர் சிற்பக்கலையின் தொன்மை -சிறுபார்வை"
+      "topic_title": "தமிழர் சிற்பக்கலையின் தொன்மை — சிறுபார்வை"
     },
     {
       "file": "06-nool-mathippurai.md",
@@ -50,7 +50,12 @@
     {
       "file": "08-manam.md",
       "section_name": "மனம் தொடர்",
-      "topic_title": "மனம் எனும் மந்திரச் சாவி"
+      "topic_title": "மனம் எனும் மந்திரசாவி"
+    },
+    {
+      "file": "11-iyarkai.md",
+      "section_name": "இயற்கை தரும் இன்பம்",
+      "topic_title": "மருத நிலம் — பச்சை வயல்"
     },
     {
       "file": "09-activities.md",

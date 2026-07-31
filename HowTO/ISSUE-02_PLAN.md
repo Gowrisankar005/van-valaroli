@@ -31,14 +31,14 @@ and the "அடுத்த இதழில்" teaser we printed in Issue 01.
 | # | Section | File name | Topic for ஆடி 2026 | Author | Target pages |
 |---|---|---|---|---|---|
 | 1 | தலையங்கம் | `01-thalayangam.md` | *(editor's theme)* | மு. முத்துஜோதி | 2 |
-| 2 | திருக்குறள் ஆய்வு | `02-thirukkural.md` | நட்பு அதிகாரம் | | 4–5 |
-| 3 | சிறுகதை | `03-sirukathai.md` | *(new story)* | | 3–4 |
+| 2 | திருக்குறள் ஆய்வு | `02-thirukkural.md` | ஆறுவது சினம் — ஔவையார் ஆத்திசூடி vs. வள்ளுவர் வெகுளாமை அதிகாரம் | | 4–5 |
+| 3 | சிறுகதை | `03-sirukathai.md` | "திறந்த ஜன்னல்" — புதுமைப்பித்தன் (மணிக்கொடி, 1934) — classic reprint, not a new story | | 3–4 |
 | 4 | சங்க இலக்கியம் | `04-sangam.md` | பறவைகள் (birds) | | 5–6 |
-| 5 | தமிழகக் கலைகள் | `05-kalai.md` | மதுரை மீனாட்சி — இசைத் தூண்கள் | | 5–7 |
+| 5 | தமிழகக் கலைகள் | `05-kalai.md` | தமிழர் சிற்பக்கலையின் தொன்மை — கீழடி, ஆதிச்சநல்லூர், நடுகற்கள் (not மதுரை மீனாட்சி as originally planned) | | 5–7 |
 | 6 | நூல் மதிப்புரை | `06-nuul.md` | *(book TBD)* | | 2–3 |
-| 7 | ஓர் ஒழுக்கம் | `07-ozhukkam.md` | *(practice TBD)* | | 3–4 |
+| 7 | ஓர் ஒழுக்கம் | `07-ozhukkam.md` | மல சலம் கழித்தல் — எருவாய்க்கான ஒழுக்கம் | | 3–4 |
 | 8 | மனம் தொடர் (NEW series) | `08-manam.md` | மனதின் இயல்பு — பகுதி 1 | | 2 |
-| 9 | அறநிலையச் செய்திகள் | `09-activities.md` | June–July VAN நிகழ்வுகள் + photos | குமாரவேல் | 2–3 |
+| 9 | அறநிலையச் செய்திகள் | `09-activities.md` | மே–ஜூன் 2026 VAN நிகழ்வுகள் + photos | குமாரவேல் | 2–3 |
 | 10 | அடுத்த இதழில் | `10-closing.md` | புரட்டாசி 2026 teaser + வாசகர் குரல் | (editor) | 1 |
 
 Optional swap-ins if an author drops out: இயற்கை தரும் இன்பம் (1 page photo
@@ -98,7 +98,7 @@ Cover image: place as `issues/Issue-02/images/cover-image.jpeg`
 
 ```bash
 # 1. Save it
-cp ~/Downloads/thirukkural-natpu.md issues/Issue-02/articles/02-thirukkural.md
+cp ~/Downloads/thirukkural-aaruvathu-sinam.md issues/Issue-02/articles/02-thirukkural.md
 
 # 2. Save its images
 cp ~/Downloads/*.jpg issues/Issue-02/images/

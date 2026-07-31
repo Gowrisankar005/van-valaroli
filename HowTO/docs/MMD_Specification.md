@@ -40,13 +40,22 @@ Second paragraph after a blank line.
 ```
 
 ### 2. Subhead
-A second-level heading (`## `) becomes a subhead with the green left-bar style.
+A heading (`## ` through `###### `) becomes a subhead with the green
+left-bar style. The design has only one subhead style, so every level
+renders identically — use `###`+ only to signal nesting in your source,
+not to get a different look.
 
 ```markdown
 ## முன்னுரை
+### வேள் பாரி
 ```
 
 Articles typically have 2–6 subheads.
+
+### 2b. Inline bold
+`**text**` becomes `<strong>text</strong>`. Works inside paragraphs, bullet
+list items, and box items. No other inline emphasis (italics, links, etc.)
+is supported — anything else is printed literally.
 
 ### 3. Bullet list
 Lines starting with `- ` become an unordered list.
@@ -105,7 +114,8 @@ A `:::image` directive with `src` and `caption` attributes. Optional `type` sele
 | `float` (default) | 60×45mm right-floated thumbnail | Most images |
 | `float-left` | 60×45mm left-floated thumbnail | Second image in a row — alternate sides so text doesn't get squeezed into a narrow column between two same-side floats |
 | `banner` | Full-width hero | Section openers, dramatic shots |
-| `half` | 100mm centered | Diagrams, single objects |
+| `half` | 80mm centered, no border | Diagrams, single objects, artifact/figurine photos |
+| `portrait` | 45mm centered, no border | A single author/subject portrait at an article's top, before the lead paragraph |
 
 **Never put two consecutive `float` (or two consecutive `float-left`) images back to back with only a short paragraph between them** — the paragraph gets squeezed into a narrow ragged column between the stacked floats. Alternate `float` / `float-left`, or separate them with enough body text / a `half` image to clear the float before the next one starts.
 
@@ -118,10 +128,19 @@ Author sign-off at the end of an article.
 :::closing
 நாம் மேலும் வளர்வோம்.
 — குமாரவேல்
+நிர்வாக இயக்குநர்
+வான் அறநிலையம்
 :::
 ```
 
-Lines starting with `—` are styled as sign-off; subsequent lines become the name. A decorative ❀ is added automatically.
+Lines are split automatically: any line ending in `./!/?/।` (a full sentence)
+stays plain closing prose. The **first line that isn't a full sentence**
+starts the signature card, and the lines after it fill sign-off → name →
+title → org-name in order. A leading `—` on the sign-off line is optional
+(not required to trigger the split, but still fine to include) — write the
+signature block as short label-like lines, not full sentences, and the
+parser finds the boundary on its own. A decorative ❀ is added automatically
+at the end.
 
 ## Rules
 
@@ -166,11 +185,22 @@ author: திருமுருகன்
 
 ## Validation
 
-Future enhancement: `validate_mmd.py` will catch errors before submission:
-- Missing required frontmatter
-- Section name not in `issue_meta.json`
-- Image files that don't exist
-- English loan words
-- Unclosed `:::` directives
+Run before handing an issue to the pipeline:
 
-For now, the parser warns about basic issues at build time.
+```bash
+python validate_mmd.py issues/Issue-NN/articles/*.md --issue issues/Issue-NN
+```
+
+It catches:
+- Missing/malformed frontmatter or required fields
+- Section name not matching a `section_name` in `issue_meta.json`
+- Image files referenced but missing from `images/`
+- English loan words (செந்தமிழ் check)
+- Em-dash typos (`--`/`----` instead of `—`)
+- Unclosed `:::` directives
+- A rough page-count estimate per article
+
+The build-time parser (`mmd_parser.py`) also emits soft warnings for
+unknown directives or missing `src=` on an image, but `validate_mmd.py`
+is the pre-flight check to run first — it's the one authors/editors should
+use before content ever reaches the pipeline.

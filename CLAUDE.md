@@ -221,14 +221,16 @@ author: திருமுருகன்
 
 | Directive | Maps to | Notes |
 |---|---|---|
-| `## Heading` | `.subhead` | 2–6 per article typical |
+| `## Heading` through `###### Heading` | `.subhead` | 2–6 per article typical; all levels render identically (one visual style) — use deeper levels only to signal nesting in source |
+| `**bold**` | `<strong>` | Inline only, works in paragraphs/list items/box items; no other inline emphasis supported |
 | `- item` | `<ul>` list | |
-| `:::quote source="..."` | `.slim-quote` | Verse lines joined by `<br>` |
+| `1. item` | `<ol class="numbered-list">` | Exact `N. ` prefix required |
+| `:::quote source="..."` | `.slim-quote` | Each non-blank line → its own verse line |
 | `:::box title="..."` | `.highlights-box` | Bulleted items inside |
-| `:::image src="..." caption="..." type="float\|banner\|half"` | `.article-figure img-*` | `src` must exist in issue's `images/` folder |
-| `:::closing` | sign-off block | Lines starting with `—` become sign-off; auto-adds ❀ |
+| `:::image src="..." caption="..." type="float\|float-left\|banner\|half\|portrait"` | `.article-figure img-*` | `float`=60×45mm right, `float-left`=same but left (alternate with `float` — never stack two same-side floats back to back), `banner`=full-width, `half`=80mm centered no border (diagrams/artifacts), `portrait`=45mm centered no border (author/subject headshot, use this NOT `half` for portraits). `src` must exist in issue's `images/` folder |
+| `:::closing` | sign-off block | Heuristic: prose lines ending in `./!/?` stay plain text; the first line that ISN'T a full sentence starts the signature (sign-off → name → title → org) — no `—` marker required, though one still works |
 
-**Rules:** Tamil only (செந்தமிழ் substitutions apply — PART 4), em-dash `—` (U+2014) for citations never `--`/`----`, no manual page breaks (pagination is automatic via `rebalance_sections.py`), no raw HTML, `section:` frontmatter must exactly match a `section_name` in `issue_meta.json`.
+**Rules:** Tamil only (செந்தமிழ் substitutions apply — PART 4), em-dash `—` (U+2014) for citations never `--`/`----`, no manual page breaks (pagination is automatic via `rebalance_sections.py`, which now includes a real-rendered-gap backfill pass — see PART 9), no raw HTML, `section:` frontmatter must exactly match a `section_name` in `issue_meta.json`.
 
 Before handing an issue to the pipeline, run:
 ```bash
@@ -429,6 +431,41 @@ An exact-string fix for `:root` (`'--van-gold:       var(--van-gold);'`, 7 space
 `check_brand_colors` and `check_theme_system` tested whether a variable *name* was present anywhere in the CSS — including as a circular definition. Both passed on broken CSS.
 **Rule:** every check must test *semantic meaning*, not presence of a string. When adding a new check, write a self-test with bad input that should fail it — if the self-test passes, the check is incomplete.
 
+### System B (HowTO pipeline) — Lessons Learned (found during Issue 02)
+
+All fixed at the shared-script level, not patched per-page — that is the standing rule for this pipeline: a bug found on one issue's page must be fixed so it can't recur on any future issue, not worked around for the page it was found on.
+
+### ❌ Lesson 5 — Never measure element heights via a `/tmp/` scratch file
+`rebalance_sections.py`'s Playwright measurement step wrote its temp HTML to a hardcoded `/tmp/rebalance_measure.html`, breaking every relative `Images/...` src in it. Broken images render at fallback size, so every image's height was undercounted by 60-70% — the root cause of most "unexplained" blank space at page bottoms that session. It looked like a pagination bug for a long time before the actual cause (a path bug) was found.
+**Rule:** any script that writes a temp copy of the HTML for Playwright measurement must write it *next to* the real source file (same directory), never to `/tmp` or any other directory — relative asset paths must still resolve. Clean up with `unlink(missing_ok=True)` after.
+
+### ❌ Lesson 6 — `!important` in a stylesheet silently defeats inline-style safety nets
+`build_text_pdf.py` had an auto-zoom-to-fit step: measure overflow, then set `element.style.maxHeight`/`.height` inline to shrink it. `magazine.css` had `!important` on those same properties, so the inline styles were silently ignored — the safety net looked wired up but never actually fired, and pages kept overflowing. No error, no warning — it just quietly did nothing.
+**Rule:** when a script must override CSS from JS/Python-injected inline styles, use `element.style.setProperty(prop, val, 'important')`, never bare `element.style.prop = val`, whenever there's any chance the stylesheet also sets that property with `!important`.
+
+### ❌ Lesson 7 — `display:block` silently breaks flex-dependent layouts
+A print-CSS override forced `.page, .cover { display: block !important }` for print pagination. But the footer's "stick to page bottom" positioning depended on the page being a flex column. Forcing `block` looked harmless (block is the "normal" default) but silently broke footer placement — footers floated up next to content instead of pinning to the bottom.
+**Rule:** when a print/measurement override touches `display`, check what layout mode (flex/grid) the element's children depend on first — don't assume `block` is a safe default.
+
+### ❌ Lesson 8 — A 20%-overfill-and-shrink tolerance hides real pagination bugs
+`adjust_page_count()` tolerated sections up to 20% over their page-capacity estimate, relying on `build_text_pdf.py`'s per-page zoom to visually compress the overflow. This is what produced "small font + big empty margin" pages — zoom shrank dense pages fine, but on pages where the *measurement* was itself wrong (see Lesson 5), the zoom had nothing to compress and the tail end just sat blank.
+**Rule:** tolerance was tightened to 3% — prefer adding a page over shrinking text. A page-count/pagination algorithm should not lean on a downstream visual hack to paper over its own estimation error.
+
+### ❌ Lesson 9 — Subhead-adjacency edge case in logical-unit splitting
+`split_logical_units()` glued a subhead to the content immediately following it (so a heading never lands alone at a page bottom) — but didn't check whether that "following content" was *itself* another subhead (e.g. `##` immediately followed by `###`), so nested headings got mis-glued together as one unit, sometimes stranding the deeper heading anyway.
+**Rule:** any "glue heading to next unit" logic needs a second pass that also merges any unit which turns out to be *entirely* headings/dividers (no real content) forward into the next unit — checking adjacency once, at construction time, isn't enough.
+
+### ❌ Lesson 10 — A page-layout function that assumes one page shape breaks on others
+`reorganize_activities_page()` (the "group all photos into a 2-col grid" fixup) originally grouped **every** image on the page into a single grid regardless of position, which scrambled multi-subsection pages where images were meant to stay next to their own paragraph. Fixed to only group images that are *immediately consecutive* in document order. The fixed-crop `object-fit:cover` grid it used was also unsafe to reuse for content with wildly different aspect ratios (a 0.54 vs 1.24 ratio pair badly cropped) — a separate `.image-pair-row` class using `object-fit:contain` with a height cap (no cropping) was added instead of forcing everything through the same grid.
+**Rule:** a DOM-restructuring fixup written for one page's shape will silently misfire on a differently-shaped page using the same section type. Scope the match condition (e.g. "consecutive same-type figures") narrowly, and don't reuse a fixed-crop grid for photos whose aspect ratios you don't control.
+
+### ❌ Lesson 11 — Screen-media measurement can diverge from print-media render
+Playwright measured page heights with the browser in default (screen) media, but `page.pdf()` renders in `print` media — if any `@media print` CSS rule changes layout (and one did, see Lesson 7), the measured heights don't match what actually gets printed.
+**Rule:** call `page.emulate_media(media='print')` immediately after `page.goto()`, before any measurement, whenever the same Playwright page is later used to produce the PDF.
+
+### ℹ️ Note — WeasyPrint was evaluated and rejected for PDF generation
+When asked to switch the PDF step to WeasyPrint, we recommended staying on the Playwright-based `build_text_pdf.py` instead: WeasyPrint substitutes fonts it can't find (risk of breaking Tamil glyph rendering) and computes `height:auto` layout independently of the Playwright-measured HTML the rebalance step already tuned, reopening every pagination bug this section describes. Playwright renders with the same Chromium engine used for measurement, so what was measured is what gets printed.
+
 ---
 
 ## SESSION CHECKLIST
@@ -437,7 +474,7 @@ An exact-string fix for `:root` (`'--van-gold:       var(--van-gold);'`, 7 space
 2. If System A: run `validate_template.py --self-test`, then the target file, to establish baseline.
 3. If System B: check `issue_meta.json` matches the plan doc, run `validate_mmd.py` on touched articles.
 4. Make the change — surgically (PART 0.3).
-5. Re-validate (System A) or rebuild + spot-check PDF (System B) before reporting done.
+5. Re-validate (System A) or rebuild + spot-check PDF (System B) before reporting done. System B: run the full pipeline through `build_text_pdf.py`, then `compare_html.py` as an integrity check — don't call a build final on `rebalance_sections.py` output alone. If a page still looks underfilled after `rebalance_sections.py`'s `[3/5] Backfilled N element(s)` line ran, check whether it's genuinely a bug or just the natural end of a section/article.
 6. Commit only when asked; never `--no-verify`.
 7. If you hit a new bug worth remembering, add it to PART 9 — don't let it repeat.
 
