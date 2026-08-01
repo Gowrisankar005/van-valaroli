@@ -4,12 +4,14 @@ Step-by-step checklist for producing each magazine issue from scratch.
 
 ## Phase 1 — Plan & collect (weeks 1-3)
 
-1. Decide which 10 sections appear in this issue
+1. Decide which sections appear in this issue (check the rotation tracker in
+   CLAUDE.md PART 6 first — don't repeat a topic still fresh from last issue,
+   and note any series, like மனம் தொடர், that owes a next part)
 2. Assign one author per article
 3. Send `docs/Author_Guide.docx` + `docs/MMD_Specification.md` to each author
 4. Set submission deadline (allow 1 week for revisions)
 
-### Default 10 sections
+### Default sections (11, matching Issue 02's actual final shape)
 
 | # | Section | Typical pages |
 |---|---|---|
@@ -20,9 +22,10 @@ Step-by-step checklist for producing each magazine issue from scratch.
 | 5 | தமிழகக் கலைகள் | 5–7 |
 | 6 | நூல் மதிப்புரை | 2–3 |
 | 7 | ஓர் ஒழுக்கம் | 3–4 |
-| 8 | இயற்கை தரும் இன்பம் | 1 |
-| 9 | அறநிலையச் செய்திகள் | 2–3 |
-| 10 | அடுத்த இதழில் | 1 |
+| 8 | மனம் தொடர் | 2 |
+| 9 | இயற்கை தரும் இன்பம் | 1 |
+| 10 | அறநிலையச் செய்திகள் | 2–3 |
+| 11 | அடுத்த இதழில் | 1 |
 
 You can change this list per issue — just update `issue_meta.json`.
 
@@ -31,10 +34,12 @@ You can change this list per issue — just update `issue_meta.json`.
 ```bash
 cd /Users/gowri/spaceclub/e-magazine/HowTO
 
-# Copy the skeleton
-cp -r issues/Issue-02-sample issues/Issue-03    # use existing as template
-# or
-cp -r examples/Issue-NN-skeleton issues/Issue-03
+# Copy a template — issues/Issue-02-sample is a minimal 3-article skeleton
+# (good for a quick trial run); issues/Issue-02 is the full, validated
+# 11-article issue (better as a real reference for issue_meta.json's schema,
+# masthead override shape, and article/image naming conventions)
+cp -r issues/Issue-02-sample issues/Issue-03
+# then delete the sample articles/images you don't need and add your own
 ```
 
 Edit `issues/Issue-03/issue_meta.json`:
@@ -57,20 +62,24 @@ For each section:
 
 ### Article folder example
 
+Based on Issue 02's actual (validated, shipped) layout — `issues/Issue-02/`
+is a working reference if you want to see real examples of each piece below:
+
 ```
 issues/Issue-03/
 ├── issue_meta.json
 ├── articles/
-│   ├── 01-thalayangam.md
+│   ├── 01-thalaiyangam.md
 │   ├── 02-thirukkural.md
 │   ├── 03-sirukathai.md
-│   ├── 04-thamarai.md
+│   ├── 04-sangailakkiyam.md
 │   ├── 05-kalai.md
-│   ├── 06-nuul.md
+│   ├── 06-nool-mathippurai.md
 │   ├── 07-ozhukkam.md
-│   ├── 08-iyarkai.md
+│   ├── 08-manam.md
 │   ├── 09-activities.md
-│   └── 10-closing.md
+│   ├── 10-closing.md
+│   └── 11-iyarkai.md
 └── images/
     ├── cover-image.jpeg     ← cover background (required)
     ├── lotus-pond-01.jpg
@@ -85,7 +94,7 @@ source .venv/bin/activate
 
 python make_magazine.py \
     --from-issue issues/Issue-03 \
-    output/VAN_Vallaroli_Aani2026.pdf
+    output/VAN_Vallaroli_Purattasi2026.pdf
 ```
 
 This runs all 5 steps automatically:
@@ -150,7 +159,7 @@ While the build runs, glance at the `rebalance_sections.py` output:
 Make changes to the markdown / images, then re-run:
 
 ```bash
-python make_magazine.py --from-issue issues/Issue-03 output/VAN_Vallaroli_Aani2026.pdf
+python make_magazine.py --from-issue issues/Issue-03 output/VAN_Vallaroli_Purattasi2026.pdf
 ```
 
 Common fixes:
@@ -190,7 +199,7 @@ done
 ## Phase 9 — Archive
 
 ```bash
-ISSUE="Aani2026"
+ISSUE="Purattasi2026"
 mkdir -p archive/$ISSUE
 cp -r issues/Issue-03 archive/$ISSUE/
 mv output/VAN_Vallaroli_*.pdf archive/$ISSUE/

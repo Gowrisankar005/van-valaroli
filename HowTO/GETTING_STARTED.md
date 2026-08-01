@@ -33,12 +33,12 @@ pip install -r requirements.txt
 playwright install chromium
 ```
 
-## 3. Smoke test — build the current magazine
+## 3. Smoke test — build the sample issue
 
 ```bash
 source .venv/bin/activate
 python make_magazine.py \
-    source/VAN_Vallaroli_Chittirai2026_v4_6_20260512.html \
+    --from-issue issues/Issue-02-sample \
     output/test.pdf
 ```
 
@@ -49,26 +49,30 @@ Expected output:
   வான் வளரொளி இதழ் — Magazine Production Pipeline
 ================================================================
 ...
+✓ Step 0/4  build_issue_html.py  (0.0s)
 ✓ Step 1/4  fix_html.py  (0.1s)
-✓ Step 2/4  rebalance_sections.py  (4.4s)
-✓ Step 3/4  compare_html.py  (0.3s)
-✓ Step 4/4  build_text_pdf.py  (6.5s)
+✓ Step 2/4  rebalance_sections.py  (~6s)
+✓ Step 3/4  compare_html.py  (0.0s)
+✓ Step 4/4  build_text_pdf.py  (~3s)
 ================================================================
-  ✓ Done in 11.3s
+  ✓ Done in ~9s
   ✓ Output: output/test.pdf
-  ✓ Size:   18.0 MB
+  ✓ Size:   ~2.2 MB
 ================================================================
 ```
 
-Open `output/test.pdf` — you should see the complete Chittirai 2026 magazine.
+Open `output/test.pdf` — you should see a small 3-article sample magazine
+(தலையங்கம், திருக்குறள் ஆய்வு், சங்க இலக்கியம்).
 
-If you see the same magazine, setup is complete.
+If you see that, setup is complete. To see a full-size issue instead, build
+from a real one once it exists, e.g. `--from-issue issues/Issue-02` (~15-20s,
+~7 MB for an 11-article issue).
 
 ## 4. Try a different theme
 
 ```bash
 python make_magazine.py \
-    source/VAN_Vallaroli_Chittirai2026_v4_6_20260512.html \
+    --from-issue issues/Issue-02-sample \
     output/test_peacock.pdf \
     --theme peacock
 ```
@@ -92,7 +96,7 @@ Once setup is done, every future session just needs:
 ```bash
 cd /Users/gowri/spaceclub/e-magazine/HowTO
 source .venv/bin/activate
-python make_magazine.py <source.html> <output/file.pdf>
+python make_magazine.py --from-issue issues/Issue-NN output/file.pdf
 ```
 
 ## Troubleshooting

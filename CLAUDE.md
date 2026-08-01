@@ -55,6 +55,8 @@ Root-level files like `VAN_Vallaroli_Chittirai2026_v4_6_20260512.html` are singl
 
 ```
 HowTO/
+├── GETTING_STARTED.md        ← one-time machine setup + smoke test
+├── setup.sh                  ← bash installer (venv, deps, Playwright Chromium)
 ├── make_magazine.py          ← ONE-COMMAND ENTRY POINT
 ├── build_issue_html.py       ← Step 0 — MMD → base HTML (uses mmd_parser.py)
 ├── validate_mmd.py           ← Pre-flight lint for author articles
@@ -364,15 +366,16 @@ Every article should sound like a wise, warm, learned elder — not a textbook, 
 - Version bumps (System A only): `v1.0` first draft · `v1.1` minor corrections · `v2.0` structural changes
 
 ### Issue Rotation Tracker (avoid repeating topics)
-| Section | Issue 1 (வைகாசி 2026) | Issue 2 (ஆடி 2026) |
-|---|---|---|
-| திருக்குறள் ஆய்வு | அறிவுடைமை — பத்துக் குறட்பாக்கள் | ஆறுவது சினம் — ஔவையார் ஆத்திசூடி vs. வெகுளாமை அதிகாரம் |
-| சிறுகதை | பால்வண்ணம் பிள்ளை — புதுமைப்பித்தன் | திறந்த ஜன்னல் — புதுமைப்பித்தன் (மணிக்கொடி, 1934) |
-| தமிழகக் கலைகள் | கோயிற் கட்டிடக்கலை — ஓர் அறிமுகம் | தமிழர் சிற்பக்கலையின் தொன்மை — கீழடி, ஆதிச்சநல்லூர், நடுகற்கள் |
-| சங்க இலக்கியம் | தாமரை மலரின் அறச்செய்தி (Lotus) | மலர் சூடிய நாகரிகம் — சங்க இலக்கியத்தில் மலர்களின் பெருமையும் அறமும் (received; topic changed from originally planned பறவைகள்/Birds) |
-| ஓர் ஒழுக்கம் | அதிகாலை துயில் எழல் — வள்ளலாரின் நெறி | மல சலம் கழித்தல் — எருவாய்க்கான ஒழுக்கம் |
-| நூல் மதிப்புரை | வாசிப்பது எப்படி? — செல்வேந்திரன் | (TBD) |
-| மனம் தொடர் | Not started (teaser only) | மனதின் இயல்பு (Part 1) — planned, not yet received |
+| Section | Issue 1 (வைகாசி 2026) | Issue 2 (ஆடி 2026) | Issue 3 (புரட்டாசி 2026 — Oct 2026 release) |
+|---|---|---|---|
+| திருக்குறள் ஆய்வு | அறிவுடைமை — பத்துக் குறட்பாக்கள் | ஆறுவது சினம் — ஔவையார் ஆத்திசூடி vs. வெகுளாமை அதிகாரம் | (TBD) |
+| சிறுகதை | பால்வண்ணம் பிள்ளை — புதுமைப்பித்தன் | திறந்த ஜன்னல் — புதுமைப்பித்தன் (மணிக்கொடி, 1934) | (TBD — see note below) |
+| தமிழகக் கலைகள் | கோயிற் கட்டிடக்கலை — ஓர் அறிமுகம் | தமிழர் சிற்பக்கலையின் தொன்மை — கீழடி, ஆதிச்சநல்லூர், நடுகற்கள் | (TBD) |
+| சங்க இலக்கியம் | தாமரை மலரின் அறச்செய்தி (Lotus) | மலர் சூடிய நாகரிகம் — சங்க இலக்கியத்தில் மலர்களின் பெருமையும் அறமும் | (TBD) |
+| ஓர் ஒழுக்கம் | அதிகாலை துயில் எழல் — வள்ளலாரின் நெறி | மல சலம் கழித்தல் — எருவாய்க்கான ஒழுக்கம் | (TBD) |
+| நூல் மதிப்புரை | வாசிப்பது எப்படி? — செல்வேந்திரன் | தமிழர் வீரம் — முனைவர் ரா.பி. சேதுப்பிள்ளை | (TBD) |
+| மனம் தொடர் | Not started (teaser only) | மனதின் இயல்பு (Part 1) — shipped | Part 2 expected — this is an ongoing series, don't let it lapse |
+| இயற்கை தரும் இன்பம் | Not started | Photo essay — shipped (new section, added mid-issue) | (TBD) |
 
 Note: two authors reused Pudhumaipithan classics for சிறுகதை across Issue 1 and Issue 2 — flag to editor if a third reprint is considered for Issue 3; readers may expect original fiction eventually.
 

@@ -46,10 +46,10 @@ echo "  ✓ Chromium ready"
 
 # 5. Smoke test
 echo
-echo "  · Running smoke test (builds the current magazine) …"
+echo "  · Running smoke test (builds the sample 3-article issue) …"
 mkdir -p output
 if python make_magazine.py \
-    source/VAN_Vallaroli_Chittirai2026_v4_6_20260512.html \
+    --from-issue issues/Issue-02-sample \
     output/_setup_test.pdf \
     --skip-audit >/dev/null 2>&1; then
     SIZE=$(du -h output/_setup_test.pdf | cut -f1)
@@ -57,7 +57,7 @@ if python make_magazine.py \
 else
     echo "  ✗ Smoke test failed — try running manually to see the error:"
     echo "      source .venv/bin/activate"
-    echo "      python make_magazine.py source/VAN_*.html output/test.pdf"
+    echo "      python make_magazine.py --from-issue issues/Issue-02-sample output/test.pdf"
     exit 1
 fi
 
@@ -68,6 +68,6 @@ echo "  Next steps:"
 echo "    1. Activate the env in each new shell session:"
 echo "         source .venv/bin/activate"
 echo "    2. Build a magazine:"
-echo "         python make_magazine.py <source.html> <output/file.pdf>"
+echo "         python make_magazine.py --from-issue issues/Issue-NN output/file.pdf"
 echo "    3. Read GETTING_STARTED.md and PRODUCTION_WORKFLOW.md"
 echo
