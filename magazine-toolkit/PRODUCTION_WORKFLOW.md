@@ -43,6 +43,11 @@ cp -r issues/_starter-template issues/Issue-03
 # then delete the sample articles/images you don't need and add your own
 ```
 
+If you copy from `issues/released/Issue-NN` instead (to reuse its structure as
+a closer starting point), **delete its `final/` folder and `ISSUE-NN_PLAN.md`
+first** — those are that specific issue's shipped output and production plan,
+not part of a fresh issue's starting skeleton.
+
 Edit `issues/Issue-03/issue_meta.json`:
 - Bump `issue_number`
 - Set `tamil_month`, `year`, `year_tamil`, `english_dates`
