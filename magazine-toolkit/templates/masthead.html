@@ -1,0 +1,63 @@
+  <!-- PAGE 3 — CREDITS / MASTHEAD (ஆசிரியர் குழு) ═══════════════════════════ -->
+  <div class="page page-masthead">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span>
+    <span class="corner-bl">❈</span>
+    <span class="corner-br">❈</span>
+
+    <div class="page-header">
+      <img class="header-logo-left" src="Images/van-logo.jpg" alt="VAN">
+      <span class="section-name">ஆசிரியர் குழு</span>
+      <img class="header-logo-right" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
+    </div>
+
+    <div class="content-area">
+      <div class="masthead-grid">
+        <!-- Left: three roles, equal visual weight -->
+        <div class="masthead-card">
+          <div class="masthead-card-title">வான் வளரொளி இதழ்</div>
+          <div class="masthead-card-divider"></div>
+
+          <div class="masthead-roles">
+            {% for role in masthead.roles %}
+            <div class="masthead-role-block">
+              <div class="masthead-role-label">{{ role.label }}</div>
+              <div class="masthead-name">{{ role.name }}</div>
+              {{ role.lines_html }}
+            </div>
+            {% endfor %}
+          </div>
+
+          <div class="masthead-card-divider"></div>
+          <div class="masthead-contact-heading">வலையொளி:</div>
+          <div class="masthead-contact-text">{{ masthead.youtube }}</div>
+          <div class="masthead-contact-heading">மின்னஞ்சல்:</div>
+          <div class="masthead-contact-text">{{ masthead.email }}</div>
+        </div>
+
+        <!-- Right: logos + தொகுப்பாசிரியர்கள் -->
+        <div class="masthead-board">
+          <div class="masthead-board-logos">
+            {% for logo in masthead.logos %}
+            <img class="masthead-logo" src="{{ logo }}" alt="">
+            {% endfor %}
+          </div>
+          <div class="masthead-board-main">
+            <div class="masthead-board-title">{{ masthead.compilers_label }}</div>
+            <ol class="masthead-board-list">
+              {% for name in masthead.compilers %}
+              <li>{{ name }}</li>
+              {% endfor %}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: {{ issue_number }} &nbsp;|&nbsp; {{ tamil_month }} {{ year }}</span>
+      <span class="page-number">3</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  </div>

@@ -1,0 +1,59 @@
+  <!-- COVER ═══════════════════════════════════════════════ -->
+  <div class="cover-section">
+    <div class="cover">
+      <img class="cover-image" src="{{ cover_image }}" alt="">
+      <div class="glossy"></div>
+      <div class="border-frame"></div>
+      <span class="corner c-tl">❈</span>
+      <span class="corner c-tr">❈</span>
+      <span class="corner c-bl">❈</span>
+      <span class="corner c-br">❈</span>
+
+      <!-- MASTHEAD -->
+      <div class="masthead">
+        <!-- Org row: logo | organisation name | logo — all inline -->
+        <div class="cover-org-row">
+          <img class="cover-logo-left" src="{{ logo_left }}" alt="VAN">
+          <div class="cover-org-text">
+            <div class="org-name">வள்ளலார் அறநிலையம்</div>
+            <div class="org-vazangum">வழங்கும்</div>
+          </div>
+          <img class="cover-logo-right" src="{{ logo_right }}" alt="வான் வளரொளி">
+        </div>
+        <div class="gold-rule"></div>
+        <div class="mag-name-main">வான் வளரொளி இதழ்</div>
+        <div class="tagline">செந்தமிழில் அறம் வளர்க்கும் அறிவொளி இதழ்</div>
+        <div class="issue-row">
+          <span class="pill">இதழ் {{ issue_number }} &nbsp;·&nbsp; {{ tamil_month }} {{ year }}</span>
+          {% if special_label %}<span class="pill-special">{{ special_label }}</span>{% endif %}
+        </div>
+      </div>
+
+      <!-- QUOTE -->
+      <div class="quote-float">
+        <div class="quote-text">"எல்லா உயிர்களும் இன்புற்று வாழ்க"</div>
+        <div class="quote-attr">— வள்ளலார்</div>
+      </div>
+
+      <!-- BOTTOM BAND -->
+      <div class="bottom-band">
+        <div class="teasers-label">இந்த இதழில்</div>
+        <div class="teasers">
+          {% for teaser in teasers %}
+          <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">{{ teaser }}</span></div>
+          {% endfor %}
+        </div>
+        <div class="publisher-row">
+          <span class="publisher-name">{{ publisher }}</span>
+          <img class="van-seal" src="{{ logo_left }}" alt="VAN">
+        </div>
+      </div>
+
+      <!-- Issue number badge — circular gold stamp bottom right -->
+      <div class="cover-issue-badge">
+        <span class="badge-label-top">இதழ்</span>
+        <span class="badge-num">{{ issue_number }}</span>
+        <span class="badge-label-bot">{{ tamil_month }}</span>
+      </div>
+    </div>
+  </div>

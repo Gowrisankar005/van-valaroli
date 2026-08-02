@@ -1,0 +1,43 @@
+{
+  "_comment": "Shared defaults for every issue. Per-issue issue_meta.json overrides only what it sets; masthead.compilers / roles fall back to these when missing.",
+  "masthead": {
+    "roles": [
+      {
+        "label": "பொறுப்பாசிரியர்",
+        "name": "தயவு மு. முத்துஜோதி",
+        "lines": [
+          "தலைவர், வள்ளலார் அறநிலையம்"
+        ]
+      },
+      {
+        "label": "வெளியீட்டாளர்",
+        "name": "தயவு க. குமாரவேல்",
+        "lines": [
+          "செயலாளர், வள்ளலார் அறநிலையம்"
+        ]
+      },
+      {
+        "label": "பதிப்பாசிரியர்",
+        "name": "தயவு இரா. கௌரிசங்கர்"
+      }
+    ],
+    "compilers": [
+      "தயவு வெ. வானதி",
+      "தயவு கு. திருமுருகன்",
+      "தயவு ஏ. ஹரிஹரன்"
+    ],
+    "compilers_label": "தொகுப்பாசிரியர்கள்",
+    "publisher": "பெண்ணாடம் வள்ளலார் அறநிலையம்",
+    "address":   "கடலூர் மாவட்டம், பெண்ணாடம்",
+    "email":     "vallalararanilayampdm@gmail.com",
+    "youtube":   "https://www.youtube.com/@pennadamvallalararanilayam",
+    "logos": [
+      "Images/van-logo.jpg",
+      "Images/vallaroli-logo.jpg"
+    ]
+  },
+  "cover": {
+    "max_teasers": 6,
+    "skip_sections": ["அடுத்த இதழில்"]
+  }
+}

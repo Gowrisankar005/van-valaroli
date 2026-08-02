@@ -1,0 +1,26 @@
+{
+  "issue_number": 2,
+  "tamil_month": "வைகாசி",
+  "year": 2026,
+  "year_tamil": "௨௦௨௬",
+  "english_dates": "மே — ஜூன் 2026",
+  "special_label": "",
+
+  "next_issue": {
+    "tamil_month": "ஆனி",
+    "year": 2026
+  },
+
+  "sections": [
+    {"file": "01-thalayangam.md",  "section_name": "தலையங்கம்",         "topic_title": "தமிழின் வளர்ச்சி"},
+    {"file": "02-thirukkural.md",  "section_name": "திருக்குறள் ஆய்வு", "topic_title": "நட்பு அதிகாரம்"},
+    {"file": "03-thamarai.md",     "section_name": "சங்க இலக்கியம்",    "topic_title": "பறவைகள் — சங்க பாடல்களில்"}
+  ],
+
+  "masthead": {
+    "publisher": "பெண்ணாடம் வள்ளலார் அறநிலையம்",
+    "address":   "கடலூர் மாவட்டம், பெண்ணாடம்",
+    "email":     "vallalararanilayampdm@gmail.com"
+  }
+}
+

@@ -2,70 +2,118 @@
 ## Instructions for Claude Code
 
 > **Project:** வான் வளரொளி இதழ் (Van Vallaroli Magazine)
-> **Publisher:** வள்ளலார் அறநிலையம் (VAN — Vallalar Aranilayam)
-> **Claude Code's Role:** Maintainer and builder of the magazine's HTML output
-> **Last Synced From:** Claude.ai project session — சித்திரை 2026
+> **Publisher:** பெண்ணாடம் வள்ளலார் அறநிலையம் (VAN — Vallalar Aranilayam)
+> **Claude Code's role:** Maintainer and builder of the magazine's HTML/PDF output
+> **Cadence:** Bi-monthly since Issue 02 (ஆடி 2026)
 
 ---
 
-## PART 1: PROJECT ORIENTATION
+## PART 0: BEHAVIORAL GUIDELINES
 
-### What This Magazine Is
-வான் வளரொளி இதழ் is a monthly Tamil e-magazine published by பெண்ணாடம் வள்ளலார் அறநிலையம் (VAN). Its mission is to spread செந்தமிழ் (pure Tamil language), வள்ளலார்'s teachings on compassion and ethics, and Tamil cultural heritage.
+Adapted from [andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills) — merge with the project-specific rules below. These bias toward caution over speed; use judgment on trivial edits.
 
-- **Audience:** Tamil speakers 40+, வள்ளலார் followers, intergenerational Tamil families
-- **Format:** A4 HTML → print-to-PDF, 15–25 pages, 15–20 sections per issue
-- **Output file convention:** `VAN_Vallaroli_[Tamil Month][Year]_v[X.X]_[YYYYMMDD].html`
-- **Current file (Issue 1):** `VAN_Vallaroli_Chittirai2026_v1_1_20260307.html` (34 pages)
+### 1. Think Before Coding
+Don't assume. Don't hide confusion. Surface tradeoffs.
+- State assumptions explicitly (e.g. "which issue folder", "which pipeline version"). If uncertain, ask.
+- If multiple interpretations exist, present them — don't pick silently.
+- If something is unclear (a section mapping, a stale file, an ambiguous instruction), stop and name what's confusing.
 
-### Gowri's Role (Your Human Collaborator)
-Gowri is the publisher and coordinator. She reviews content, enforces செந்தமிழ் standards, manages contributors, and gives final editorial approval. She uses Claude.ai for content creation and asks Claude Code (you) for HTML maintenance, structural refactoring, and issue assembly.
+### 2. Simplicity First
+Minimum change that solves the problem. Nothing speculative.
+- No new CSS components, pipeline steps, or abstractions beyond what's asked.
+- No "flexibility" that wasn't requested (e.g. don't add a new theme or section type unless asked).
+- No error handling for scenarios the pipeline can't hit.
+
+### 3. Surgical Changes
+Touch only what you must. Clean up only your own mess.
+- Don't "improve" adjacent CSS, templates, or scripts while doing a content edit.
+- Match existing style in `magazine-toolkit/*.py` and `templates/*.html`, even if you'd do it differently.
+- If you notice unrelated dead/stale content (old drafts, orphaned issue folders), mention it — don't delete it without asking.
+- Every changed line should trace to the user's actual request.
+
+### 4. Goal-Driven Execution
+Define success criteria; loop until verified.
+- "Fix the PDF cut-off" → find the page, reproduce visually (screenshot/PDF page), then confirm it's gone.
+- "Add a section" → build with `make_magazine.py`, open the PDF, check the Phase 5 checklist below.
+- For multi-step work (new issue, pipeline change), state a brief plan with checkpoints before starting.
 
 ---
 
-## PART 2: CURRENT FILE ARCHITECTURE
+## PART 1: TWO SYSTEMS IN THIS REPO — READ THIS FIRST
 
-### The Current Structure (Single Monolithic HTML)
-The magazine is currently one self-contained HTML file where CSS, layout, and content are all embedded together. This is intentional for portability (single file = email-ready, no dependencies).
+This repo contains **two generations** of the same magazine. Know which one you're touching.
+
+### A. Legacy monolithic HTML (Issue 01, சித்திரை/வைகாசி 2026) — FROZEN
+Root-level files like `VAN_Vallaroli_Chittirai2026_v4_6_20260512.html` are single self-contained HTML documents: CSS, layout, and content all embedded together, built by hand/iteratively (v1.0 → v4.6+). This is how Issue 01 shipped.
+- Governed by `Reference_docs/validate_template.py` (structural + brand-color validator).
+- Enforced by `.git/hooks/pre-commit` (blocks commit on FAIL) and `.github/workflows/validate.yml` (CI).
+- **Treat these root `.html` files as historical artifacts.** Only edit one if Gowri explicitly asks for a correction to a shipped/in-flight issue built this way. Don't use this as the template for new issues.
+- Full structural reference (page anatomy, CSS class table, section registry) is preserved in **PART 2 below** since the design system it encodes is still the single source of truth for visual style.
+
+### B. magazine-toolkit/ — ACTIVE, use this for all new issues
+`magazine-toolkit/` is a self-contained build system: **author markdown (MMD) → templated HTML → auto-paginated PDF.** This is what Issue 02 (ஆடி 2026) onward uses. (Renamed from `HowTO/` — same system, clearer name.)
 
 ```
-[single HTML file]
-├── <head> — Google Fonts import (Noto Sans Tamil)
-├── <style> — ALL CSS (~750 lines, embedded)
-│   ├── Body/global styles
-│   ├── Cover page styles (.cover, .masthead, .quote-float, etc.)
-│   ├── TOC page styles (.toc-*, .issue-banner, etc.)
-│   ├── Interior page styles (.page, .page-header, .page-footer, etc.)
-│   ├── Content component styles (.section-header, .slim-quote, .highlights-box, etc.)
-│   └── Print media queries
-└── <body>
-    ├── <!-- COVER PAGE --> div.cover (A4 210×297mm)
-    ├── <!-- TOC PAGE --> div.page (பொருளடக்கம்)
-    ├── <!-- PAGE 3 --> div.page (தலையங்கம் — Editorial)
-    ├── <!-- PAGE 4 --> div.page (Section content...)
-    ├── ... (pages 4–33 = content sections)
-    └── <!-- PAGE 34 --> div.page (Next issue preview + contact)
+magazine-toolkit/
+├── GETTING_STARTED.md        ← one-time machine setup + smoke test
+├── setup.sh                  ← bash installer (venv, deps, Playwright Chromium)
+├── make_magazine.py          ← ONE-COMMAND ENTRY POINT
+├── build_issue_html.py       ← Step 0 — MMD → base HTML (uses mmd_parser.py)
+├── validate_mmd.py           ← Pre-flight lint for author articles
+├── fix_html.py               ← Step 1 — image paths, CSS injection, layout fixes
+├── rebalance_sections.py     ← Step 2 — Playwright-measured pagination + TOC
+├── compare_html.py           ← Step 3 — integrity audit (order/content/images preserved)
+├── build_text_pdf.py         ← Step 4 — Playwright → searchable text-PDF (default)
+├── build_screenshot_pdf.py   ←   (fallback — image-based PDF)
+├── templates/                ← _base.html, cover.html, toc.html, article_page.html,
+│                                masthead.html, imprint.html, magazine.css (~1540 lines)
+│   └── assets/               ← the only 2 truly-shared static files (van-logo.jpg,
+│                                vallaroli-logo.jpg) — everything else is per-issue
+├── docs/                     ← Author_Guide.docx, Editor_Guide.docx,
+│                                MMD_Specification.md, Architecture.md
+├── issues/
+│   ├── _starter-template/    ← copy this to start a new issue (has its own README)
+│   ├── Issue-NN/              ← the currently active issue being built
+│   │   └── _drafts/          ← gitignored raw-submission staging (docx → pandoc →
+│   │                            hand-cleaned into articles/*.md — see PRODUCTION_WORKFLOW.md)
+│   └── released/              ← completed, shipped issues (full recipe + final/ output)
+├── source/                   ← build scratch, fully gitignored — regenerated per build,
+│                                nothing here is durable (durable copy lives in
+│                                issues/released/Issue-NN/final/)
+└── output/                   ← final PDFs before manual promotion to issues/released/
 ```
 
-### How Each Interior Page Is Built
-Every content page follows this exact structure — learn it well:
+**One command builds an entire issue:**
+```bash
+cd magazine-toolkit && source .venv/bin/activate
+python make_magazine.py --from-issue issues/Issue-02 output/VAN_Vallaroli_Aadi2026.pdf
+```
 
+- `magazine-toolkit/templates/*.html` are page **fragments**, not full documents (no `<style>` block, no full class set — they're assembled at build time). The pre-commit hook explicitly skips them; don't expect them to pass `validate_template.py`.
+- Full technical deep-dive: `magazine-toolkit/docs/Architecture.md`. Full per-issue checklist: `magazine-toolkit/PRODUCTION_WORKFLOW.md`.
+- Author-facing content format is **MMD (Magazine Markdown)** — see PART 2A below. Authors never touch HTML or CSS.
+
+**When Gowri says "build the issue" / "make the PDF" / gives you a new issue's content → use System B.**
+**When Gowri says "fix Issue 01" / references a specific `.html` filename at the repo root → use System A, and be extra careful (Lessons Learned in PART 9 apply directly).**
+
+---
+
+## PART 2: LEGACY SYSTEM (A) — HTML PAGE ANATOMY
+
+### Every Content Page
 ```html
 <div class="page">
   <div class="glossy"></div>
   <span class="corner-tl">❈</span>
   <span class="corner-br">❈</span>
 
-  <!-- HEADER -->
   <div class="page-header">
     <span class="section-name">[SECTION NAME IN TAMIL]</span>
     <span class="mag-name">வான் வளரொளி இதழ்</span>
   </div>
 
-  <!-- CONTENT -->
   <div class="content-area">
-
-    <!-- Section title block — use for first page of a section -->
+    <!-- First page of a section: -->
     <div class="section-header">
       <div class="topic-title">[ARTICLE TITLE]</div>
       <div class="section-label-row">
@@ -75,102 +123,158 @@ Every content page follows this exact structure — learn it well:
       </div>
       <div class="title-underline"></div>
     </div>
-
-    <!-- Continuation banner — use for page 2+ of same section -->
+    <!-- Page 2+ of same section, instead: -->
     <div class="continuation-banner">
       <span class="cont-section-name">[SECTION NAME]</span>
       <span class="cont-page-info">தொடர்ச்சி — பகுதி [X/Y]</span>
     </div>
 
     <div class="section-divider">&#x2022; &nbsp;&nbsp; &#x2022; &nbsp;&nbsp; &#x2022;</div>
+    <div class="body-text"><!-- content components below --></div>
+  </div>
 
-    <div class="body-text">
-      <!-- Body content goes here — see content components below -->
-    </div>
-
-  </div><!-- .content-area -->
-
-  <!-- FOOTER -->
   <div class="page-footer">
     <span class="issue-info">இதழ் எண்: [N] &nbsp;|&nbsp; [Tamil Month] [Year]</span>
     <span class="page-number">[PAGE NUMBER]</span>
     <img class="van-logo-footer" src="VANLogoGold.jpg" alt="VAN">
   </div>
-
-</div><!-- .page [N] -->
+</div>
 ```
 
-### Content Components (CSS Classes to Use)
+### Content Components (CSS classes to use)
 
-| Component | HTML | When to Use |
+| Component | HTML | When to use |
 |-----------|------|-------------|
 | Body paragraph | `<p>text</p>` | All running text |
 | Lead paragraph | `<p class="lead-para">text</p>` | Opening paragraph of each article only |
 | Subheading | `<div class="subhead">text</div>` | Section sub-topics |
-| Classical quote block | `<div class="slim-quote"><div class="quote-text">verse</div><div class="quote-source">source</div></div>` | Thirukkural, Sangam verses |
+| Classical quote | `<div class="slim-quote"><div class="quote-text">verse</div><div class="quote-source">source</div></div>` | Thirukkural, Sangam verses |
 | Highlights box | `<div class="highlights-box"><div class="box-title">title</div><ul><li>item</li></ul></div>` | Key points, lists |
 | Numbered list | `<ol class="numbered-list"><li>item</li></ol>` | Step-by-step instructions |
 | Author byline | `<div class="author-byline">text</div>` | Article attribution |
 | Section divider | `<div class="section-divider">• &nbsp; • &nbsp; •</div>` | Between sub-sections |
-| **Image — float right** | `<figure class="article-figure img-right"><img src="..." alt="[Tamil]"><figcaption class="img-caption">[Tamil caption]</figcaption></figure>` | Portraits, illustrations, book covers (62mm wide, text wraps left) |
-| **Image — float left** | `<figure class="article-figure img-left"><img src="..." alt="[Tamil]"><figcaption class="img-caption">[Tamil caption]</figcaption></figure>` | Same as above, text wraps right |
-| **Image — full banner** | `<figure class="article-figure img-banner"><img src="..." alt="[Tamil]"><figcaption class="img-caption">[Tamil caption]</figcaption></figure>` | Temple exteriors, landscapes (full content width) |
-| **Image — half centered** | `<figure class="article-figure img-half"><img src="..." alt="[Tamil]"><figcaption class="img-caption">[Tamil caption]</figcaption></figure>` | Diagrams, single objects (100mm centered) |
+| Image — float right | `<figure class="article-figure img-right"><img src="..." alt="[Tamil]"><figcaption class="img-caption">[Tamil]</figcaption></figure>` | Portraits, illustrations (62mm, text wraps left) |
+| Image — float left | same with `.img-left` | Same, text wraps right |
+| Image — full banner | `.img-banner` | Temple exteriors, landscapes (full width) |
+| Image — half centered | `.img-half` | Diagrams, single objects (100mm centered) |
 
-### Image Size Guide
+**Image size guide:** float 62mm (min 370×280px, ideal 730×550px) · banner 182mm (min 1080×400px, ideal 2150×790px) · half 100mm (min 590×440px, ideal 1180×870px).
+Never place a float immediately after another float — use a `section-divider` between them.
 
-| Placement mode | CSS class | Width | Min pixels (screen) | Ideal for print (300dpi) |
-|---|---|---|---|---|
-| Float column | `.img-right` / `.img-left` | 62mm | 370 × 280px | 730 × 550px |
-| Full banner | `.img-banner` | 182mm | 1080 × 400px | 2150 × 790px |
-| Half centered | `.img-half` | 100mm | 590 × 440px | 1180 × 870px |
+### Section Registry (extended menu — up to 21 types; an issue typically uses 10)
 
-**Placement decision guide:**
-- Saint/author portrait → `img-right` (face toward text centre)
-- Sangam bird/plant illustration → `img-right` or `img-left`
-- Temple exterior, colonnade, gopuram → `img-banner`
-- Book cover, diagram, single artefact → `img-half`
-- Never place a float immediately after another float — use a `section-divider` between them
+| # | Tamil Name | Page-Header Label | Typical Pages |
+|---|---|---|---|
+| 1 | தலையங்கம் | தலையங்கம் | 1–2 |
+| 2 | கருணைச் சோலைக் கட்டுரை | கருணைச் சோலை | 2–3 |
+| 3 | திருக்குறள் ஆய்வு | திருக்குறள் ஆய்வு | 4–5 |
+| 4 | சங்க இலக்கியத் தொடர் | சங்க இலக்கியம் | 5–6 |
+| 5 | மாணவர் கல்வி வெற்றித் தொடர் | மாணவர் வெற்றி | 1–2 |
+| 6 | நலவாழ்வு / அறிவியல் | நலவாழ்வு | 1 |
+| 7 | வீட்டுப்பெண்களுக்கு | வீட்டுப்பெண்களுக்கு | 1–2 |
+| 8 | அறநிலைய செய்திகள் | அறநிலையச் செய்திகள் | 2–3 |
+| 9 | தமிழகக் கோயில் கட்டமைப்பு / தமிழகக் கலைகள் | கோயில் கட்டமைப்பு | 5–7 |
+| 10 | கல்வெட்டில் அறச் செய்திகள் | கல்வெட்டு ஆய்வு | 1 |
+| 11 | தமிழிசை வரலாறு | தமிழிசை | 1 |
+| 12 | தமிழர் வாழ்வியல் | தமிழர் வாழ்வியல் | 1 |
+| 13 | நூல் மதிப்புரை | நூல் மதிப்புரை | 2–3 |
+| 14 | தமிழ் எழுத்துக்களின் வரலாறு | தமிழ் எழுத்து வரலாறு | 1 |
+| 15 | அருளாளர்களின் அறம் | அருளாளர்கள் | 1 |
+| 16 | நற்றமிழ் சொற்கள் அறிவோம் | நற்றமிழ் சொற்கள் | 0.5 |
+| 17 | கவிதைகள் | கவிதைகள் | 1 |
+| 18 | சிறுகதை | சிறுகதை | 3–4 |
+| 19 | ஒரு ஒழுக்கம் | ஒரு ஒழுக்கம் | 3–4 |
+| 20 | இயற்கை உணவு / இயற்கை தரும் இன்பம் | இயற்கை உணவு | 0.5–1 |
+| 21 | விவாதம்: இரு பார்வை | விவாதம் | 1–2 |
+| — | மனம் தொடர் (new, from Issue 02) | மனம் தொடர் | 2 |
+| — | அடுத்த இதழில் (always last) | — | 1 |
+
+**Fixed structure, both systems:** cover → TOC/imprint/masthead → content sections in editorial order → அடுத்த இதழில் / closing page (always last).
 
 ---
 
-## PART 3: DESIGN SYSTEM — DO NOT ALTER THESE
+## PART 2A: MMD AUTHORING FORMAT (System B — how content becomes HTML)
 
-### Brand Colors (Non-Negotiable)
-```css
-/* Primary greens */
---van-green-mid: #8DC63F;      /* Accent, subheadings */
---van-green-deep: #2d7a3e;     /* Page header text, page numbers */
---van-green-dark: #6BA82F;     /* Highlights box border, section labels */
+Full spec: `magazine-toolkit/docs/MMD_Specification.md`. One `.md` file per article, saved to `issues/Issue-NN/articles/`.
 
-/* Gold */
---van-gold: #D4AF37;           /* Decorative elements, pull quote lines */
+```markdown
+---
+section: திருக்குறள் ஆய்வு
+title: நட்பு — ஓர் ஆய்வு
+subtitle: திருவள்ளுவர் காட்டும் நட்பின் இலக்கணம்
+author: திருமுருகன்
+---
 
-/* Text */
---body-text: #2B2B2B;          /* All body paragraphs */
---subtle-text: #666666;        /* Sign titles, org names */
+முதல் பத்தி (இது தானாக lead-para ஆகும்).
 
-/* Page backgrounds */
---page-bg-top: #fffef5;
---page-bg-bottom: #fef9f2;
+## முன்னுரை
+
+இரண்டாம் பத்தி.
+
+:::quote source="திருக்குறள் 781"
+செயற்கரிய யாவுள நட்பின் அதுபோல
+வினைக்கரிய யாவுள காப்பு.
+:::
+
+:::box title="இந்த இதழில்..."
+- திருக்குறள் ஆய்வு
+- சங்க இலக்கியம்
+:::
+
+:::image src="lotus-01.jpg" caption="கோயில் குளத்தில் தாமரை" type="float"
+:::
+
+:::closing
+நாம் மேலும் வளர்வோம்.
+— திருமுருகன்
+:::
 ```
 
-### Typography (Non-Negotiable)
-- **Font:** Noto Sans Tamil (Google Fonts) — load via `<link>` in `<head>`
-- **Body text:** 12–13pt, line-height 1.5, color `#2B2B2B`, justified
-- **Subheadings:** 13–14pt, bold, color `#8DC63F` with left bar accent
-- **Classical quotes:** Centered, 13–14pt, inside `.slim-quote` block
-- **Minimum size:** 11pt (senior accessibility requirement)
-- **Page header section name:** Color `#D4AF37` (gold)
-- **Page number:** Color `#2d7a3e` (deep green)
+| Directive | Maps to | Notes |
+|---|---|---|
+| `## Heading` through `###### Heading` | `.subhead` | 2–6 per article typical; all levels render identically (one visual style) — use deeper levels only to signal nesting in source |
+| `**bold**` | `<strong>` | Inline only, works in paragraphs/list items/box items; no other inline emphasis supported |
+| `- item` | `<ul>` list | |
+| `1. item` | `<ol class="numbered-list">` | Exact `N. ` prefix required |
+| `:::quote source="..."` | `.slim-quote` | Each non-blank line → its own verse line |
+| `:::box title="..."` | `.highlights-box` | Bulleted items inside |
+| `:::image src="..." caption="..." type="float\|float-left\|banner\|half\|portrait"` | `.article-figure img-*` | `float`=60×45mm right, `float-left`=same but left (alternate with `float` — never stack two same-side floats back to back), `banner`=full-width, `half`=80mm centered no border (diagrams/artifacts), `portrait`=45mm centered no border (author/subject headshot, use this NOT `half` for portraits). `src` must exist in issue's `images/` folder |
+| `:::closing` | sign-off block | Heuristic: prose lines ending in `./!/?` stay plain text; the first line that ISN'T a full sentence starts the signature (sign-off → name → title → org) — no `—` marker required, though one still works |
+
+**Rules:** Tamil only (செந்தமிழ் substitutions apply — PART 4), em-dash `—` (U+2014) for citations never `--`/`----`, no manual page breaks (pagination is automatic via `rebalance_sections.py`, which now includes a real-rendered-gap backfill pass — see PART 9), no raw HTML, `section:` frontmatter must exactly match a `section_name` in `issue_meta.json`.
+
+Before handing an issue to the pipeline, run:
+```bash
+python magazine-toolkit/validate_mmd.py issues/Issue-NN/articles/*.md
+```
+
+---
+
+## PART 3: DESIGN SYSTEM — DO NOT ALTER WITHOUT EXPLICIT INSTRUCTION
+
+### Brand Colors (CSS custom properties — see PART 3A)
+```
+--van-primary / --van-green-mid:  #8DC63F   accent, subheadings
+--van-deep / --van-green-deep:    #2d7a3e   page header text, page numbers
+--van-dark / --van-green-dark:    #6BA82F   highlights-box border, section labels
+--van-gold:                       #D4AF37   decorative elements, pull-quote lines
+--body-text:                      #2B2B2B   all body paragraphs
+--subtle-text:                    #666666   sign titles, org names
+--page-bg-top / --page-bg-bottom: #fffef5 / #fef9f2
+```
+
+### Typography
+- Font: Noto Sans Tamil (Google Fonts), loaded via `<link>` in `<head>`
+- Body text: 12–13pt (11pt minimum — senior accessibility requirement), line-height 1.5, `#2B2B2B`, justified
+- Subheadings: 13–14pt bold, `#8DC63F` with left-bar accent
+- Classical quotes: centered, 13–14pt, inside `.slim-quote`
+- Page header section name: gold `#D4AF37`. Page number: deep green `#2d7a3e`
 
 ### Page Dimensions
-- **Size:** A4 = 210mm × 297mm
-- **Content padding:** 14mm left/right, 5mm top (below header), 3mm bottom
-- **All pages must include:** `.glossy` overlay, `corner-tl`/`corner-br` ❈ motifs
-- **Decorative corners:** Color `#8b6f47`, opacity ~9%
+- A4 = 210mm × 297mm. Content padding 14mm left/right, 5mm top (below header), 3mm bottom
+- Every page: `.glossy` overlay + `corner-tl`/`corner-br` ❈ motifs (color `#8b6f47`, ~9% opacity)
 
-### Print Media Query (Always Preserve)
+### Print Media Query (always preserve)
 ```css
 @media print {
   body { background: none; padding: 0; margin: 0; }
@@ -180,426 +284,27 @@ Every content page follows this exact structure — learn it well:
 @page { size: A4 portrait; margin: 0; }
 ```
 
-### Image Assets (Required Files in Same Directory)
+### Required Image Assets
 ```
-VANLogoGold.jpg          — Footer logo on every page
-valarolilogogold01.jpg   — Larger logo used on cover
-MagazineCoverImage01.jpg — Cover background photo
+VANLogoGold.jpg          — footer logo, every page
+valarolilogogold01.jpg   — larger logo on cover
+MagazineCoverImage01.jpg — cover background photo
 ```
-If these files are missing or renamed, ALL page footers and the cover will break.
+If missing/renamed, every footer and the cover break.
 
 ---
 
-## PART 4: ISSUE METADATA — WHAT TO UPDATE EACH MONTH
+## PART 3A: THEME SYSTEM — CSS CUSTOM PROPERTIES
 
-When creating a new issue, these strings must be updated consistently throughout the entire HTML file. Use find-and-replace — they appear on every page.
-
-| Field | Location | Example Current Value |
-|-------|----------|-----------------------|
-| Issue number | Every page footer `<span class="issue-info">` | `இதழ் எண்: 1` |
-| Tamil month + year | Every page footer + cover masthead | `சித்திரை 2026` |
-| Special issue label | Cover `.pill-special` span | `கல்வி சிறப்பிதழ்` |
-| Issue number pill | Cover `.pill` span | `இதழ் 1 · சித்திரை 2026` |
-| Next issue preview | Last content page | `வைகாசி 2026` |
-| HTML `<title>` tag | `<head>` | `வான் வளரொளி இதழ் — சித்திரை ௨௦௨௬ — முழு இதழ்` |
-
-**Tamil Numerals for Page Numbers and Years:**
-```
-௧=1  ௨=2  ௩=3  ௪=4  ௫=5  ௬=6  ௭=7  ௮=8  ௯=9  ௰=10
-௨௦௨௬ = 2026   சித்திரை = Chittirai   வைகாசி = Vaigasi
-கார்த்திகை = Karthigai   மார்கழி = Margazhi   ஐப்பசி = Aippasi
-```
-
----
-
-## PART 5: SECTION REGISTRY
-
-The magazine has up to 21 section types. Each issue uses 15–20 of them. This is the master registry for naming, page-header labels, and typical page count.
-
-| # | Section Tamil Name | Page Header Label | Typical Pages |
-|---|--------------------|-------------------|---------------|
-| 1 | தலையங்கம் | தலையங்கம் | 1 |
-| 2 | கருணைச் சோலைக் கட்டுரை | கருணைச் சோலை | 2–3 |
-| 3 | திருக்குறள் ஆய்வு | திருக்குறள் ஆய்வு | 2–4 |
-| 4 | சங்க இலக்கியத் தொடர் | சங்க இலக்கியம் | 1–2 |
-| 5 | மாணவர் கல்வி வெற்றித் தொடர் | மாணவர் வெற்றி | 1–2 |
-| 6 | நலவாழ்வு / அறிவியல் | நலவாழ்வு | 1 |
-| 7 | வீட்டுப்பெண்களுக்கு | வீட்டுப்பெண்களுக்கு | 1–2 |
-| 8 | அறநிலைய செய்திகள் | அறநிலையச் செய்திகள் | 1–2 |
-| 9 | தமிழகக் கோயில் கட்டமைப்பு | கோயில் கட்டமைப்பு | 1–2 |
-| 10 | கல்வெட்டில் அறச் செய்திகள் | கல்வெட்டு ஆய்வு | 1 |
-| 11 | தமிழிசை வரலாறு | தமிழிசை | 1 |
-| 12 | தமிழர் வாழ்வியல் | தமிழர் வாழ்வியல் | 1 |
-| 13 | நூல் மதிப்புரை | நூல் மதிப்புரை | 1 |
-| 14 | தமிழ் எழுத்துக்களின் வரலாறு | தமிழ் எழுத்து வரலாறு | 1 |
-| 15 | அருளாளர்களின் அறம் | அருளாளர்கள் | 1 |
-| 16 | நற்றமிழ் சொற்கள் அறிவோம் | நற்றமிழ் சொற்கள் | 0.5 |
-| 17 | கவிதைகள் | கவிதைகள் | 1 |
-| 18 | சிறுகதை | சிறுகதை | 1–2 |
-| 19 | ஒரு ஒழுக்கம் | ஒரு ஒழுக்கம் | 0.5 |
-| 20 | இயற்கை உணவு | இயற்கை உணவு | 0.5 |
-| 21 | விவாதம்: இரு பார்வை | விவாதம் | 1–2 |
-
-**Fixed Structure (Always in this order):**
-1. Cover page (`.cover` div — special structure, not `.page`)
-2. பொருளடக்கம் (TOC — special structure)
-3. தலையங்கம் (Editorial — page 3)
-4. Content sections (pages 4 onward, in editorial order)
-5. அடுத்த இதழில் / closing page (always last)
-
----
-
-## PART 6: COMMON MAINTENANCE TASKS
-
-### Task A: Update Issue Metadata for New Month
-```bash
-# In the HTML file, do these replacements (in order):
-# 1. Update <title> tag
-# 2. Update cover masthead pill text
-# 3. Update cover special edition label (or remove if not applicable)
-# 4. Find-replace all footer "issue info" spans
-# 5. Update "அடுத்த இதழில்" (next issue preview) page
-```
-
-### Task B: Add a New Section Page
-1. Locate the page comment block: `<!-- PAGE [N] — [section name] -->`
-2. Copy the standard interior page template (Part 2 above)
-3. Set the correct `section-name` in the `.page-header`
-4. Use `section-header` block for the first page of any section
-5. Use `continuation-banner` for page 2+ of the same section
-6. Update the page footer with correct page number
-7. Update the TOC page to include the new section with correct page number
-8. Renumber all subsequent page footers if inserting mid-document
-
-### Task C: Update the TOC
-The TOC is on the second `<div class="page">` in the body. Each TOC row follows this structure:
-```html
-<div class="toc-row [row-alt?]">
-  <div class="toc-accent" style="background: [color];"></div>
-  <div class="toc-content">
-    <div class="toc-section">[Section Tamil Name]</div>
-    <div class="toc-desc">[Brief description or subtitle]</div>
-  </div>
-  <div class="toc-dots"></div>
-  <div class="toc-page" style="color:[color];">[Tamil numeral page]</div>
-</div>
-```
-TOC accent colors rotate through: `#8DC63F`, `#6BA82F`, `#D4AF37`, `#2d7a3e`
-
-### Task D: Replace/Edit Content in an Existing Section
-1. Find the section using the page comment: `Ctrl+F` / `grep` for `<!-- PAGE [N]`
-2. Edit only within the `.body-text` div of that page
-3. Never alter `.page-header`, `.page-footer`, `.section-header` structure
-4. Preserve all CSS class names — the design is defined by classes, not inline styles
-5. Exception: Inline `style=""` overrides on specific elements are acceptable for one-off adjustments
-
-### Task E: Validate Before Handing Back
-Run through this quick checklist before saving final output:
-- [ ] Every `<div class="page">` has exactly one `.page-header`, one `.content-area`, one `.page-footer`
-- [ ] Page numbers in footers are sequential (3, 4, 5... — cover and TOC don't have footers with numbers)
-- [ ] Issue info string is identical across all footers
-- [ ] `VANLogoGold.jpg` `src` attribute is present in every footer
-- [ ] TOC page numbers match actual page positions
-- [ ] `<title>` tag matches cover month/year
-- [ ] No broken Tamil characters (no replacement characters ▯ or ? boxes)
-- [ ] Print media query is intact at bottom of `<style>` block
-
----
-
-## PART 7: BUILDING A NEW ISSUE FROM SCRATCH
-
-### Step 1 — Create the new file
-Copy the previous issue HTML as a starting template:
-```bash
-cp VAN_Vallaroli_Chittirai2026_v1_1_20260307.html VAN_Vallaroli_[NewMonth][Year]_v1_0_[YYYYMMDD].html
-```
-
-### Step 2 — Update global metadata (find-replace)
-| Find | Replace With |
-|------|-------------|
-| `ஐப்பசி 2026` | `[New Tamil Month] [Year]` |
-| `இதழ் எண்: 1` | `இதழ் எண்: [N]` |
-| `இதழ் 1 &nbsp;·&nbsp; சித்திரை 2026` | `இதழ் [N] &nbsp;·&nbsp; [New Month] [Year]` |
-| `கல்வி சிறப்பிதழ்` | `[New special label or remove .pill-special]` |
-
-### Step 3 — Replace section content
-For each section, receive the content from Gowri (as markdown or plain text), then:
-- Convert to the appropriate HTML components (paragraphs, subheads, slim-quotes, highlights-boxes)
-- Apply செந்தமிழ் vocabulary from Part 9 of this file
-- Wrap in the standard page structure
-- Set correct page numbers throughout
-
-### Step 4 — Update TOC
-After all pages are placed, count actual page numbers and update the TOC rows.
-
-### Step 5 — Update next-issue preview
-On the last content page, update the "அடுத்த இதழில்" section with content for the upcoming issue.
-
-### Step 6 — Final validation
-Run the Task E checklist (Part 6 above).
-
----
-
-## PART 8: CONTENT FORMATTING RULES
-
-### Thirukkural Citation Format
-```html
-<div class="slim-quote">
-  <div class="quote-text">
-    [Line 1 of Kural]<br>
-    [Line 2 of Kural]
-  </div>
-  <div class="quote-source">— திருக்குறள் [NUMBER], [அதிகாரம் name]</div>
-</div>
-```
-Always verify Thirukkural text and numbers from the canonical source. Do not paraphrase the verse itself.
-
-### Sangam Literature Citation Format
-```html
-<div class="slim-quote">
-  <div class="quote-text">[Verse lines]</div>
-  <div class="quote-source">— [நூல் name], [பாடல் number] | புலவர்: [Name]</div>
-</div>
-```
-
-### Highlights / Key Points Box
-```html
-<div class="highlights-box">
-  <div class="box-title">[Box Title]</div>
-  <ul>
-    <li>[Point 1]</li>
-    <li>[Point 2]</li>
-  </ul>
-</div>
-```
-
-### Multi-column Comparison Tables
-```html
-<table class="comparison-table">
-  <tr>
-    <th>[Col 1 Header]</th>
-    <th>[Col 2 Header]</th>
-  </tr>
-  <tr>
-    <td>[Cell]</td>
-    <td>[Cell]</td>
-  </tr>
-</table>
-```
-
-### Author Sign-off (Editorial / Special Articles)
-```html
-<div class="closing">
-  <p>[Closing paragraph]</p>
-  <div class="sign-off">அன்புடன்,</div>
-  <div class="sign-name">[Author Name in Tamil]</div>
-  <div class="sign-title">[Title]</div>
-  <div class="org-name">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
-  <div class="lotus-end">❀</div>
-</div>
-```
-
----
-
-## PART 9: செந்தமிழ் STANDARDS — MANDATORY SUBSTITUTIONS
-
-The magazine enforces pure Tamil vocabulary. These substitutions are non-negotiable. When converting content from markdown/plain text to HTML, apply all applicable substitutions automatically.
-
-### Technology
-| ❌ Avoid | ✅ Use Instead |
-|---------|--------------|
-| கம்ப்யூட்டர் | கணினி |
-| லேப்டாப் | மடிக்கணினி |
-| மொபைல் / போன் | கைப்பேசி / அலைபேசி |
-| இன்டர்நெட் | இணையம் |
-| இ-மெயில் | மின்னஞ்சல் |
-| வெப்சைட் | இணையதளம் |
-
-### Education
-| ❌ Avoid | ✅ Use Instead |
-|---------|--------------|
-| ஸ்கூல் | பள்ளி |
-| காலேஜ் | கல்லூரி |
-| டீச்சர் | ஆசிரியர் / ஆசிரியை |
-| ஸ்டூடென்ட் | மாணவர் / மாணவி |
-| கிளாஸ் ரூம் | வகுப்பறை |
-
-### Healthcare
-| ❌ Avoid | ✅ Use Instead |
-|---------|--------------|
-| ஹாஸ்பிடல் | மருத்துவமனை |
-| டாக்டர் | மருத்துவர் |
-| நர்ஸ் | செவிலியர் |
-| மெடிசின் | மருந்து |
-| ஆப்பரேஷன் | அறுவை சிகிச்சை |
-
-### Sanskrit Loan Words
-| ❌ Avoid | ✅ Use Instead |
-|---------|--------------|
-| தர்மம் | அறம் |
-| புண்ணியம் | நன்மை |
-| சுத்தம் | தூய்மை |
-| ஆரோக்கியம் | நலம் / நலனுடைமை |
-| ஞானம் (OK to use) | அறிவொளி (preferred in headers) |
-
-### Transport
-| ❌ Avoid | ✅ Use Instead |
-|---------|--------------|
-| பஸ் | பேருந்து |
-| டிரெய்ன் | தொடர்வண்டி |
-| ரோடு | சாலை |
-| ஏர்போர்ட் | விமான நிலையம் |
-
----
-
-## PART 10: VAN VOICE — EDITORIAL STYLE GUIDE
-
-Every article in this magazine must sound like it was written by a wise, warm, learned elder — not a textbook and not a clickbait blog. This is the "VAN Voice."
-
-### Three Pillars
-1. **சுஜாதா's clarity** — Simple explanations, real-world examples, no unnecessary complexity
-2. **பாவண்ணன்'s grounding** — Deep respect for classical texts, tradition treated with reverence
-3. **சிற்பி's compassion** — Warm, socially conscious, emotionally honest
-
-### Characteristics
-- Conversational yet respectful (like a learned elder speaking to family)
-- Scholarly without being pedantic
-- Uses storytelling and real-life examples
-- Balances tradition with contemporary relevance
-- Inspires without preaching
-- Evidence-based yet spiritually aware
-
-### Intergenerational Appeal Test
-Before finalizing any article, ask:
-- Would a 65-year-old வள்ளலார் devotee feel this speaks to their wisdom? ✓
-- Would a 25-year-old Tamil professional feel this is relevant to their life? ✓
-
-### What to Avoid
-- Starting paragraphs with "நாம் அனைவரும் அறிவோம்..." (cliché)
-- Preachy endings that moralize too directly
-- Long Sanskrit-heavy passages without translation
-- Academic jargon without explanation
-- Mixing Tamil script with English words unnecessarily
-
----
-
-## PART 11: WHAT GOWRI WILL PROVIDE AND WHAT YOU MUST DO
-
-### Gowri Provides → You Convert to HTML
-| What She Provides | What You Must Do |
-|-------------------|-----------------|
-| Markdown files (`.md`) | Convert to HTML components |
-| Plain Tamil text | Wrap in correct CSS classes |
-| Classical verse references | Format in `.slim-quote` blocks |
-| Section order for new issue | Build TOC + page structure |
-| Corrections/edits | Apply to specific sections by page number |
-| New cover image filename | Update `cover-image` src on cover page |
-
-### Content Conversion Rules
-When converting markdown to HTML:
-- `## Heading` → `<div class="subhead">Heading</div>`
-- `**Bold text**` → `<strong>text</strong>` (use sparingly)
-- `> Block quote` → `<div class="slim-quote">` structure
-- `- List items` → `<ul>` inside `.highlights-box` if grouped, or `<ol class="numbered-list">` for steps
-- Standard paragraphs → `<p>text</p>` inside `.body-text`
-- Blank line between paragraphs → new `<p>` tag (no `<br>` for paragraph breaks)
-
-### Never Do This
-- Never alter the CSS `<style>` block without explicit instruction from Gowri
-- Never remove the print media query
-- Never change color values from the brand palette
-- Never use inline styles for colors (use CSS classes)
-- Never rename or move the image asset files
-- Never use English headings or labels in Tamil content sections
-
----
-
-## PART 12: FILE MANAGEMENT CONVENTIONS
-
-### Naming Convention
-```
-VAN_Vallaroli_[TamilMonth][Year]_v[Major].[Minor]_[YYYYMMDD].html
-
-Examples:
-VAN_Vallaroli_Chittirai2026_v1_1_20260307.html  ← Issue 1 (current, v1.1)
-VAN_Vallaroli_Vaigasi2026_v1_0_[YYYYMMDD].html  ← Issue 2 (next)
-```
-
-### Version Numbering
-- `v1.0` = First draft of new issue
-- `v1.1` = Minor corrections after first review
-- `v2.0` = Major structural changes (new sections, layout overhaul)
-
-### Tamil Month Reference
-| Tamil Month | Approx English | Tamil Script |
-|-------------|----------------|--------------|
-| சித்திரை | Apr–May | சித்திரை |
-| வைகாசி | May–Jun | வைகாசி |
-| ஆனி | Jun–Jul | ஆனி |
-| ஆடி | Jul–Aug | ஆடி |
-| ஆவணி | Aug–Sep | ஆவணி |
-| புரட்டாசி | Sep–Oct | புரட்டாசி |
-| ஐப்பசி | Oct–Nov | ஐப்பசி |
-| கார்த்திகை | Nov–Dec | கார்த்திகை |
-| மார்கழி | Dec–Jan | மார்கழி |
-| தை | Jan–Feb | தை |
-| மாசி | Feb–Mar | மாசி |
-| பங்குனி | Mar–Apr | பங்குனி |
-
----
-
-## PART 13: KNOWN ISSUES IN CURRENT FILE (Issue 1) — OPEN ITEMS
-
-1. **`comparison-table` CSS** is defined but not consistently applied across all pages — verify all data tables use this class before Issue 2 production begins
-2. **TOC page numbers** should be re-verified against actual page positions any time content sections are added, removed, or reordered
-
-> ✅ **Resolved:** Filename/metadata inconsistency (ஐப்பசி vs சித்திரை) — fully corrected in `v1_1_20260307`. Issue 1 is officially **சித்திரை 2026**. Issue 2 is **வைகாசி 2026**.
-
----
-
-## PART 14: QUICK REFERENCE — TAMIL MONTH ISSUE ROTATION
-
-Each issue has rotating topic themes for the recurring sections. Track what was used to avoid repetition:
-
-| Section | Issue 1 (சித்திரை 2026) | Issue 2 (வைகாசி 2026) |
-|---------|--------------------------|------------------------|
-| திருக்குறள் ஆய்வு | கல்வி அதிகாரம் | நட்பு அதிகாரம் |
-| சங்க இலக்கியம் | தாமரை (Lotus) | பறவைகள் (Birds) |
-| கோயில் கட்டமைப்பு | Overview/Introduction | மதுரை மீனாட்சி — இசைத் தூண்கள் |
-| நலவாழ்வு | பாலில்லா புரதம் + கால்சியம் | நீரிழிவு நோய் + இயற்கை உணவு |
-| மனம் தொடர் | Not started (teaser only) | மனதின் இயல்பு (Part 1) |
-
----
-
-## PART 15: CONTACT & VAN DETAILS (Use These Consistently)
-
-```
-அமைப்பு: பெண்ணாடம் வள்ளலார் அறநிலையம் (VAN)
-தலைவர்: மு. முத்துஜோதி
-இணையதளம்: www.vallalar.org
-மின்னஞ்சல்: vallalararanilayampdm@gmail.com
-```
-
-These appear on the closing/contact page. Never change without Gowri's explicit instruction.
-
----
-
-## PART 16: THEME SYSTEM — CSS CUSTOM PROPERTIES
-
-The magazine uses a CSS variable theme system. **This changes how you must handle color values.**
-
-### Structure
 ```css
-/* In <style> block — always present */
 :root {
-  --van-primary:   #8DC63F;   /* green — default */
+  --van-primary:   #8DC63F;
   --van-deep:      #2d7a3e;
   --van-dark:      #6BA82F;
   --van-gold:      #D4AF37;
   --van-deepest:   #0a2616;   /* masthead gradient */
   --van-deeper:    #0d3320;
   --van-brown:     #8b6f47;   /* corner motifs */
-  /* Background tints */
   --van-bg-light:          #f4fbe8;
   --van-bg-gradient-start: #f0f7e6;
   --van-bg-gradient-end:   #e8f5d0;
@@ -607,148 +312,200 @@ The magazine uses a CSS variable theme system. **This changes how you must handl
   --page-bg-top:           #fffef5;
   --page-bg-bottom:        #fef9f2;
 }
-/* + 4 [data-theme="peacock/blue/terracotta/saffron"] override blocks */
+/* + [data-theme="peacock/blue/terracotta/saffron"] override blocks */
 ```
+System B supports building all 5 themes: `python make_magazine.py --from-issue issues/Issue-NN out.pdf --theme <name>`.
 
-### Rules for Working with the Theme System
-
-**DO:**
-- Use `var(--van-primary)` etc. in any new CSS rules you write — never hardcode the theme hex values
-- After any CSS edit, run the validator to check `check_css_variable_values` passes
-
-**NEVER DO:**
-- Hardcode `#8DC63F`, `#2d7a3e`, `#6BA82F`, `#D4AF37` directly in CSS rules — these are now owned by the variable system
-- Run a global string replacement on the *entire* CSS block — the `:root` block must be excluded or you will corrupt the variable definitions with circular self-references (see Part 17)
-
-### Theme Picker UI
-A floating picker (`id="theme-picker"`) sits before `</body>`. It is hidden via `@media print` and must stay that way. Never remove it or move it inside a `.page` div.
+**DO:** use `var(--van-primary)` etc. in any new CSS — never hardcode hex values.
+**NEVER:** run a global string/regex replacement across the *entire* CSS block including `:root {}` and `[data-theme]` blocks — see Lesson 1 in PART 9. Only replace within the rules body, never inside variable definitions.
 
 ---
 
-## PART 17: QUALITY PROTOCOL — VALIDATOR AND GATES
+## PART 4: செந்தமிழ் STANDARDS — MANDATORY SUBSTITUTIONS
 
-### The Validator
+Applies when converting any content (both systems) to output. Non-negotiable.
+
+| Category | ❌ Avoid | ✅ Use |
+|---|---|---|
+| Technology | கம்ப்யூட்டர் / லேப்டாப் / மொபைல் / இன்டர்நெட் / இ-மெயில் / வெப்சைட் | கணினி / மடிக்கணினி / கைப்பேசி / இணையம் / மின்னஞ்சல் / இணையதளம் |
+| Education | ஸ்கூல் / காலேஜ் / டீச்சர் / ஸ்டூடென்ட் / கிளாஸ் ரூம் | பள்ளி / கல்லூரி / ஆசிரியர்(ஆசிரியை) / மாணவர்(மாணவி) / வகுப்பறை |
+| Healthcare | ஹாஸ்பிடல் / டாக்டர் / நர்ஸ் / மெடிசின் / ஆப்பரேஷன் | மருத்துவமனை / மருத்துவர் / செவிலியர் / மருந்து / அறுவை சிகிச்சை |
+| Sanskrit loans | தர்மம் / புண்ணியம் / சுத்தம் / ஆரோக்கியம் | அறம் / நன்மை / தூய்மை / நலம்(நலனுடைமை) |
+| Transport | பஸ் / டிரெய்ன் / ரோடு / ஏர்போர்ட் | பேருந்து / தொடர்வண்டி / சாலை / விமான நிலையம் |
+
+`ஞானம்` is acceptable; prefer `அறிவொளி` in headers.
+
+---
+
+## PART 5: VAN VOICE — EDITORIAL STYLE
+
+Every article should sound like a wise, warm, learned elder — not a textbook, not a blog.
+
+**Three pillars:** சுஜாதா's clarity (simple, concrete examples) + பாவண்ணன்'s grounding (reverence for classical texts) + சிற்பி's compassion (warm, socially conscious, emotionally honest).
+
+**Intergenerational test:** would a 65-year-old வள்ளலார் devotee feel this speaks to their wisdom, AND would a 25-year-old Tamil professional feel it's relevant to their life?
+
+**Avoid:** opening with "நாம் அனைவரும் அறிவோம்..." · preachy/moralizing endings · long untranslated Sanskrit-heavy passages · academic jargon · unnecessary English-Tamil script mixing.
+
+---
+
+## PART 6: ISSUE METADATA & FILE NAMING
+
+### Fields to update every issue (both systems)
+| Field | System A location | System B location |
+|---|---|---|
+| Issue number | every footer `.issue-info` | `issue_meta.json → issue_number` |
+| Tamil month + year | footers + cover masthead | `issue_meta.json → tamil_month, year, year_tamil` |
+| Special issue label | cover `.pill-special` | `issue_meta.json → special_label` |
+| Next issue preview | last content page | `issue_meta.json → next_issue` |
+| `<title>` tag | `<head>` | generated by `build_issue_html.py` |
+| Masthead/editor names | contact page | `issue_meta.json → masthead.roles` |
+
+### Tamil Numerals & Months
+```
+௧=1 ௨=2 ௩=3 ௪=4 ௫=5 ௬=6 ௭=7 ௮=8 ௯=9 ௰=10   ௨௦௨௬ = 2026
+சித்திரை(Apr–May) வைகாசி(May–Jun) ஆனி(Jun–Jul) ஆடி(Jul–Aug) ஆவணி(Aug–Sep)
+புரட்டாசி(Sep–Oct) ஐப்பசி(Oct–Nov) கார்த்திகை(Nov–Dec) மார்கழி(Dec–Jan)
+தை(Jan–Feb) மாசி(Feb–Mar) பங்குனி(Mar–Apr)
+```
+
+### Naming Convention
+- System A: `VAN_Vallaroli_[TamilMonth][Year]_v[Major].[Minor]_[YYYYMMDD].html`
+- System B: `magazine-toolkit/issues/Issue-NN/` (source) → `magazine-toolkit/output/VAN_Vallaroli_[TamilMonth][Year].pdf` (build output)
+- Version bumps (System A only): `v1.0` first draft · `v1.1` minor corrections · `v2.0` structural changes
+
+### Issue Rotation Tracker (avoid repeating topics)
+| Section | Issue 1 (வைகாசி 2026) | Issue 2 (ஆடி 2026) | Issue 3 (புரட்டாசி 2026 — Oct 2026 release) |
+|---|---|---|---|
+| திருக்குறள் ஆய்வு | அறிவுடைமை — பத்துக் குறட்பாக்கள் | ஆறுவது சினம் — ஔவையார் ஆத்திசூடி vs. வெகுளாமை அதிகாரம் | (TBD) |
+| சிறுகதை | பால்வண்ணம் பிள்ளை — புதுமைப்பித்தன் | திறந்த ஜன்னல் — புதுமைப்பித்தன் (மணிக்கொடி, 1934) | (TBD — see note below) |
+| தமிழகக் கலைகள் | கோயிற் கட்டிடக்கலை — ஓர் அறிமுகம் | தமிழர் சிற்பக்கலையின் தொன்மை — கீழடி, ஆதிச்சநல்லூர், நடுகற்கள் | (TBD) |
+| சங்க இலக்கியம் | தாமரை மலரின் அறச்செய்தி (Lotus) | மலர் சூடிய நாகரிகம் — சங்க இலக்கியத்தில் மலர்களின் பெருமையும் அறமும் | (TBD) |
+| ஓர் ஒழுக்கம் | அதிகாலை துயில் எழல் — வள்ளலாரின் நெறி | மல சலம் கழித்தல் — எருவாய்க்கான ஒழுக்கம் | (TBD) |
+| நூல் மதிப்புரை | வாசிப்பது எப்படி? — செல்வேந்திரன் | தமிழர் வீரம் — முனைவர் ரா.பி. சேதுப்பிள்ளை | (TBD) |
+| மனம் தொடர் | Not started (teaser only) | மனதின் இயல்பு (Part 1) — shipped | Part 2 expected — this is an ongoing series, don't let it lapse |
+| இயற்கை தரும் இன்பம் | Not started | Photo essay — shipped (new section, added mid-issue) | (TBD) |
+
+Note: two authors reused Pudhumaipithan classics for சிறுகதை across Issue 1 and Issue 2 — flag to editor if a third reprint is considered for Issue 3; readers may expect original fiction eventually.
+
+---
+
+## PART 7: CONTACT & VAN DETAILS
+
+```
+அமைப்பு: பெண்ணாடம் வள்ளலார் அறநிலையம் (VAN)
+தலைவர்: மு. முத்துஜோதி
+இணையதளம்: www.vallalar.org
+மின்னஞ்சல்: vallalararanilayampdm@gmail.com
+```
+Never change without Gowri's explicit instruction.
+
+---
+
+## PART 8: QUALITY GATES
+
+### System A (root HTML files)
 ```bash
-# Run after every edit session — before git add
-python3 Reference_docs/validate_template.py <file>.html
-
-# Test the validator itself (run if you modify validate_template.py)
-python3 Reference_docs/validate_template.py --self-test
-
-# Validate all HTML files at once
+python3 Reference_docs/validate_template.py <file>.html   # 0 FAIL expected
+python3 Reference_docs/validate_template.py --self-test   # if you touched the validator
 python3 Reference_docs/validate_template.py --all
 ```
+Enforced by `.git/hooks/pre-commit` (blocks on FAIL; skips `Archive/**` and `magazine-toolkit/templates/**`) and `.github/workflows/validate.yml` (CI on push/PR touching root `*.html`). **Never use `git commit --no-verify`.**
 
-**Expected: 0 FAIL.** Run `--self-test` to see the current check count — don't rely on a number written here. Warnings are non-blocking but should be reviewed.
-
-### Three Gates — All Enforced
-| Gate | Trigger | Blocks? |
-|------|---------|---------|
-| Manual checkpoint | After every edit session | Best practice — do it |
-| Pre-commit hook | `git commit` | ✅ Commit blocked on FAIL |
-| GitHub Actions CI | `git push` | ✅ Shows ✅/❌ on GitHub |
-
-**Never use `git commit --no-verify`.** Both gates exist for a reason — bypassing the local hook means the only remaining catch is CI after the code is already in the repo.
-
-### When You Modify `validate_template.py`
-Run `--self-test` first. If a self-test fails, fix the check *before* using it on real files. If you find a gap (a bug the validator missed), follow this sequence:
-1. Write a self-test that FAILS (proving the gap) — commit it first so the gap is on record
-2. Fix the check function so the self-test passes
-3. Commit both together: `"Fix validator gap: <description>"`
+### System B (magazine-toolkit pipeline)
+```bash
+python magazine-toolkit/validate_mmd.py issues/Issue-NN/articles/*.md   # pre-flight lint
+# compare_html.py runs automatically as pipeline Step 3 — integrity audit:
+#   section order preserved, all paragraphs preserved, byline on each section's
+#   first page, image count consistent with page delta
+```
+Then eyeball the PDF against the Phase 5 checklist in `magazine-toolkit/PRODUCTION_WORKFLOW.md` (cover, imprint, masthead, TOC, spot-check 3 articles, Cmd+F search works, file size 5–20MB).
 
 ---
 
-## PART 18: LESSONS LEARNED — NEVER REPEAT THESE
+## PART 9: LESSONS LEARNED — NEVER REPEAT THESE
 
-These are real bugs from production. Read before touching CSS or writing scripts.
+Real production bugs. Read before touching CSS, `magazine.css`, or any script that does bulk text replacement in either system.
 
-### ❌ Lesson 1 — Never Run Color Replacement Across the Entire CSS Block
-**What happened:** A Python script replaced hex color values throughout the entire `<style>` block, including inside the `:root { }` variable definitions. This turned `--van-primary: #8DC63F` into `--van-primary: var(--van-primary)` — a circular self-reference. CSS silently ignores circular refs and falls back to `black` for all color properties. Every font color in the magazine turned black. The old validator passed it because it only checked that the variable *name* was present, not its *value*.
+### ❌ Lesson 1 — Never run color replacement across the entire CSS block
+A script replaced hex values throughout the whole `<style>` block, including inside `:root {}`. `--van-primary: #8DC63F` became `--van-primary: var(--van-primary)` — a circular self-reference. CSS silently falls back to `black`. Every font color turned black; the old validator missed it because it only checked variable *names*, not resolved values.
+**Rule:** exclude `:root {}` and all `[data-theme]` blocks from any bulk replacement. Only touch the CSS rules body.
 
-**The rule:** When writing any script that does string/regex replacement in the CSS block, **always exclude the `:root { }` block and all `[data-theme]` blocks from replacement.** Only replace in the CSS rules body.
+### ❌ Lesson 2 — Never restructure CSS via slice/cursor without verifying length
+A fix script found the end of the last `[data-theme]` block by brace-counting and returned `CORRECT_ROOT + css[cut_point:]`. A logic error made the cut point wrong, silently deleting ~900 lines of CSS. Looked fine until length was checked.
+**Rule:** after any CSS restructuring script, assert `after_lines >= before_lines - 10`.
 
-**How to do it safely:**
-```python
-# Find where :root and theme blocks end, only replace after that point
-theme_section_end = css.rfind('}', 0, css.index('.page'))  # find end of vars section
-css_rules = css[theme_section_end:]
-css_rules = css_rules.replace('#8DC63F', 'var(--van-primary)')
-css = css[:theme_section_end] + css_rules
-```
+### ❌ Lesson 3 — Spacing variations break targeted string replacement
+An exact-string fix for `:root` (`'--van-gold:       var(--van-gold);'`, 7 spaces) missed the same circular ref in `[data-theme="blue"]` with 5 spaces.
+**Rule:** after targeted CSS replacement, re-search with a flexible-whitespace regex (`r'--van-\w+:\s*var\(--van-\w+\)'`) and assert nothing remains.
 
-### ❌ Lesson 2 — Never Use a Cursor/Slice to Restructure CSS Without Verifying Length
-**What happened:** A fix script found the end of the last `[data-theme]` block using brace-counting, then returned `CORRECT_ROOT + css[saffron_end:]`. Due to a logic error in the cut point, `css[saffron_end:]` was nearly empty — silently deleting 900 lines of CSS. The file appeared fine until the CSS length was checked.
+### ❌ Lesson 4 — Validator gaps are silent
+`check_brand_colors` and `check_theme_system` tested whether a variable *name* was present anywhere in the CSS — including as a circular definition. Both passed on broken CSS.
+**Rule:** every check must test *semantic meaning*, not presence of a string. When adding a new check, write a self-test with bad input that should fail it — if the self-test passes, the check is incomplete.
 
-**The rule:** After any script that restructures the CSS block, immediately verify:
-```python
-before_lines = len(original_css.split('\n'))
-after_lines  = len(new_css.split('\n'))
-assert after_lines >= before_lines - 10, f"CSS shrank too much: {before_lines} → {after_lines}"
-```
+### System B (magazine-toolkit pipeline) — Lessons Learned (found during Issue 02)
 
-### ❌ Lesson 3 — Spacing Variations Break Targeted String Replacement
-**What happened:** A fix was applied to `:root` using exact string matching: `'--van-gold:       var(--van-gold);'` (7 spaces). The same circular ref existed in `[data-theme="blue"]` with different spacing: `'--van-gold:     var(--van-gold);'` (5 spaces). The fix missed it. The validator didn't catch it until `check_css_variable_values` was added.
+All fixed at the shared-script level, not patched per-page — that is the standing rule for this pipeline: a bug found on one issue's page must be fixed so it can't recur on any future issue, not worked around for the page it was found on.
 
-**The rule:** When doing targeted replacement in CSS, always do a final search for the target pattern with flexible whitespace:
-```python
-import re
-remaining = re.findall(r'--van-\w+:\s*var\(--van-\w+\)', css)
-assert not remaining, f"Circular refs still present: {remaining}"
-```
+### ❌ Lesson 5 — Never measure element heights via a `/tmp/` scratch file
+`rebalance_sections.py`'s Playwright measurement step wrote its temp HTML to a hardcoded `/tmp/rebalance_measure.html`, breaking every relative `Images/...` src in it. Broken images render at fallback size, so every image's height was undercounted by 60-70% — the root cause of most "unexplained" blank space at page bottoms that session. It looked like a pagination bug for a long time before the actual cause (a path bug) was found.
+**Rule:** any script that writes a temp copy of the HTML for Playwright measurement must write it *next to* the real source file (same directory), never to `/tmp` or any other directory — relative asset paths must still resolve. Clean up with `unlink(missing_ok=True)` after.
 
-### ❌ Lesson 4 — Validator Gaps are Silent
-**What happened:** `check_brand_colors` tested whether a variable *name* like `--van-primary` was anywhere in the CSS. It was — as a circular definition. The check passed. `check_theme_system` had the same gap. Both gave false confidence that the theme system was correct.
+### ❌ Lesson 6 — `!important` in a stylesheet silently defeats inline-style safety nets
+`build_text_pdf.py` had an auto-zoom-to-fit step: measure overflow, then set `element.style.maxHeight`/`.height` inline to shrink it. `magazine.css` had `!important` on those same properties, so the inline styles were silently ignored — the safety net looked wired up but never actually fired, and pages kept overflowing. No error, no warning — it just quietly did nothing.
+**Rule:** when a script must override CSS from JS/Python-injected inline styles, use `element.style.setProperty(prop, val, 'important')`, never bare `element.style.prop = val`, whenever there's any chance the stylesheet also sets that property with `!important`.
 
-**The rule:** Every check must test the *semantic meaning* of what it finds, not just the *presence of a string*. When writing a new check, immediately write a self-test with a bad input that should fail — if the self-test passes (bad input wasn't caught), the check is incomplete.
+### ❌ Lesson 7 — `display:block` silently breaks flex-dependent layouts
+A print-CSS override forced `.page, .cover { display: block !important }` for print pagination. But the footer's "stick to page bottom" positioning depended on the page being a flex column. Forcing `block` looked harmless (block is the "normal" default) but silently broke footer placement — footers floated up next to content instead of pinning to the bottom.
+**Rule:** when a print/measurement override touches `display`, check what layout mode (flex/grid) the element's children depend on first — don't assume `block` is a safe default.
+
+### ❌ Lesson 8 — A 20%-overfill-and-shrink tolerance hides real pagination bugs
+`adjust_page_count()` tolerated sections up to 20% over their page-capacity estimate, relying on `build_text_pdf.py`'s per-page zoom to visually compress the overflow. This is what produced "small font + big empty margin" pages — zoom shrank dense pages fine, but on pages where the *measurement* was itself wrong (see Lesson 5), the zoom had nothing to compress and the tail end just sat blank.
+**Rule:** tolerance was tightened to 3% — prefer adding a page over shrinking text. A page-count/pagination algorithm should not lean on a downstream visual hack to paper over its own estimation error.
+
+### ❌ Lesson 9 — Subhead-adjacency edge case in logical-unit splitting
+`split_logical_units()` glued a subhead to the content immediately following it (so a heading never lands alone at a page bottom) — but didn't check whether that "following content" was *itself* another subhead (e.g. `##` immediately followed by `###`), so nested headings got mis-glued together as one unit, sometimes stranding the deeper heading anyway.
+**Rule:** any "glue heading to next unit" logic needs a second pass that also merges any unit which turns out to be *entirely* headings/dividers (no real content) forward into the next unit — checking adjacency once, at construction time, isn't enough.
+
+### ❌ Lesson 10 — A page-layout function that assumes one page shape breaks on others
+`reorganize_activities_page()` (the "group all photos into a 2-col grid" fixup) originally grouped **every** image on the page into a single grid regardless of position, which scrambled multi-subsection pages where images were meant to stay next to their own paragraph. Fixed to only group images that are *immediately consecutive* in document order. The fixed-crop `object-fit:cover` grid it used was also unsafe to reuse for content with wildly different aspect ratios (a 0.54 vs 1.24 ratio pair badly cropped) — a separate `.image-pair-row` class using `object-fit:contain` with a height cap (no cropping) was added instead of forcing everything through the same grid.
+**Rule:** a DOM-restructuring fixup written for one page's shape will silently misfire on a differently-shaped page using the same section type. Scope the match condition (e.g. "consecutive same-type figures") narrowly, and don't reuse a fixed-crop grid for photos whose aspect ratios you don't control.
+
+### ❌ Lesson 11 — Screen-media measurement can diverge from print-media render
+Playwright measured page heights with the browser in default (screen) media, but `page.pdf()` renders in `print` media — if any `@media print` CSS rule changes layout (and one did, see Lesson 7), the measured heights don't match what actually gets printed.
+**Rule:** call `page.emulate_media(media='print')` immediately after `page.goto()`, before any measurement, whenever the same Playwright page is later used to produce the PDF.
+
+### ℹ️ Note — WeasyPrint was evaluated and rejected for PDF generation
+When asked to switch the PDF step to WeasyPrint, we recommended staying on the Playwright-based `build_text_pdf.py` instead: WeasyPrint substitutes fonts it can't find (risk of breaking Tamil glyph rendering) and computes `height:auto` layout independently of the Playwright-measured HTML the rebalance step already tuned, reopening every pagination bug this section describes. Playwright renders with the same Chromium engine used for measurement, so what was measured is what gets printed.
 
 ---
 
-## START OF SESSION CHECKLIST
+## SESSION CHECKLIST
 
-At the beginning of every Claude Code session on this project:
-
-1. **Read this CLAUDE.md fully** before making any changes
-2. **Run self-test** to confirm the validator is healthy:
-   `python3 Reference_docs/validate_template.py --self-test` → all tests must pass
-3. **Run validator on the working file** to establish a clean baseline:
-   `python3 Reference_docs/validate_template.py VAN_Vallaroli_Chittirai2026_v1_2_20260309.html`
-4. **Identify the specific task** — maintenance, content edit, or new feature?
-5. **Check the file version** in the filename before editing
-6. **After making changes** — run validator again before committing
-7. **Commit using the pre-commit hook** — never use `--no-verify`
-
-### End of Session
-- [ ] Validator passes (0 failures) on all modified HTML files
-- [ ] All changes committed and pushed
-- [ ] Any new lessons learned added to Part 18 of this file
-- [ ] CLAUDE.md updated if any of the Maintenance Triggers below apply
+1. Identify which system you're in (PART 1) before editing anything.
+2. If System A: run `validate_template.py --self-test`, then the target file, to establish baseline.
+3. If System B: check `issue_meta.json` matches the plan doc, run `validate_mmd.py` on touched articles.
+4. Make the change — surgically (PART 0.3).
+5. Re-validate (System A) or rebuild + spot-check PDF (System B) before reporting done. System B: run the full pipeline through `build_text_pdf.py`, then `compare_html.py` as an integrity check — don't call a build final on `rebalance_sections.py` output alone. If a page still looks underfilled after `rebalance_sections.py`'s `[3/5] Backfilled N element(s)` line ran, check whether it's genuinely a bug or just the natural end of a section/article.
+6. Commit only when asked; never `--no-verify`.
+7. If you hit a new bug worth remembering, add it to PART 9 — don't let it repeat.
 
 ---
 
 ## CLAUDE.md MAINTENANCE TRIGGERS
 
-CLAUDE.md is a living document. Update it whenever the project evolves. Use this table to know **what to update and where**.
+Update this file when the change affects *future Claude Code behavior* — design rules, quality gates, hard-won lessons, component/MMD patterns. Do **not** update it for one-off content edits, single-issue fixes, or temporary workarounds — those belong in issue-specific plan doc inside `issues/released/Issue-NN/`, `Reference_docs/content_tracker.md`, or commit messages.
 
-| What Changed | Update in CLAUDE.md | Section |
-|---|---|---|
-| New validator check added | Nothing — `--self-test` always shows current count | Part 17 |
-| Validator self-test count changes | Nothing — count is not hardcoded here (by design) | Part 17 |
-| New bug found and fixed | Add entry to Lessons Learned | Part 18 |
-| New CSS component/class added | Add row to Content Components table | Part 2 |
-| Brand color added or renamed | Update Brand Colors block + CSS Variables section | Parts 3 & 16 |
-| New theme added to theme picker | Add to theme table + `[data-theme]` rules | Part 16 |
-| New section type added | Add row to Section Registry | Part 5 |
-| Image asset renamed or moved | Update image assets list | Part 3 |
-| Production process step changes | Update the corresponding Phase in production_workflow.md | (external) |
-| New monthly issue started | Update current file in Session Checklist + issue rotation table | Parts 12 & 14 |
-| VAN contact details change | Update contact block | Part 15 |
-
-### When to update CLAUDE.md vs. when NOT to
-**Update CLAUDE.md** when the change affects *how Claude Code should behave in future sessions* — design rules, quality gates, hard-won lessons, component patterns.
-
-**Do NOT update CLAUDE.md** for one-off content changes, issue-specific edits, or temporary workarounds. Those belong in `Reference_docs/content_tracker.md` or commit messages.
-
----
+| What changed | Update here |
+|---|---|
+| New MMD directive or component | PART 2A table |
+| New CSS component/class | PART 2 components table |
+| Brand color added/renamed | PARTs 3 & 3A |
+| New theme added | PART 3A |
+| New section type | PART 2 section registry |
+| New bug found and fixed | PART 9 |
+| Pipeline step added/changed in `magazine-toolkit/` | PART 1B + `magazine-toolkit/docs/Architecture.md` |
+| New issue started | PART 6 rotation tracker |
+| VAN contact details change | PART 7 |
 
 *நன்றி! Together we illuminate minds with வான் வளரொளி. ❀✨*
-*CLAUDE.md — Last updated: சித்திரை 2026 (session 3)*
