@@ -31,17 +31,10 @@ ms-playwright/
 # Local Claude cache
 .claude/
 
-# Intermediate/experimental artifacts for Issue-01 (keep only *_step2.html + *_final.pdf)
-Final Drafts/Grok/VAN_Vallaroli_screenshot.pdf
-Final Drafts/Grok/VAN_Vallaroli_peacock.pdf
-Final Drafts/Grok/VAN_Vallaroli_text.pdf
-Final Drafts/Grok/VAN_Vallaroli_fixed.html
-Final Drafts/Grok/VAN_Vallaroli_balanced.html
-Final Drafts/Grok/VAN_Vallaroli_step1.html
-Final Drafts/Grok/VAN_Vallaroli_Chittirai2026_v4_6_20260512-working.html
-Final Drafts/Grok/output/
+# magazine-toolkit build scratch — nothing here is durable; the durable copy of a
+# shipped issue lives in magazine-toolkit/issues/released/Issue-NN/final/
+magazine-toolkit/source/**
+magazine-toolkit/output/*.pdf
 
-# HowTO pipeline outputs (regeneratable)
-HowTO/output/*.pdf
-HowTO/source/_pipeline_step*.html
-HowTO/source/*_base.html
+# magazine-toolkit per-issue draft-intake staging (raw author docx before MMD conversion)
+magazine-toolkit/issues/*/_drafts/

@@ -27,7 +27,7 @@ Minimum change that solves the problem. Nothing speculative.
 ### 3. Surgical Changes
 Touch only what you must. Clean up only your own mess.
 - Don't "improve" adjacent CSS, templates, or scripts while doing a content edit.
-- Match existing style in `HowTO/*.py` and `templates/*.html`, even if you'd do it differently.
+- Match existing style in `magazine-toolkit/*.py` and `templates/*.html`, even if you'd do it differently.
 - If you notice unrelated dead/stale content (old drafts, orphaned issue folders), mention it — don't delete it without asking.
 - Every changed line should trace to the user's actual request.
 
@@ -50,11 +50,11 @@ Root-level files like `VAN_Vallaroli_Chittirai2026_v4_6_20260512.html` are singl
 - **Treat these root `.html` files as historical artifacts.** Only edit one if Gowri explicitly asks for a correction to a shipped/in-flight issue built this way. Don't use this as the template for new issues.
 - Full structural reference (page anatomy, CSS class table, section registry) is preserved in **PART 2 below** since the design system it encodes is still the single source of truth for visual style.
 
-### B. HowTO/ pipeline toolkit — ACTIVE, use this for all new issues
-`HowTO/` is a self-contained build system: **author markdown (MMD) → templated HTML → auto-paginated PDF.** This is what Issue 02 (ஆடி 2026) onward uses.
+### B. magazine-toolkit/ — ACTIVE, use this for all new issues
+`magazine-toolkit/` is a self-contained build system: **author markdown (MMD) → templated HTML → auto-paginated PDF.** This is what Issue 02 (ஆடி 2026) onward uses. (Renamed from `HowTO/` — same system, clearer name.)
 
 ```
-HowTO/
+magazine-toolkit/
 ├── GETTING_STARTED.md        ← one-time machine setup + smoke test
 ├── setup.sh                  ← bash installer (venv, deps, Playwright Chromium)
 ├── make_magazine.py          ← ONE-COMMAND ENTRY POINT
@@ -67,21 +67,30 @@ HowTO/
 ├── build_screenshot_pdf.py   ←   (fallback — image-based PDF)
 ├── templates/                ← _base.html, cover.html, toc.html, article_page.html,
 │                                masthead.html, imprint.html, magazine.css (~1540 lines)
+│   └── assets/               ← the only 2 truly-shared static files (van-logo.jpg,
+│                                vallaroli-logo.jpg) — everything else is per-issue
 ├── docs/                     ← Author_Guide.docx, Editor_Guide.docx,
 │                                MMD_Specification.md, Architecture.md
-├── issues/Issue-NN/          ← issue_meta.json + articles/*.md + images/
-├── source/                   ← intermediate built HTML + shared Images/
-└── output/                   ← final PDFs
+├── issues/
+│   ├── _starter-template/    ← copy this to start a new issue (has its own README)
+│   ├── Issue-NN/              ← the currently active issue being built
+│   │   └── _drafts/          ← gitignored raw-submission staging (docx → pandoc →
+│   │                            hand-cleaned into articles/*.md — see PRODUCTION_WORKFLOW.md)
+│   └── released/              ← completed, shipped issues (full recipe + final/ output)
+├── source/                   ← build scratch, fully gitignored — regenerated per build,
+│                                nothing here is durable (durable copy lives in
+│                                issues/released/Issue-NN/final/)
+└── output/                   ← final PDFs before manual promotion to issues/released/
 ```
 
 **One command builds an entire issue:**
 ```bash
-cd HowTO && source .venv/bin/activate
+cd magazine-toolkit && source .venv/bin/activate
 python make_magazine.py --from-issue issues/Issue-02 output/VAN_Vallaroli_Aadi2026.pdf
 ```
 
-- `HowTO/templates/*.html` are page **fragments**, not full documents (no `<style>` block, no full class set — they're assembled at build time). The pre-commit hook explicitly skips them; don't expect them to pass `validate_template.py`.
-- Full technical deep-dive: `HowTO/docs/Architecture.md`. Full per-issue checklist: `HowTO/PRODUCTION_WORKFLOW.md`. This issue's concrete plan: `HowTO/ISSUE-02_PLAN.md`.
+- `magazine-toolkit/templates/*.html` are page **fragments**, not full documents (no `<style>` block, no full class set — they're assembled at build time). The pre-commit hook explicitly skips them; don't expect them to pass `validate_template.py`.
+- Full technical deep-dive: `magazine-toolkit/docs/Architecture.md`. Full per-issue checklist: `magazine-toolkit/PRODUCTION_WORKFLOW.md`.
 - Author-facing content format is **MMD (Magazine Markdown)** — see PART 2A below. Authors never touch HTML or CSS.
 
 **When Gowri says "build the issue" / "make the PDF" / gives you a new issue's content → use System B.**
@@ -186,7 +195,7 @@ Never place a float immediately after another float — use a `section-divider` 
 
 ## PART 2A: MMD AUTHORING FORMAT (System B — how content becomes HTML)
 
-Full spec: `HowTO/docs/MMD_Specification.md`. One `.md` file per article, saved to `issues/Issue-NN/articles/`.
+Full spec: `magazine-toolkit/docs/MMD_Specification.md`. One `.md` file per article, saved to `issues/Issue-NN/articles/`.
 
 ```markdown
 ---
@@ -236,7 +245,7 @@ author: திருமுருகன்
 
 Before handing an issue to the pipeline, run:
 ```bash
-python HowTO/validate_mmd.py issues/Issue-NN/articles/*.md
+python magazine-toolkit/validate_mmd.py issues/Issue-NN/articles/*.md
 ```
 
 ---
@@ -362,7 +371,7 @@ Every article should sound like a wise, warm, learned elder — not a textbook, 
 
 ### Naming Convention
 - System A: `VAN_Vallaroli_[TamilMonth][Year]_v[Major].[Minor]_[YYYYMMDD].html`
-- System B: `HowTO/issues/Issue-NN/` (source) → `HowTO/output/VAN_Vallaroli_[TamilMonth][Year].pdf` (build output)
+- System B: `magazine-toolkit/issues/Issue-NN/` (source) → `magazine-toolkit/output/VAN_Vallaroli_[TamilMonth][Year].pdf` (build output)
 - Version bumps (System A only): `v1.0` first draft · `v1.1` minor corrections · `v2.0` structural changes
 
 ### Issue Rotation Tracker (avoid repeating topics)
@@ -401,16 +410,16 @@ python3 Reference_docs/validate_template.py <file>.html   # 0 FAIL expected
 python3 Reference_docs/validate_template.py --self-test   # if you touched the validator
 python3 Reference_docs/validate_template.py --all
 ```
-Enforced by `.git/hooks/pre-commit` (blocks on FAIL; skips `Archive/**` and `HowTO/templates/**`) and `.github/workflows/validate.yml` (CI on push/PR touching root `*.html`). **Never use `git commit --no-verify`.**
+Enforced by `.git/hooks/pre-commit` (blocks on FAIL; skips `Archive/**` and `magazine-toolkit/templates/**`) and `.github/workflows/validate.yml` (CI on push/PR touching root `*.html`). **Never use `git commit --no-verify`.**
 
-### System B (HowTO pipeline)
+### System B (magazine-toolkit pipeline)
 ```bash
-python HowTO/validate_mmd.py issues/Issue-NN/articles/*.md   # pre-flight lint
+python magazine-toolkit/validate_mmd.py issues/Issue-NN/articles/*.md   # pre-flight lint
 # compare_html.py runs automatically as pipeline Step 3 — integrity audit:
 #   section order preserved, all paragraphs preserved, byline on each section's
 #   first page, image count consistent with page delta
 ```
-Then eyeball the PDF against the Phase 5 checklist in `HowTO/PRODUCTION_WORKFLOW.md` (cover, imprint, masthead, TOC, spot-check 3 articles, Cmd+F search works, file size 5–20MB).
+Then eyeball the PDF against the Phase 5 checklist in `magazine-toolkit/PRODUCTION_WORKFLOW.md` (cover, imprint, masthead, TOC, spot-check 3 articles, Cmd+F search works, file size 5–20MB).
 
 ---
 
@@ -434,7 +443,7 @@ An exact-string fix for `:root` (`'--van-gold:       var(--van-gold);'`, 7 space
 `check_brand_colors` and `check_theme_system` tested whether a variable *name* was present anywhere in the CSS — including as a circular definition. Both passed on broken CSS.
 **Rule:** every check must test *semantic meaning*, not presence of a string. When adding a new check, write a self-test with bad input that should fail it — if the self-test passes, the check is incomplete.
 
-### System B (HowTO pipeline) — Lessons Learned (found during Issue 02)
+### System B (magazine-toolkit pipeline) — Lessons Learned (found during Issue 02)
 
 All fixed at the shared-script level, not patched per-page — that is the standing rule for this pipeline: a bug found on one issue's page must be fixed so it can't recur on any future issue, not worked around for the page it was found on.
 
@@ -485,7 +494,7 @@ When asked to switch the PDF step to WeasyPrint, we recommended staying on the P
 
 ## CLAUDE.md MAINTENANCE TRIGGERS
 
-Update this file when the change affects *future Claude Code behavior* — design rules, quality gates, hard-won lessons, component/MMD patterns. Do **not** update it for one-off content edits, single-issue fixes, or temporary workarounds — those belong in `HowTO/ISSUE-NN_PLAN.md`, `Reference_docs/content_tracker.md`, or commit messages.
+Update this file when the change affects *future Claude Code behavior* — design rules, quality gates, hard-won lessons, component/MMD patterns. Do **not** update it for one-off content edits, single-issue fixes, or temporary workarounds — those belong in issue-specific plan doc inside `issues/released/Issue-NN/`, `Reference_docs/content_tracker.md`, or commit messages.
 
 | What changed | Update here |
 |---|---|
@@ -495,7 +504,7 @@ Update this file when the change affects *future Claude Code behavior* — desig
 | New theme added | PART 3A |
 | New section type | PART 2 section registry |
 | New bug found and fixed | PART 9 |
-| Pipeline step added/changed in `HowTO/` | PART 1B + `HowTO/docs/Architecture.md` |
+| Pipeline step added/changed in `magazine-toolkit/` | PART 1B + `magazine-toolkit/docs/Architecture.md` |
 | New issue started | PART 6 rotation tracker |
 | VAN contact details change | PART 7 |
 

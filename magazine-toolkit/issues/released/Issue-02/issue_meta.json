@@ -1,0 +1,80 @@
+{
+  "issue_number": 2,
+  "tamil_month": "ஆடி",
+  "year": 2026,
+  "year_tamil": "௨௦௨௬",
+  "english_dates": "சூலை — ஆகத்து 2026",
+  "special_label": "",
+
+  "next_issue": {
+    "tamil_month": "புரட்டாசி",
+    "year": 2026
+  },
+
+  "sections": [
+    {
+      "file": "01-thalaiyangam.md",
+      "section_name": "தலையங்கம்",
+      "topic_title": "தமிழர் அறநெறி வாழ்க்கை"
+    },
+    {
+      "file": "02-thirukkural.md",
+      "section_name": "திருக்குறள் ஆய்வு",
+      "topic_title": "அறம் செய விரும்பு"
+    },
+    {
+      "file": "03-sirukathai.md",
+      "section_name": "சிறுகதை",
+      "topic_title": "திறந்த ஜன்னல்"
+    },
+    {
+      "file": "04-sangailakkiyam.md",
+      "section_name": "சங்க இலக்கியம்",
+      "topic_title": "மலர் சூடிய நாகரிகம்"
+    },
+    {
+      "file": "05-kalai.md",
+      "section_name": "தமிழகக் கலைகள்",
+      "topic_title": "தமிழர் சிற்பக்கலையின் தொன்மை — சிறுபார்வை"
+    },
+    {
+      "file": "06-nool-mathippurai.md",
+      "section_name": "நூல் மதிப்புரை",
+      "topic_title": "தமிழர் வீரம்"
+    },
+    {
+      "file": "07-ozhukkam.md",
+      "section_name": "ஓர் ஒழுக்கம்",
+      "topic_title": "மல சலம் கழித்தல்"
+    },
+    {
+      "file": "08-manam.md",
+      "section_name": "மனம் தொடர்",
+      "topic_title": "மனம் எனும் மந்திரசாவி"
+    },
+    {
+      "file": "11-iyarkai.md",
+      "section_name": "இயற்கை தரும் இன்பம்",
+      "topic_title": "மருத நிலம் — பச்சை வயல்"
+    },
+    {
+      "file": "09-activities.md",
+      "section_name": "அறநிலையச் செய்திகள்",
+      "topic_title": "அறநிலைய நிகழ்வுகள் — ஜூன் மற்றும் ஜூலை 2026"
+    },
+    {
+      "file": "10-closing.md",
+      "section_name": "அடுத்த இதழில்",
+      "topic_title": "புரட்டாசி 2026 — இதழ் 3"
+    }
+  ],
+
+  "masthead": {
+    "publisher": "பெண்ணாடம் வள்ளலார் அறநிலையம்",
+    "address":   "கடலூர் மாவட்டம், பெண்ணாடம்",
+    "email":     "vallalararanilayampdm@gmail.com"
+  },
+
+  "_notes": "தொகுப்பாசிரியர்கள் and default masthead logos come from magazine-toolkit/magazine_defaults.json (shared every issue). Cover teasers are built automatically from sections[].topic_title — optional cover_teasers or cover.skip_sections override."
+}
+
