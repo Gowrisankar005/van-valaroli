@@ -32,7 +32,7 @@ You can change this list per issue — just update `issue_meta.json`.
 ## Phase 2 — Set up the issue folder
 
 ```bash
-cd /Users/gowri/spaceclub/e-magazine/magazine-toolkit
+cd van-valaroli/magazine-toolkit   # or wherever you cloned the repo
 
 # Copy a template — issues/_starter-template is a minimal 3-article skeleton
 # (good for a quick trial run, and has its own README); issues/released/Issue-02

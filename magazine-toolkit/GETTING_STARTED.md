@@ -1,6 +1,8 @@
 # Getting Started
 
-One-time setup for a fresh machine.
+One-time setup for a fresh machine. If you're new to this project, this is
+where to start — you don't need to read `CLAUDE.md` (that one's written for
+Claude Code, the AI assistant used for pipeline development, not for people).
 
 ## 1. Prerequisites
 
@@ -8,14 +10,21 @@ Make sure you have:
 
 | Tool | Version | Check | Install if missing |
 |---|---|---|---|
+| Git | any recent | `git --version` | `brew install git` (macOS) |
 | Python | 3.11 or newer | `python3 --version` | `brew install python@3.13` (macOS) |
 | Homebrew | latest | `brew --version` | https://brew.sh |
 | Google Chrome | latest stable | open Chrome | https://chrome.google.com |
 
-## 2. Run the setup script
+You'll also need access to the GitHub repo — ask whoever's currently
+maintaining it to add you as a collaborator if you don't have access yet
+(VAN contact details are in root `CLAUDE.md` PART 7, if you can't reach the
+maintainer directly).
+
+## 2. Clone the repo and run setup
 
 ```bash
-cd /Users/gowri/spaceclub/e-magazine/magazine-toolkit
+git clone https://github.com/gowrishankar005/van-valaroli.git
+cd van-valaroli/magazine-toolkit
 ./setup.sh
 ```
 
@@ -94,7 +103,7 @@ If all three work, the text-PDF pipeline is correct.
 Once setup is done, every future session just needs:
 
 ```bash
-cd /Users/gowri/spaceclub/e-magazine/magazine-toolkit
+cd van-valaroli/magazine-toolkit   # or wherever you cloned the repo
 source .venv/bin/activate
 python make_magazine.py --from-issue issues/Issue-NN output/file.pdf
 ```

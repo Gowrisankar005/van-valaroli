@@ -6,7 +6,7 @@ A self-contained workspace for producing the magazine PDF from author content.
 
 ```bash
 # One-time setup
-cd /Users/gowri/spaceclub/e-magazine/magazine-toolkit
+cd van-valaroli/magazine-toolkit   # or wherever you cloned the repo
 ./setup.sh
 
 # Build the magazine from author articles
