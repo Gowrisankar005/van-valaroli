@@ -1,0 +1,35 @@
+{
+  "issue_number": 3,
+  "tamil_month": "புரட்டாசி",
+  "year": 2026,
+  "year_tamil": "௨௦௨௬",
+  "english_dates": "செப்டம்பர் — அக்டோபர் 2026",
+  "special_label": "",
+
+  "next_issue": {
+    "tamil_month": "ஐப்பசி",
+    "year": 2026
+  },
+
+  "sections": [
+    {"file": "01-thalaiyangam.md",     "section_name": "தலையங்கம்",           "topic_title": "(TBD)"},
+    {"file": "02-thirukkural.md",      "section_name": "திருக்குறள் ஆய்வு",   "topic_title": "(TBD)"},
+    {"file": "03-sirukathai.md",       "section_name": "சிறுகதை",             "topic_title": "(TBD — avoid a third Pudhumaipithan reprint, see CLAUDE.md PART 6 note)"},
+    {"file": "04-sangailakkiyam.md",   "section_name": "சங்க இலக்கியம்",      "topic_title": "(TBD)"},
+    {"file": "05-kalai.md",            "section_name": "தமிழகக் கலைகள்",      "topic_title": "(TBD)"},
+    {"file": "06-nool-mathippurai.md", "section_name": "நூல் மதிப்புரை",      "topic_title": "(TBD)"},
+    {"file": "07-ozhukkam.md",         "section_name": "ஓர் ஒழுக்கம்",        "topic_title": "(TBD)"},
+    {"file": "08-manam.md",            "section_name": "மனம் தொடர்",          "topic_title": "(TBD — Part 2, don't let the series lapse)"},
+    {"file": "09-iyarkai.md",          "section_name": "இயற்கை தரும் இன்பம்", "topic_title": "(TBD)"},
+    {"file": "10-activities.md",       "section_name": "அறநிலையச் செய்திகள்", "topic_title": "(TBD)"},
+    {"file": "11-closing.md",          "section_name": "அடுத்த இதழில்",       "topic_title": "(TBD)"}
+  ],
+
+  "masthead": {
+    "publisher": "பெண்ணாடம் வள்ளலார் அறநிலையம்",
+    "address":   "கடலூர் மாவட்டம், பெண்ணாடம்",
+    "email":     "vallalararanilayampdm@gmail.com"
+  },
+
+  "_notes": "SCAFFOLD ONLY — no real article content yet. Topics are all (TBD); check the rotation tracker in root CLAUDE.md PART 6 before assigning, and update this file's sections list + section_name/topic_title as topics are confirmed. தொகுப்பாசிரியர்கள் and default masthead logos come from magazine-toolkit/magazine_defaults.json (shared every issue)."
+}
