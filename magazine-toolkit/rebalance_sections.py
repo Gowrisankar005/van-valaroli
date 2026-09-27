@@ -156,10 +156,22 @@ def is_closing_block(el):
 
 # ─── Measurement ──────────────────────────────────────────────────────────────
 
+HEADER_EI = -1   # sentinel element-index for a page's .section-header,
+                  # stored in the same heights dict as (page_index, HEADER_EI)
+
+
 def measure_element_heights(html_path: Path, doc) -> dict:
-    """Returns {(page_index, element_index_in_body): height_px}.
-    Renders the HTML in Playwright and measures each .body-text child's
-    offsetHeight in CSS pixels."""
+    """Returns {(page_index, element_index_in_body): height_px}, plus one
+    (page_index, HEADER_EI) entry per page for the combined height of
+    everything in .content-area ahead of .body-text — on a section's first
+    page that's .section-header + .section-divider + .author-byline (three
+    separate siblings, not just the one div "header" suggests; measuring
+    only .section-header undercounted this by ~70px and made this fix a
+    no-op the first time around), on a continuation page just the slim
+    .continuation-banner. Title wrap + subtitle presence vary this total by
+    100px+ across articles — see SECTION_START_CAPACITY_PX's caller for why
+    that matters. Renders the HTML in Playwright and measures each
+    .body-text child's offsetHeight in CSS pixels."""
     # Tag each body-text child with a unique data-rebalance-id so we can
     # locate it in the rendered DOM.
     heights: dict = {}
@@ -172,7 +184,7 @@ def measure_element_heights(html_path: Path, doc) -> dict:
         for ei, ch in enumerate(body):
             if ch.tag is None:
                 continue
-            ch.set('data-rebal', f'{pi}-{ei}')
+            ch.set('data-rebal', f'{pi}:{ei}')
             tagged += 1
 
     # Write tagged copy next to the real source file — NOT /tmp. Images are
@@ -195,6 +207,13 @@ def measure_element_heights(html_path: Path, doc) -> dict:
         )
         page = ctx.new_page()
         page.goto(tmp_path.as_uri(), wait_until='networkidle')
+        # build_text_pdf.py renders the PDF in print media, and magazine.css's
+        # @media print block forces body to display:block (overriding screen's
+        # flex layout) — measuring in default screen media here sizes elements
+        # under a different layout mode than what actually gets printed,
+        # silently mis-measuring heights. Must match before any measurement
+        # (see CLAUDE.md Lesson 11).
+        page.emulate_media(media='print')
         page.add_style_tag(content=MEASUREMENT_CSS)
         page.evaluate("document.fonts.ready")
         # .img-half/.img-right/.img-left all use height:auto with no
@@ -221,6 +240,24 @@ def measure_element_heights(html_path: Path, doc) -> dict:
                 return out;
             }
         """)
+        # Header-region total per page: everything in .content-area BEFORE
+        # .body-text, summed as one number (not tagged individually above —
+        # .section-header/.section-divider/.author-byline are three separate
+        # siblings, and this needs their combined footprint, not any one).
+        header_totals = page.evaluate("""
+            () => Array.from(document.querySelectorAll('.page')).map(p => {
+                const ca = p.querySelector('.content-area');
+                if (!ca) return 0;
+                let sum = 0;
+                Array.from(ca.children).forEach(ch => {
+                    if ((ch.className || '').split(' ').includes('body-text')) return;
+                    const r = ch.getBoundingClientRect();
+                    const cs = getComputedStyle(ch);
+                    sum += r.height + (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
+                });
+                return sum;
+            })
+        """)
         browser.close()
 
     tmp_path.unlink(missing_ok=True)
@@ -235,8 +272,11 @@ def measure_element_heights(html_path: Path, doc) -> dict:
                 ch.attrib.pop('data-rebal')
 
     for k, v in raw.items():
-        pi, ei = k.split('-')
+        pi, ei = k.split(':')
         heights[(int(pi), int(ei))] = float(v)
+    for pi, total in enumerate(header_totals):
+        if total > 0:
+            heights[(pi, HEADER_EI)] = float(total)
     return heights
 
 
@@ -300,15 +340,24 @@ def adjust_page_count(doc, html_path: Path, verbose=True) -> tuple[int, int]:
         if total < MIN_TOTAL_TO_ADJUST:
             continue
 
+        # Section-start capacity depends on THIS section's actual title-block
+        # height (title wrap + subtitle presence vary it by 100px+) — a flat
+        # constant here undercounts the header on 2-line-title/subtitled
+        # sections, which then overflow and get auto-shrunk downstream.
+        # Fall back to the flat constant if measurement is missing.
+        first_pi = page_index_of[id(sect_pages[0])]
+        header_h = heights.get((first_pi, HEADER_EI))
+        start_capacity = (A4_BODY_PX - header_h) if header_h else SECTION_START_CAPACITY_PX
+
         current = len(sect_pages)
         # Ideal page count using CAPACITY model:
-        # Section needs N pages where: SECTION_START_CAPACITY +
+        # Section needs N pages where: start_capacity +
         # (N-1)*CONTINUATION_CAPACITY ≈ total content.
-        # Solve for N: N ≈ 1 + (total - SECTION_START_CAPACITY)/CONTINUATION_CAPACITY
-        if total <= SECTION_START_CAPACITY_PX:
+        # Solve for N: N ≈ 1 + (total - start_capacity)/CONTINUATION_CAPACITY
+        if total <= start_capacity:
             ideal_raw = 1
         else:
-            remaining = total - SECTION_START_CAPACITY_PX
+            remaining = total - start_capacity
             ideal_raw = 1 + remaining / CONTINUATION_CAPACITY_PX
         floor_p = max(1, math.floor(ideal_raw))
         ceil_p  = max(1, math.ceil(ideal_raw))
@@ -325,7 +374,7 @@ def adjust_page_count(doc, html_path: Path, verbose=True) -> tuple[int, int]:
             # blank space (zoom shrinks the box without anything else
             # growing to fill the page), which reads as inconsistent
             # across the issue. Add the extra page instead.
-            cap_floor = SECTION_START_CAPACITY_PX + max(0, floor_p - 1) * CONTINUATION_CAPACITY_PX
+            cap_floor = start_capacity + max(0, floor_p - 1) * CONTINUATION_CAPACITY_PX
             ratio = total / cap_floor
             ideal = floor_p if ratio <= 1.03 else ceil_p
 
@@ -600,9 +649,14 @@ def rebalance(doc, html_path: Path, verbose=True) -> int:
 
         # PER-PAGE CAPACITY: first page of section has section-header
         # taking ~140px, so its body-text budget is smaller. Continuation
-        # pages just have a slim banner (~30px).
+        # pages just have a slim banner (~30px). Use this section's actual
+        # measured header height (title wrap + subtitle vary it by 100px+)
+        # rather than a flat constant — see adjust_page_count's comment.
+        def _start_capacity(sp):
+            header_h = heights.get((page_index_of[id(sp)], HEADER_EI))
+            return (A4_BODY_PX - header_h) if header_h else SECTION_START_CAPACITY_PX
         capacities = [
-            SECTION_START_CAPACITY_PX if is_section_start(sp)
+            _start_capacity(sp) if is_section_start(sp)
             else CONTINUATION_CAPACITY_PX
             for sp, _ in body_refs
         ]
@@ -690,6 +744,10 @@ def backfill_underfilled_pages(doc, html_path: Path, threshold_px: float = 60,
             )
             page = ctx.new_page()
             page.goto(tmp_path.as_uri(), wait_until='networkidle')
+            # Must match build_text_pdf.py's print-media render before
+            # measuring footer position — see the emulate_media call in
+            # measure_element_heights above for why (CLAUDE.md Lesson 11).
+            page.emulate_media(media='print')
             page.evaluate("document.fonts.ready")
             page.wait_for_function(
                 "Array.from(document.images).every(img => img.complete)")

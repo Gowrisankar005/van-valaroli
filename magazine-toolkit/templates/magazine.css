@@ -1508,6 +1508,16 @@
       line-height: 1.45;
       word-break: break-word;
     }
+    /* The channel URL is one address. The card is too narrow for 9pt,
+       and break-word was splitting it mid-name. Shrink only this line. */
+    .masthead-contact-text.masthead-url {
+      white-space: nowrap;
+      word-break: normal;
+      overflow-wrap: normal;
+      font-size: 7pt;
+      letter-spacing: 0;
+      line-height: 1.3;
+    }
     .masthead-card-spacer {
       display: none; /* equal role spacing replaces the old spacer */
     }
