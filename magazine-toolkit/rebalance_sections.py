@@ -467,6 +467,18 @@ def split_logical_units(elements):
             else:
                 i += 1
             units.append(unit)
+        elif (el.tag == 'p'
+              and el.text_content().strip().endswith((':', '：'))
+              and i + 1 < n
+              and not is_subhead(elements[i + 1][0])
+              and not is_section_divider(elements[i + 1][0])
+              and not is_closing_block(elements[i + 1][0])):
+            # A paragraph ending in ":" introduces the element right after
+            # it (a list, a quote, ...). Keep the two together, otherwise
+            # the intro line can be stranded at a page bottom with its list
+            # starting on the next page.
+            units.append([(el, h), elements[i + 1]])
+            i += 2
         else:
             units.append([(el, h)])
             i += 1
@@ -639,6 +651,11 @@ def rebalance(doc, html_path: Path, verbose=True) -> int:
 
 # ─── Post-redistribution verification / backfill ──────────────────────────────
 
+# A section's last page may be left with at most this much blank space (px) after
+# backfill pulls content forward from it; beyond that it would look too empty.
+LAST_PAGE_MAX_GAP_PX = 500
+
+
 def backfill_underfilled_pages(doc, html_path: Path, threshold_px: float = 60,
                                 max_rounds: int = 4, verbose: bool = True) -> int:
     """rebalance() decides page boundaries using PRE-measured element heights
@@ -742,7 +759,13 @@ def backfill_underfilled_pages(doc, html_path: Path, threshold_px: float = 60,
                 # cascading it all the way to the section's last page,
                 # which is worse than where it started).
                 nxt_gap_after = info[nxt_i]['gap'] + nxt_first_h
-                if nxt_gap_after >= gap:
+                # Exception: blank space at the bottom of a section's LAST
+                # page is natural (the article just ends), so pulling content
+                # forward from it is fine — as long as that last page stays
+                # reasonably filled afterwards.
+                nxt_is_last = (idx + 1 == len(sect_pages) - 1)
+                last_page_ok = nxt_is_last and nxt_gap_after < LAST_PAGE_MAX_GAP_PX
+                if nxt_gap_after >= gap and not last_page_ok:
                     continue
                 cur_body = find_body_text(cur)
                 nxt_body = find_body_text(nxt)

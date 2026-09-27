@@ -222,6 +222,7 @@ Common fixes:
 | Issue | Fix |
 |---|---|
 | Empty space at page bottom, mid-section | Should mostly self-correct via the `rebalance_sections.py` backfill pass — re-check the log for `Backfilled N element(s)`. If the gap remains because the next page's first block is one large paragraph (too big to move whole), split that paragraph at a natural sentence break in the source `.md` — the pipeline doesn't split paragraphs automatically, that's an intentional limit on the pagination rule (never split a paragraph mid-sentence programmatically) |
+| Gap before a photo pair or a list | Those are unbreakable blocks. Move a nearby paragraph above the photos, or use `float` / `float-left` so the photos sit beside text (alternate sides). A line ending in `:` now stays glued to the list/quote after it automatically |
 | Empty space at bottom of a section's *last* page | Usually just the natural end of the article — not a bug. Confirm the last visible line ends the piece (closing sign-off, rating, etc.) |
 | Section content overflows | Trim text or split into more pages (auto-handled by rebalance) |
 | Wrong section page in TOC | Re-run pipeline; TOC is auto-generated |

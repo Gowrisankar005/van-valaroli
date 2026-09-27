@@ -59,6 +59,8 @@ SOURCE (author MMD or hand-built HTML)
 │        content, e.g. a nested ## immediately before a ###) into   │
 │        the next unit, so a heading can never end up stranded      │
 │        alone at a page bottom; prefer breaks after section-divider │
+│  • A paragraph ending in ":" stays glued to the list/quote that     │
+│        follows it (no stranded intro line at a page bottom)        │
 │  • Backfill pass: after redistribution, re-measure REAL rendered  │
 │        gaps in the browser and greedily pull the next page's      │
 │        first block forward into any page with real slack — only   │

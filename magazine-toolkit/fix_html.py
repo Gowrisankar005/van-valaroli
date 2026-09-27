@@ -301,6 +301,14 @@ CSS_INJECTION = """
         max-height: 75mm !important;
         object-fit: cover !important;
     }
+    /* banner-full: full content width, height from the photo itself.
+       The 75mm cover crop above is for wide panoramas. A 4:3 frame
+       loses its top and bottom in that slot. */
+    .img-banner.img-banner-full img {
+        max-height: none !important;
+        height: auto !important;
+        object-fit: contain !important;
+    }
     .img-half img {
         max-height: 80mm !important;
         object-fit: contain !important;

@@ -113,7 +113,8 @@ A `:::image` directive with `src` and `caption` attributes. Optional `type` sele
 |---|---|---|
 | `float` (default) | 60×45mm right-floated thumbnail | Most images |
 | `float-left` | 60×45mm left-floated thumbnail | Second image in a row — alternate sides so text doesn't get squeezed into a narrow column between two same-side floats |
-| `banner` | Full-width hero | Section openers, dramatic shots |
+| `banner` | Full-width hero, height capped at 75mm (cover crop) | Wide section openers and landscapes |
+| `banner-full` | Full width, the photo's own height, no crop | A full-width photo that is not a wide panorama |
 | `half` | 80mm centered, no border | Diagrams, single objects, artifact/figurine photos |
 | `portrait` | 45mm centered, no border | A single author/subject portrait at an article's top, before the lead paragraph |
 

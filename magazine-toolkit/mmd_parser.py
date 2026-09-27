@@ -235,11 +235,12 @@ def render_directive(name: str, attrs: dict, lines: list, warnings: list) -> str
     if name == 'image':
         src = attrs.get('src', '')
         caption = attrs.get('caption', '')
-        img_type = attrs.get('type', 'float')   # float | float-left | banner | half
+        img_type = attrs.get('type', 'float')   # float | float-left | banner | banner-full | half
         type_class = {
             'float': 'img-right',
             'float-left': 'img-left',
             'banner': 'img-banner',
+            'banner-full': 'img-banner img-banner-full',
             'half': 'img-half',
             'portrait': 'img-portrait',
         }.get(img_type, 'img-right')

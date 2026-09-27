@@ -25,6 +25,8 @@ To rebuild and confirm it still matches:
 python make_magazine.py --from-issue issues/released/Issue-NN output/test.pdf
 ```
 
+The text always rebuilds identically (`compare_html.py` clean). Pagination can shift slightly after later pipeline improvements (Issue 02 since the Issue 03 pagination fixes: same 35 pages, a few blocks moved) — `final/` is the authoritative record of what shipped.
+
 ## `Issue-01/` — built via the legacy System A process
 
 Issue 01 predates this toolkit — it was a hand-built, single-file HTML

@@ -155,7 +155,8 @@ python make_magazine.py --from-issue issues/Issue-02 output/VAN_Vallaroli_Aadi20
 | Section divider | `<div class="section-divider">• &nbsp; • &nbsp; •</div>` | Between sub-sections |
 | Image — float right | `<figure class="article-figure img-right"><img src="..." alt="[Tamil]"><figcaption class="img-caption">[Tamil]</figcaption></figure>` | Portraits, illustrations (62mm, text wraps left) |
 | Image — float left | same with `.img-left` | Same, text wraps right |
-| Image — full banner | `.img-banner` | Temple exteriors, landscapes (full width) |
+| Image — full banner | `.img-banner` | Temple exteriors, landscapes (full width, 75mm cover crop) |
+| Image — full width, natural height | `.img-banner.img-banner-full` | Same width as a banner; height follows the photo. For a picture that is not a wide panorama |
 | Image — half centered | `.img-half` | Diagrams, single objects (100mm centered) |
 
 **Image size guide:** float 62mm (min 370×280px, ideal 730×550px) · banner 182mm (min 1080×400px, ideal 2150×790px) · half 100mm (min 590×440px, ideal 1180×870px).
@@ -238,7 +239,7 @@ author: திருமுருகன்
 | `1. item` | `<ol class="numbered-list">` | Exact `N. ` prefix required |
 | `:::quote source="..."` | `.slim-quote` | Each non-blank line → its own verse line |
 | `:::box title="..."` | `.highlights-box` | Bulleted items inside |
-| `:::image src="..." caption="..." type="float\|float-left\|banner\|half\|portrait"` | `.article-figure img-*` | `float`=60×45mm right, `float-left`=same but left (alternate with `float` — never stack two same-side floats back to back), `banner`=full-width, `half`=80mm centered no border (diagrams/artifacts), `portrait`=45mm centered no border (author/subject headshot, use this NOT `half` for portraits). `src` must exist in issue's `images/` folder |
+| `:::image src="..." caption="..." type="float\|float-left\|banner\|banner-full\|half\|portrait"` | `.article-figure img-*` | `float`=60×45mm right, `float-left`=same but left (alternate with `float` — never stack two same-side floats back to back), `banner`=full-width with a 75mm cover crop, `banner-full`=full width at the photo's own height (no crop; use when the picture is not a wide panorama), `half`=80mm centered no border (diagrams/artifacts), `portrait`=45mm centered no border (author/subject headshot, use this NOT `half` for portraits). `src` must exist in issue's `images/` folder |
 | `:::closing` | sign-off block | Heuristic: prose lines ending in `./!/?` stay plain text; the first line that ISN'T a full sentence starts the signature (sign-off → name → title → org) — no `—` marker required, though one still works |
 
 **Rules:** Tamil only (செந்தமிழ் substitutions apply — PART 4), em-dash `—` (U+2014) for citations never `--`/`----`, no manual page breaks (pagination is automatic via `rebalance_sections.py`, which now includes a real-rendered-gap backfill pass — see PART 9), no raw HTML, `section:` frontmatter must exactly match a `section_name` in `issue_meta.json`.
@@ -335,6 +336,8 @@ Applies when converting any content (both systems) to output. Non-negotiable.
 
 `ஞானம்` is acceptable; prefer `அறிவொளி` in headers.
 
+**Exception — reprinted classic texts** (e.g. the Pudhumaipithan சிறுகதை series): keep the author's original words, including loan words (நர்ஸ், டாக்டர், ஆஸ்பத்திரி…). Do not "fix" them; `validate_mmd.py` will still print loan-word warnings for these files — that is expected. The செந்தமிழ் substitutions apply to new writing by VAN authors.
+
 ---
 
 ## PART 5: VAN VOICE — EDITORIAL STYLE
@@ -377,16 +380,16 @@ Every article should sound like a wise, warm, learned elder — not a textbook, 
 ### Issue Rotation Tracker (avoid repeating topics)
 | Section | Issue 1 (வைகாசி 2026) | Issue 2 (ஆடி 2026) | Issue 3 (புரட்டாசி 2026 — Oct 2026 release) |
 |---|---|---|---|
-| திருக்குறள் ஆய்வு | அறிவுடைமை — பத்துக் குறட்பாக்கள் | ஆறுவது சினம் — ஔவையார் ஆத்திசூடி vs. வெகுளாமை அதிகாரம் | (TBD) |
-| சிறுகதை | பால்வண்ணம் பிள்ளை — புதுமைப்பித்தன் | திறந்த ஜன்னல் — புதுமைப்பித்தன் (மணிக்கொடி, 1934) | (TBD — see note below) |
-| தமிழகக் கலைகள் | கோயிற் கட்டிடக்கலை — ஓர் அறிமுகம் | தமிழர் சிற்பக்கலையின் தொன்மை — கீழடி, ஆதிச்சநல்லூர், நடுகற்கள் | (TBD) |
-| சங்க இலக்கியம் | தாமரை மலரின் அறச்செய்தி (Lotus) | மலர் சூடிய நாகரிகம் — சங்க இலக்கியத்தில் மலர்களின் பெருமையும் அறமும் | (TBD) |
-| ஓர் ஒழுக்கம் | அதிகாலை துயில் எழல் — வள்ளலாரின் நெறி | மல சலம் கழித்தல் — எருவாய்க்கான ஒழுக்கம் | (TBD) |
+| திருக்குறள் ஆய்வு | அறிவுடைமை — பத்துக் குறட்பாக்கள் | அறம் செய விரும்பு — பாரி · பேகன் (கடையெழு வள்ளல்கள்), குறள் 211 | ஆறுவது சினம் — நாவினால் சுட்ட வடு (குறள் 129, 305, 306) |
+| சிறுகதை | பால்வண்ணம் பிள்ளை — புதுமைப்பித்தன் | திறந்த ஜன்னல் — புதுமைப்பித்தன் (மணிக்கொடி, 1934) | கட்டில் பேசுகிறது — புதுமைப்பித்தன் (மணிக்கொடி, 1934) |
+| தமிழகக் கலைகள் | கோயிற் கட்டிடக்கலை — ஓர் அறிமுகம் | தமிழர் சிற்பக்கலையின் தொன்மை — கீழடி, ஆதிச்சநல்லூர், நடுகற்கள் | மரம் முதல் கற்றளி வரை (Issue 02 தொடர்ச்சி) |
+| சங்க இலக்கியம் | தாமரை மலரின் அறச்செய்தி (Lotus) | மலர் சூடிய நாகரிகம் — சங்க இலக்கியத்தில் மலர்களின் பெருமையும் அறமும் | காந்தள் மலரின் அறம் — செங்காந்தள் (தமிழ்நாட்டின் மாநில மலர்) |
+| ஓர் ஒழுக்கம் | அதிகாலை துயில் எழல் — வள்ளலாரின் நெறி | மல சலம் கழித்தல் — எருவாய்க்கான ஒழுக்கம் | தந்த சுத்தி — வழலை நீக்கல் |
 | நூல் மதிப்புரை | வாசிப்பது எப்படி? — செல்வேந்திரன் | தமிழர் வீரம் — முனைவர் ரா.பி. சேதுப்பிள்ளை | (TBD) |
-| மனம் தொடர் | Not started (teaser only) | மனதின் இயல்பு (Part 1) — shipped | Part 2 expected — this is an ongoing series, don't let it lapse |
+| மனம் தொடர் | Not started (teaser only) | மனதின் இயல்பு (Part 1) — shipped | மனம் எனும் ஏணி (Part 2) — series continues |
 | இயற்கை தரும் இன்பம் | Not started | Photo essay — shipped (new section, added mid-issue) | (TBD) |
 
-Note: two authors reused Pudhumaipithan classics for சிறுகதை across Issue 1 and Issue 2 — flag to editor if a third reprint is considered for Issue 3; readers may expect original fiction eventually.
+Note: சிறுகதை is an ongoing series of Pudhumaipithan's classic short stories (Issues 1–3) — accepted by Gowri, no reprint flag needed. Keep the classic text as written.
 
 ---
 
@@ -474,6 +477,11 @@ A print-CSS override forced `.page, .cover { display: block !important }` for pr
 ### ❌ Lesson 11 — Screen-media measurement can diverge from print-media render
 Playwright measured page heights with the browser in default (screen) media, but `page.pdf()` renders in `print` media — if any `@media print` CSS rule changes layout (and one did, see Lesson 7), the measured heights don't match what actually gets printed.
 **Rule:** call `page.emulate_media(media='print')` immediately after `page.goto()`, before any measurement, whenever the same Playwright page is later used to produce the PDF.
+
+### ❌ Lesson 12 — A line ending in ":" can be stranded from the list or quote it introduces
+`split_logical_units()` treated every paragraph as its own unit, so an intro line like "பல்லவர்களின் காலத்தில்:" could sit at the bottom of one page while its numbered list started on the next. Separately, the backfill pass refused to pull content off a section's *last* page (its "net-improvement" guard), although blank space at the end of an article is natural — so a page-bottom gap stayed even when a short paragraph would have fit.
+**Rule:** a paragraph ending in `:` is glued to the element right after it; backfill may pull content from a last page as long as that page stays reasonably filled (`LAST_PAGE_MAX_GAP_PX`). Content-side tip: photo pairs and lists are unbreakable blocks — to close a gap before one, move a nearby paragraph above it or use `float`/`float-left` photos so they sit beside text.
+**Side effect:** rebuilding an already-released issue keeps its text identical (`compare_html.py` clean) but pagination can shift slightly. `issues/released/Issue-NN/final/` is the authoritative record of what shipped.
 
 ### ℹ️ Note — WeasyPrint was evaluated and rejected for PDF generation
 When asked to switch the PDF step to WeasyPrint, we recommended staying on the Playwright-based `build_text_pdf.py` instead: WeasyPrint substitutes fonts it can't find (risk of breaking Tamil glyph rendering) and computes `height:auto` layout independently of the Playwright-measured HTML the rebalance step already tuned, reopening every pagination bug this section describes. Playwright renders with the same Chromium engine used for measurement, so what was measured is what gets printed.
