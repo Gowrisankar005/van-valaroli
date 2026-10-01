@@ -1,0 +1,2923 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>வான் வளரொளி இதழ் — புரட்டாசி 2026 — இதழ் 3</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+  /* ── CSS Custom Properties (Theme System) ──────────────────── */
+  :root {
+    /* Theme-aware colors */
+    --van-primary:    #8DC63F;   /* subheadings, accents */
+    --van-deep:       #2d7a3e;   /* page headers, page numbers */
+    --van-dark:       #6BA82F;   /* TOC borders, box borders */
+    --van-gold:       #D4AF37;   /* decorative accents, rules */
+    --van-deepest:    #0a2616;   /* masthead darkest gradient stop */
+    --van-deeper:     #0d3320;   /* masthead dark gradient stop */
+    --van-brown:      #8b6f47;   /* corner motifs */
+    /* Theme-aware — element backgrounds & text-on-dark */
+    --van-bg-light:            #f4fbe8;
+    --van-bg-gradient-start:   #f0f7e6;
+    --van-bg-gradient-end:     #e8f5d0;
+    --van-text-on-dark:        #fff8e8;
+    /* Fixed colors */
+    --body-text:      #2B2B2B;
+    --subtle-text:    #666666;
+    --page-bg-top:    #fffef5;
+    --page-bg-bottom: #fef9f2;
+  }
+
+  /* ── Theme: மயில் நிறம் (Peacock) ──────────────────────────── */
+  [data-theme="peacock"] {
+    --van-primary:  #00A896;
+    --van-deep:     #006B5E;
+    --van-dark:     #007F72;
+    --van-gold:     #C8A020;
+    --van-deepest:  #003830;
+    --van-deeper:   #004840;
+  
+    --van-bg-light:            #e4f8f5;
+    --van-bg-gradient-start:   #d4f0eb;
+    --van-bg-gradient-end:     #b8e8e0;
+    --van-text-on-dark:        #f0fff8;
+    --page-bg-top:             #f5fffe;
+    --page-bg-bottom:          #edfaf8;
+  }
+
+  /* ── Theme: ஆழிநீலம் (Royal Blue) ──────────────────────────── */
+  [data-theme="blue"] {
+    --van-primary:  #1A6BB5;
+    --van-deep:     #0D4A80;
+    --van-dark:     #1A5E9A;
+    --van-gold:     #D4AF37;
+    --van-deepest:  #071A30;
+    --van-deeper:   #0C2545;
+  
+    --van-bg-light:            #e8f0fb;
+    --van-bg-gradient-start:   #dce8f8;
+    --van-bg-gradient-end:     #c8d8f4;
+    --van-text-on-dark:        #f0f6ff;
+    --page-bg-top:             #f8faff;
+    --page-bg-bottom:          #f2f6fe;
+  }
+
+  /* ── Theme: மண்ணிறம் (Terracotta) ──────────────────────────── */
+  [data-theme="terracotta"] {
+    --van-primary:  #B85C38;
+    --van-deep:     #7A3218;
+    --van-dark:     #A04830;
+    --van-gold:     #C87941;
+    --van-deepest:  #3A1208;
+    --van-deeper:   #4A1A0A;
+  
+    --van-bg-light:            #fce8e0;
+    --van-bg-gradient-start:   #f8ddd2;
+    --van-bg-gradient-end:     #f0c8b8;
+    --van-text-on-dark:        #fff3ee;
+    --page-bg-top:             #fffaf8;
+    --page-bg-bottom:          #fff4f0;
+  }
+
+  /* ── Theme: குங்குமம் (Saffron) ─────────────────────────────── */
+  [data-theme="saffron"] {
+    --van-primary:  #D4851A;
+    --van-deep:     #8B5500;
+    --van-dark:     #B8720F;
+    --van-gold:     #E8B94B;
+    --van-deepest:  #3B2000;
+    --van-deeper:   #4D2B00;
+  
+    --van-bg-light:            #fef3d8;
+    --van-bg-gradient-start:   #fdecc4;
+    --van-bg-gradient-end:     #fbe2a0;
+    --van-text-on-dark:        #fff8e8;
+    --page-bg-top:             #fffdf5;
+    --page-bg-bottom:          #fff9e8;
+  }
+
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans Tamil', serif;
+      background: #c8bfb0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .cover {
+      width: 210mm;
+      height: 297mm;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 4px 8px rgba(0,0,0,0.15),
+        0 12px 30px rgba(0,0,0,0.28),
+        0 30px 70px rgba(0,0,0,0.22);
+    }
+
+    .cover-image {
+      position: absolute;
+      inset: 0; width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 38%;
+      z-index: 1;
+    }
+
+    .glossy {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+        rgba(255,255,255,0.38) 0%,
+        rgba(255,255,255,0.10) 25%,
+        transparent 50%,
+        rgba(255,255,255,0.05) 75%,
+        rgba(255,255,255,0.18) 100%
+      );
+      pointer-events: none;
+      z-index: 50;
+      mix-blend-mode: overlay;
+      border-radius: 3px;
+    }
+
+    .border-frame {
+      position: absolute; inset: 4.5mm;
+      border: 0.6pt solid color-mix(in srgb, var(--van-gold) 42%, transparent);
+      pointer-events: none; z-index: 55;
+    }
+
+    .corner {
+      position: absolute; font-size: 11pt;
+      color: var(--van-gold); opacity: 0.55;
+      z-index: 56; pointer-events: none; line-height: 1;
+    }
+
+    .c-tl { top: 6mm;    left: 7mm;   }
+
+    .c-tr { top: 6mm;    right: 7mm;  }
+
+    .c-bl { bottom: 6mm; left: 7mm;   }
+
+    .c-br { bottom: 6mm; right: 7mm;  }
+
+    .masthead {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 26%;
+      background: linear-gradient(180deg,
+        color-mix(in srgb, var(--van-deepest) 78%, transparent) 0%,
+        color-mix(in srgb, var(--van-deeper)  74%, transparent) 60%,
+        color-mix(in srgb, var(--van-deeper)  45%, transparent) 82%,
+        transparent 100%);
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6mm 12mm 5mm;
+    }
+
+    .org-name {
+      font-size: 8pt; font-weight: 600;
+      color: var(--van-gold); letter-spacing: 2px;
+      opacity: 0.85; margin-bottom: 0.5mm;
+    }
+
+    .org-vazangum {
+      font-size: 8pt; font-weight: 600;
+      color: color-mix(in srgb, var(--van-gold) 65%, transparent);
+      letter-spacing: 2px; margin-bottom: 3mm;
+    }
+
+    .gold-rule {
+      width: 35mm; height: 0.75px;
+      background: linear-gradient(90deg, transparent, var(--van-gold), transparent);
+      opacity: 0.50; margin-bottom: 3.5mm;
+    }
+
+    .mag-name-main {
+      font-size: 36pt; font-weight: 900;
+      color: var(--van-text-on-dark);
+      line-height: 1.0; letter-spacing: 1px;
+      text-align: center;
+      text-shadow:
+        0 1px 3px rgba(0,0,0,0.50),
+        0 0 30px color-mix(in srgb, var(--van-gold) 18%, transparent);
+      margin-bottom: 2mm;
+    }
+
+    .tagline {
+      font-size: 8pt; font-weight: 400;
+      color: color-mix(in srgb, var(--van-gold) 72%, transparent);
+      letter-spacing: 0.3px;
+      text-align: center;
+      margin-bottom: 3.5mm;
+    }
+
+    .issue-row {
+      display: flex; align-items: center; gap: 2.5mm;
+    }
+
+    .pill {
+      border: 0.85pt solid rgba(255,248,232,0.45);
+      border-radius: 20px;
+      padding: 1.2mm 4.5mm;
+      font-size: 8pt; font-weight: 600;
+      color: var(--van-text-on-dark);
+      background: rgba(255,248,232,0.08);
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+
+    .pill-special {
+      border-color: rgba(255,248,232,0.60);
+      color: var(--van-text-on-dark);
+      background: rgba(255,248,232,0.12);
+      font-weight: 700;
+    }
+    /* ── Cover logo row ── */
+    /* ── Cover org-row: logos flanking the org-name text ── */
+    .cover-org-text .org-vazangum { margin-bottom: 0; }  /* no gap inside aligned row */
+    .cover-org-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4mm;
+      width: 100%;
+      margin-bottom: 2mm;
+    }
+    .cover-org-text {
+      text-align: center;
+      flex: 0 0 auto;
+    }
+    .cover-logo-left, .cover-logo-right {
+      height:     14mm;
+      max-height: 14mm;
+      width:      auto;
+      max-width:  40mm;
+      flex-shrink: 0;
+      align-self: center;
+      object-fit: contain;
+      opacity: 0.92;
+    }
+
+
+
+    .quote-float {
+      position: absolute; top: 25%;
+      left: 0; right: 0;
+      display: flex; flex-direction: column;
+      align-items: center; padding: 0 18mm;
+      z-index: 25;
+    }
+
+    .quote-text {
+      font-size: 10pt; font-style: italic; font-weight: 600;
+      color: rgba(255,255,255,0.92); text-align: center;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.75), 0 2px 10px rgba(0,0,0,0.55);
+      line-height: 1.5;
+    }
+
+    .quote-attr {
+      font-size: 9pt; font-weight: 700;
+      color: var(--van-gold); margin-top: 2mm;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.80), 0 0 8px rgba(0,0,0,0.60);
+      letter-spacing: 0.5px;
+    }
+
+    .bottom-band {
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 29%;
+      background: linear-gradient(0deg,
+        color-mix(in srgb, var(--van-deepest) 78%, transparent) 0%,
+        color-mix(in srgb, var(--van-deepest) 70%, transparent) 50%,
+        transparent 100%);
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 10mm 6mm; z-index: 30;
+    }
+
+    .teasers-label {
+      font-size: 7pt; font-weight: 700;
+      color: var(--van-gold); letter-spacing: 3.5px;
+      margin-bottom: 2.5mm; opacity: 0.85;
+    }
+
+    .teasers {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.8mm 8mm; margin-bottom: 4.5mm;
+    }
+
+    .teaser-item {
+      display: flex; align-items: baseline; gap: 2mm;
+    }
+
+    .teaser-dot {
+      color: var(--van-primary); font-size: 6.5pt;
+      flex-shrink: 0; font-weight: 900;
+    }
+
+    .teaser-text {
+      font-size: 8.5pt; font-weight: 600;
+      color: rgba(255,255,255,0.85); line-height: 1.35;
+    }
+
+    .publisher-row {
+      display: flex; align-items: center;
+      justify-content: center; gap: 4mm;
+      padding-top: 3mm;
+      border-top: 0.5pt solid color-mix(in srgb, var(--van-gold) 28%, transparent);
+    }
+
+    .publisher-name {
+      font-size: 7.5pt; font-weight: 700;
+      color: rgba(255,255,255,0.65);
+    }
+
+    .van-seal {
+      width: 9mm; height: 9mm;
+      object-fit: contain; opacity: 0.78; flex-shrink: 0;
+    }
+
+    .publisher-url {
+      font-size: 7pt; color: rgba(255,255,255,0.38);
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, var(--page-bg-top) 0%, var(--page-bg-bottom) 100%);
+      position: relative;
+      border-radius: 3px;
+      box-shadow:
+        0 2px 4px rgba(0,0,0,0.06),
+        0 8px 20px rgba(0,0,0,0.13),
+        0 20px 50px rgba(0,0,0,0.10);
+      margin-bottom: 30px;
+    }
+
+    .corner-tl, .corner-br {
+      position: absolute; font-size: 13pt;
+      color: var(--van-brown); opacity: 0.28;
+      z-index: 5; pointer-events: none;
+    }
+
+    .corner-tl { top: 3.5mm; left: 4.5mm; }
+
+    .corner-br { bottom: 3.5mm; right: 4.5mm; }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4mm 14mm 3.5mm;
+      position: relative;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 14mm; right: 14mm;
+      height: 1.5px;
+      background: linear-gradient(90deg,
+        transparent, var(--van-primary) 20%, var(--van-gold) 50%, var(--van-primary) 80%, transparent);
+    }
+
+    .page-header .section-name,
+    .page-header .mag-name {
+      font-size: 9pt;
+      font-weight: 600;
+      color: var(--van-deep);
+      letter-spacing: 0.4px;
+    }
+
+    /* ── Header logos: VAN logo left, magazine logo right ── */
+    .header-logo-left,
+    .header-logo-right {
+      height:     6.5mm;
+      max-height: 6.5mm;
+      width:      auto;
+      max-width:  22mm;        /* prevents very wide logos breaking layout */
+      flex-shrink: 0;
+      align-self: center;
+      object-fit: contain;
+    }
+
+    .content-area {
+      padding: 5mm 14mm 3mm;
+      position: relative;
+      z-index: 10;
+      flex: 1;
+    }
+
+    .toc-header {
+      text-align: center;
+      margin-bottom: 5mm;
+    }
+
+    .toc-title {
+      font-size: 24pt;
+      font-weight: 900;
+      color: var(--van-dark);
+      line-height: 1.1;
+      margin-bottom: 2mm;
+    }
+
+    .toc-subtitle {
+      font-size: 9pt;
+      color: var(--van-gold);
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin-bottom: 3mm;
+    }
+
+    .toc-underline {
+      width: 55mm;
+      height: 2px;
+      margin: 0 auto 2.5mm;
+      background: linear-gradient(90deg,
+        transparent, var(--van-primary) 30%, var(--van-gold) 50%, var(--van-primary) 70%, transparent);
+    }
+
+    .issue-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3mm;
+      background: linear-gradient(135deg, var(--van-deepest) 0%, var(--van-deeper) 100%);
+      border-radius: 3px;
+      padding: 3mm 8mm;
+      margin-bottom: 5mm;
+    }
+
+    .issue-banner .mag-logo-sm {
+      width: 10mm; height: 10mm;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      opacity: 0.90;
+    }
+
+    .issue-banner .banner-text {
+      text-align: center;
+    }
+
+    .issue-banner .banner-title {
+      font-size: 12pt; font-weight: 900;
+      color: var(--van-text-on-dark); line-height: 1.1;
+    }
+
+    .issue-banner .banner-sub {
+      font-size: 7.5pt; font-weight: 600;
+      color: color-mix(in srgb, var(--van-gold) 80%, transparent);
+      letter-spacing: 0.5px;
+    }
+
+    .toc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .toc-row {
+      display: flex;
+      align-items: center;
+      padding: 2.8mm 0;
+      border-bottom: 0.5pt solid color-mix(in srgb, var(--van-primary) 12%, transparent);
+      position: relative;
+    }
+
+    .toc-row.row-alt {
+      background: color-mix(in srgb, var(--van-gold) 3%, transparent);
+    }
+
+    .toc-accent {
+      width: 3pt;
+      height: 100%;
+      min-height: 10mm;
+      border-radius: 2px;
+      flex-shrink: 0;
+      margin-right: 3.5mm;
+      align-self: stretch;
+    }
+
+    .toc-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .toc-section {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #2B2B2B;
+      line-height: 1.3;
+    }
+
+    .toc-desc {
+      font-size: 8.5pt;
+      font-weight: 400;
+      color: #888;
+      line-height: 1.3;
+      margin-top: 0.5mm;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toc-dots {
+      flex: 1;
+      min-width: 5mm;
+      max-width: 20mm;
+      height: 1pt;
+      border-bottom: 1pt dotted color-mix(in srgb, var(--van-primary) 35%, transparent);
+      margin: 0 3mm;
+      align-self: center;
+      margin-bottom: 4mm;
+    }
+
+    .toc-page {
+      font-size: 12pt;
+      font-weight: 700;
+      flex-shrink: 0;
+      width: 8mm;
+      text-align: right;
+      line-height: 1;
+    }
+
+    .toc-quote {
+      text-align: center;
+      margin-top: 5mm;
+      padding: 3.5mm 10mm;
+      border-top: 0.5pt solid color-mix(in srgb, var(--van-gold) 25%, transparent);
+      border-bottom: 0.5pt solid color-mix(in srgb, var(--van-gold) 25%, transparent);
+    }
+
+    .toc-quote .q-text {
+      font-size: 10pt;
+      font-style: italic;
+      font-weight: 600;
+      color: #2B2B2B;
+      line-height: 1.6;
+    }
+
+    .toc-quote .q-text::before {
+      content: '❝ ';
+      color: var(--van-gold);
+      font-style: normal;
+      font-size: 13pt;
+      vertical-align: -1px;
+    }
+
+    .toc-quote .q-attr {
+      font-size: 8.5pt;
+      color: var(--van-dark);
+      font-weight: 600;
+      margin-top: 1.5mm;
+    }
+
+    .page-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3mm 14mm 4.5mm;
+      margin-top: auto;
+      position: relative;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .page-footer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 14mm; right: 14mm;
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent, var(--van-primary) 20%, var(--van-gold) 50%, var(--van-primary) 80%, transparent);
+    }
+
+    .page-footer .issue-info { font-size: 8pt; color: #999; }
+
+    .page-footer .page-number {
+      font-size: 11pt; font-weight: 700; color: var(--van-deep);
+    }
+
+    .page-footer .van-logo-footer {
+      width: 9mm; height: 9mm;
+      object-fit: contain; opacity: 0.70;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3mm;
+      padding-bottom: 2mm;
+    }
+
+    .section-header .topic-title {
+      font-size: 26pt;
+      font-weight: 900;
+      color: var(--van-deep);
+      letter-spacing: 0.5px;
+      line-height: 1.2;
+      margin-bottom: 2.5mm;
+    }
+    /* Optional second line under title (e.g. பகுதி 1) — smaller, not shouting */
+    .section-header .topic-subtitle {
+      font-size: 12pt;
+      font-weight: 600;
+      color: var(--van-deep);
+      opacity: 0.85;
+      letter-spacing: 0.4px;
+      line-height: 1.35;
+      margin: -1mm 0 2.5mm 0;
+    }
+
+    .section-header .section-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 2.5mm;
+    }
+
+    .section-header .lotus-icon {
+      font-size: 11pt;
+      color: var(--van-gold);
+      opacity: 0.85;
+      font-style: normal;
+    }
+
+    .section-header .section-label {
+      font-size: 11pt;
+      font-weight: 600;
+      color: var(--van-gold);
+    }
+
+    .section-header .title-underline {
+      width: 65mm;
+      margin: 0 auto 3mm;
+      height: 2px;
+      background: linear-gradient(90deg,
+        transparent, var(--van-primary) 30%, var(--van-gold) 50%, var(--van-primary) 70%, transparent);
+    }
+
+    .section-divider {
+      text-align: center;
+      font-size: 10pt;
+      color: var(--van-gold);
+      opacity: 0.80;
+      margin-bottom: 3mm;
+      letter-spacing: 8px;
+    }
+
+    .body-text {
+      font-size: 12pt;
+      color: #2B2B2B;
+      line-height: 1.65;
+      text-align: justify;
+    }
+
+    .body-text p { margin-bottom: 3.5mm; }
+
+    .salutation {
+      font-size: 12pt;
+      font-weight: 700;
+      color: #2B2B2B;
+      margin-bottom: 1.5mm;
+      line-height: 1.5;
+    }
+
+    .sal-initial {
+      font-size: 15pt;
+      font-weight: 700;
+      color: var(--van-dark);
+      line-height: 1;
+    }
+
+    .first-para { text-indent: 5mm; }
+
+    .subhead {
+      font-size: 12.5pt;
+      font-weight: 700;
+      color: var(--van-deep);
+      margin: 4mm 0 2mm;
+      padding-left: 3.5mm;
+      border-left: 3pt solid var(--van-primary);
+      line-height: 1.4;
+      clear: both;
+    }
+
+    /* Poem / kural block: centre the unit on the page, but keep every
+       verse line left-aligned to the same start (do NOT centre each line).
+       Each .verse-line is a block so lines share one left edge. */
+    .slim-quote {
+      display: flex;
+      justify-content: center;   /* centres the poem unit on the page */
+      text-align: left;          /* do not centre individual lines */
+      margin: 6mm 10mm;
+      padding: 5mm 6mm;
+      border-top: 1.5pt solid color-mix(in srgb, var(--van-gold) 65%, transparent);
+      border-bottom: 1.5pt solid color-mix(in srgb, var(--van-gold) 65%, transparent);
+      background: color-mix(in srgb, var(--van-gold) 5%, transparent);
+      border-radius: 2px;
+    }
+
+    .slim-quote .quote-text {
+      display: inline-block;
+      text-align: left;
+      max-width: 100%;
+      font-size: 14pt;
+      font-style: italic;
+      font-weight: 600;
+      color: var(--van-deep);
+      line-height: 1.75;
+      text-shadow: none;
+      word-spacing: normal;
+      letter-spacing: normal;
+      overflow-wrap: normal;
+      word-break: normal;
+      hyphens: none;
+    }
+
+    .slim-quote .verse-line {
+      display: block;
+      text-align: left;
+      text-align-last: left;
+      white-space: normal;
+    }
+    .slim-quote .quote-text::before {
+      content: '❝ ';
+      color: var(--van-gold);
+      font-style: normal;
+      font-size: 16pt;
+      vertical-align: -3px;
+    }
+    .slim-quote .quote-text::after {
+      content: ' ❞';
+      color: var(--van-gold);
+      font-style: normal;
+      font-size: 16pt;
+      vertical-align: -3px;
+    }
+
+    /* Poem / kural citation — end of last verse line, smaller than verse */
+    /* e.g.  …உயிரினும் ஓம்பப் படும்.  — திருக்குறள்   (9pt on line 2)   */
+    .slim-quote .quote-cite,
+    .slim-quote .quote-source {
+      display: inline;
+      font-size: 9pt;
+      font-style: normal;
+      font-weight: 600;
+      color: var(--van-deep);
+      opacity: 0.88;
+      letter-spacing: 0.15px;
+      white-space: nowrap;
+      margin-left: 0.35em;
+      vertical-align: baseline;
+    }
+
+    /* ── Auto-compact when two quotes are adjacent ── */
+    .slim-quote + .slim-quote {
+      margin-top: 2mm;           /* reduce gap between consecutive quotes */
+      padding-top: 3mm;
+      padding-bottom: 3mm;
+    }
+    .slim-quote + .slim-quote .quote-text { font-size: 12.5pt; }
+    .slim-quote + .slim-quote .quote-text::before,
+    .slim-quote + .slim-quote .quote-text::after { font-size: 14pt; }
+
+    /* ── .slim-quote-compact: inline ornamental quote, minimal footprint ── */
+    /* Usage: <div class="slim-quote slim-quote-compact"> ... </div>          */
+    .slim-quote-compact {
+      margin: 3mm 8mm;
+      padding: 3mm 5mm;
+      font-size: 12pt;
+    }
+    .slim-quote-compact .quote-text { font-size: 12pt; line-height: 1.6; }
+    .slim-quote-compact .quote-text::before,
+    .slim-quote-compact .quote-text::after { font-size: 13pt; }
+    .slim-quote-compact .quote-cite,
+    .slim-quote-compact .quote-source { font-size: 8pt; }
+
+    .highlights-box {
+      background: var(--van-bg-light);
+      border-left: 4pt solid var(--van-dark);
+      border-radius: 0 3px 3px 0;
+      padding: 3.5mm 6mm 3.5mm 5mm;
+      margin: 4mm 0;
+      position: relative;
+    }
+
+    .highlights-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1.5px;
+      background: linear-gradient(90deg, var(--van-dark), var(--van-primary) 60%, transparent);
+    }
+
+    .highlights-box .box-title {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: var(--van-deep);
+      margin-bottom: 2mm;
+      padding-bottom: 1.5mm;
+      border-bottom: 0.5pt solid rgba(107,168,47,0.25);
+    }
+
+    .highlights-box ul { list-style: none; padding: 0; }
+
+    .highlights-box ul li {
+      font-size: 11pt;
+      color: #2B2B2B;
+      padding: 1mm 0 1mm 5mm;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .highlights-box ul li::before {
+      content: '❀';
+      position: absolute;
+      left: 0; font-size: 8.5pt; top: 1.5mm;
+    }
+
+    .closing {
+      text-align: center;
+      margin-top: 4mm;          
+      padding-top: 3mm;
+      border-top: 0.5pt solid color-mix(in srgb, var(--van-gold) 35%, transparent);
+    }
+
+    .closing p {
+      font-size: 12pt;
+      color: #2B2B2B;
+      line-height: 1.65;
+      margin-bottom: 3.5mm;
+      font-style: normal;
+      text-align: center;
+    }
+
+    .closing .sign-off {
+      font-size: 11pt;
+      font-weight: 700;
+      color: var(--van-deep);
+      margin-bottom: 0.5mm;
+      font-style: normal;
+    }
+
+    .closing .sign-name {
+      font-size: 11.5pt;
+      font-weight: 700;
+      color: var(--van-deep);
+      margin-bottom: 0.5mm;
+    }
+
+    .closing .sign-title {
+      font-size: 10pt;
+      color: #666;
+      margin-bottom: 0.5mm;
+    }
+
+    .closing .org-name { font-size: 10.5pt; color: #666; }
+
+    .closing .lotus-end {
+      font-size: 18pt;
+      color: var(--van-gold);
+      margin-top: 6mm;
+      margin-bottom: 2mm;
+      opacity: 0.80;
+      text-align: center;
+      letter-spacing: 6px;
+      display: block;
+    }
+
+    .comparison-table {
+      width: 100%;
+      margin: 4mm 0;
+      border-collapse: collapse;
+    }
+
+    .comparison-table th {
+      background: var(--van-dark);
+      color: white;
+      font-size: 11pt;
+      font-weight: 700;
+      padding: 2mm 3mm;
+      text-align: center;
+    }
+
+    .comparison-table td {
+      font-size: 10.5pt;
+      padding: 2mm 3mm;
+      border-bottom: 0.5pt solid #ddd;
+      vertical-align: top;
+    }
+
+    .comparison-table tr:nth-child(even) td {
+      background: #f9f9f5;
+    }
+
+    .numbered-list {
+      margin: 3mm 0;
+      padding-left: 6mm;
+    }
+
+    .numbered-list li {
+      font-size: 11pt;
+      margin-bottom: 2mm;
+      line-height: 1.5;
+    }
+
+    .cover-section {
+      background: #6a6058;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 0;
+    }
+
+    @media print {
+  /* v4.3 fix: let source flexbox layout control height — no max-height override */
+  .page { overflow: hidden !important; }
+  /* content-area fills space between header and footer via flex:1 — no clip needed */
+  .content-area { overflow: hidden !important; }
+  /* footer stays at bottom via margin-top:auto — no position:absolute needed */
+
+      /* ── Root reset ── */
+      html {
+        width: 210mm;
+      }
+      body {
+        background:   none    !important;
+        padding:      0       !important;
+        margin:       0       !important;
+        display:      block   !important;   /* override screen flex layout */
+        width:        210mm   !important;
+      }
+      /* ── Each page = exactly one A4 sheet ── */
+      .cover, .page {
+        width:              210mm   !important;
+        height:             297mm   !important;   /* exact — not min-height */
+        min-height:         unset   !important;
+        margin:             0       !important;
+        box-shadow:         none    !important;
+        border-radius:      0       !important;
+        page-break-after:   always  !important;
+        break-after:        page    !important;
+        page-break-inside:  avoid   !important;
+        break-inside:       avoid   !important;
+        overflow:           hidden  !important;
+      }
+      .glossy { display: none !important; }
+      /* ── Prevent content-area from pushing footer below page boundary ── */
+      .content-area {
+        overflow:   hidden  !important;
+        min-height: unset   !important;
+      }
+      /* ── Cover section: strip screen-only padding/bg to prevent phantom blank page ── */
+      .cover-section {
+        padding:    0       !important;
+        background: none    !important;
+        display:    block   !important;
+        width:      210mm   !important;
+      }
+      /* ── Header logos: keep consistent size in print ── */
+      .header-logo-left, .header-logo-right {
+        height: 6mm !important;
+        width: auto !important;
+      }
+    }
+    @page { size: A4 portrait; margin: 0; }
+
+    .byline {
+      text-align: center;
+      font-size: 9pt;
+      color: var(--van-dark);
+      font-style: italic;
+      font-weight: 600;
+      margin-top: 1mm;
+      margin-bottom: 3mm;
+      letter-spacing: 0.3px;
+    }
+
+    .img-placeholder {
+      width: 100%;
+      min-height: 45mm;
+      background: linear-gradient(135deg, var(--van-bg-gradient-start) 0%, var(--van-bg-gradient-end) 100%);
+      border: 1pt dashed color-mix(in srgb, var(--van-primary) 50%, transparent);
+      border-radius: 3px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 4mm 0;
+      color: var(--van-dark);
+      font-size: 9pt;
+      font-style: italic;
+      gap: 2mm;
+    }
+    .img-placeholder .img-icon { font-size: 20pt; opacity: 0.45; }
+    .img-placeholder .img-caption {
+      font-size: 9pt;
+      color: var(--subtle-text);
+      text-align: center;
+      margin-top: 2mm;
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    /* .continuation-banner is now hidden — cont info moved to page-header */
+    .continuation-banner { display: none !important; }
+    .cont-section-name, .cont-page-info { display: none !important; }
+
+    /* ── Continuation tag in page-header (replaces inline banner) ── */
+    .header-cont-tag {
+      font-size: 7.5pt;
+      font-weight: 700;
+      color: var(--van-gold);
+      letter-spacing: 0.3px;
+      opacity: 0.92;
+      padding: 0.5mm 2.5mm;
+      border: 0.75px solid color-mix(in srgb, var(--van-gold) 45%, transparent);
+      border-radius: 3px;
+      white-space: nowrap;
+      margin-left: 2mm;
+    }
+
+    /* ─────────────────────────────────────────────────────────────
+       RESPONSIVE — screen only (print is handled by @media print)
+    ───────────────────────────────────────────────────────────── */
+
+    /* Block all horizontal overflow at root */
+    html, body { overflow-x: hidden; max-width: 100%; }
+
+    /* ── Tablet / small desktop (≤ 880px) ─────────────────────────
+       Pages shrink proportionally — A4 look on wider screens        */
+    @media screen and (max-width: 880px) {
+      .cover {
+        width: min(210mm, 100%);
+        height: auto;
+        aspect-ratio: 210 / 297;
+        overflow: hidden;
+      }
+      .page {
+        width: min(210mm, 100%);
+        min-height: auto;
+      }
+    }
+
+    /* ── Mobile (≤ 600px) ──────────────────────────────────────────
+       True mobile-web layout:
+       · Cover  = full-width proportional hero
+       · Pages  = continuous-scroll sections (no A4 box model)
+       · Zero horizontal overflow                                    */
+    @media screen and (max-width: 600px) {
+
+      /* Edge-to-edge — no body padding on mobile */
+      body           { padding: 0; }
+      .cover-section { padding: 0; overflow: hidden; }
+
+      /* ── COVER ── */
+      /* calc() gives explicit proportional height — more reliable than
+         aspect-ratio with overflow:hidden + absolute children on iOS  */
+      .cover {
+        width: 100%;
+        height: calc(100vw * 297 / 210);
+        border-radius: 0;
+        margin-bottom: 0;
+        overflow: hidden;
+      }
+
+      /* Masthead grows to content height instead of fixed 26% */
+      .masthead { height: auto; padding: 4mm 6mm 3mm; }
+
+      /* Remove decorative spacers — reclaim vertical space */
+      .org-vazangum,
+      .gold-rule     { display: none; }
+
+      .org-name      { margin-bottom: 1mm; letter-spacing: 1px; }
+      .tagline       { margin-bottom: 2mm; }
+
+      /* Title fits in 1–2 lines instead of 3 */
+      .mag-name-main { font-size: clamp(16pt, 5.5vw, 36pt); margin-bottom: 1mm; }
+
+      /* Pills wrap to next line if too wide — no overflow */
+      .issue-row     { flex-wrap: wrap; justify-content: center; gap: 1.5mm; }
+      .pill,
+      .pill-special  { white-space: normal; text-align: center; }
+
+      /* Push floating quote below the taller auto-height masthead */
+      .quote-float             { top: 30%; padding: 0 8mm; }
+      .quote-float .quote-text { font-size: 9pt; }
+      .bottom-band             { padding: 0 5mm 4mm; }
+
+      /* ── INTERIOR PAGES ── */
+      /* Drop the A4 box model — pages become continuous web sections */
+      .page {
+        width: 100%;
+        min-height: unset;
+        border-radius: 0;
+        box-shadow: none;
+        margin-bottom: 0;
+      }
+
+      /* Subtle green rule between sections instead of box shadows */
+      .page + .page { border-top: 3px solid color-mix(in srgb, var(--van-primary) 18%, transparent); }
+
+      /* Page chrome: web-appropriate tight padding */
+      .page-header         { padding: 3mm 4mm; }
+      .page-header::after  { left: 4mm; right: 4mm; }
+      .content-area        { padding: 4mm 4mm 3mm; }
+      .page-footer         { padding: 3mm 4mm 4mm; }
+      .page-footer::before { left: 4mm; right: 4mm; }
+
+      /* Scale display fonts */
+      .section-header .topic-title { font-size: clamp(14pt, 5.5vw, 26pt); }
+      .toc-title                   { font-size: clamp(14pt, 6vw, 24pt); }
+
+      /* Decorative elements: fit narrower content width */
+      .slim-quote                      { margin-left: 4mm; margin-right: 4mm; }
+      .section-header .title-underline { width: 80%; }
+      .toc-underline                   { width: 75%; }
+
+      /* Cover teasers: single column */
+      .teasers  { grid-template-columns: 1fr; gap: 1.5mm; }
+
+      /* TOC: descriptions wrap naturally */
+      .toc-desc { white-space: normal; }
+    }
+  
+
+  /* ── Theme Picker UI (screen only) ──────────────────────────── */
+  #theme-picker {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 9999;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 28px rgba(0,0,0,0.18);
+    padding: 14px 16px;
+    font-family: 'Noto Sans Tamil', sans-serif;
+    min-width: 176px;
+    border: 1.5px solid #e8e0d0;
+  }
+  .tp-label {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #555;
+    letter-spacing: 0.4px;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+  }
+  .tp-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .tp-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1.5px solid #e0e0e0;
+    background: #fafafa;
+    cursor: pointer;
+    font-size: 10pt;
+    font-family: 'Noto Sans Tamil', sans-serif;
+    color: #333;
+    transition: background 0.15s, border-color 0.15s;
+    text-align: left;
+  }
+  .tp-btn:hover {
+    background: #f0f0f0;
+    border-color: #bbb;
+  }
+  .tp-btn.active {
+    border-color: var(--van-primary);
+    background: rgba(141,198,63,0.08);
+    font-weight: 600;
+  }
+  [data-theme="peacock"]    .tp-btn.active { background: rgba(0,168,150,0.08); }
+  [data-theme="blue"]       .tp-btn.active { background: rgba(26,107,181,0.08); }
+  [data-theme="terracotta"] .tp-btn.active { background: rgba(184,92,56,0.08); }
+  [data-theme="saffron"]    .tp-btn.active { background: rgba(212,133,26,0.08); }
+  .tp-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.12);
+    display: inline-block;
+  }
+  .tp-note {
+    font-size: 8.5pt;
+    color: #c0b8b0;
+    text-align: center;
+    margin-top: 10px;
+  }
+  @media print {
+  /* v4.3 fix: let source flexbox layout control height — no max-height override */
+  .page { overflow: hidden !important; }
+  /* content-area fills space between header and footer via flex:1 — no clip needed */
+  .content-area { overflow: hidden !important; }
+  /* footer stays at bottom via margin-top:auto — no position:absolute needed */
+
+    #theme-picker { display: none !important; }
+  }
+
+    /* ── 1. Author byline — pinned under section title on page 1 only ───── */
+    /* Lives outside .body-text so rebalance never moves it to continuations. */
+    .author-byline {
+      font-size: 11pt;
+      font-weight: 700;
+      color: var(--van-deep);
+      text-align: right;
+      margin: 0 0 3.5mm 0;
+      padding: 0 0 2mm 0;
+      border-top: none;
+      border-bottom: 0.75pt solid color-mix(in srgb, var(--van-primary) 35%, transparent);
+      letter-spacing: 0.3px;
+    }
+
+    /* ── 4. Lead paragraph — article entry point ──────────────────────────── */
+    .lead-para {
+      font-size: 13.5pt;
+      line-height: 1.75;
+      color: #1a1a1a;
+      font-weight: 500;
+      margin-bottom: 4mm;
+      margin-top: 1.5mm;
+    }
+
+  
+    /* ═══════════════════════════════════════════════════════════════
+       ARTICLE IMAGE COMPONENT — four placement modes
+       Usage: <figure class="article-figure img-right">
+                <img src="..." alt="[Tamil alt text]">
+                <figcaption class="img-caption">[Tamil caption]</figcaption>
+              </figure>
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* Base figure */
+    .article-figure {
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ── Mode 1: Float right — 62mm column, text wraps left ───── */
+    .img-right {
+      float: right;
+      width: 62mm;
+      margin: 1mm 0 5mm 6mm;
+      clear: right;
+    }
+
+    /* ── Mode 2: Float left — 62mm column, text wraps right ───── */
+    .img-left {
+      float: left;
+      width: 62mm;
+      margin: 1mm 6mm 5mm 0;
+      clear: left;
+    }
+
+    /* ── Mode 3: Full banner — 100% content width, no float ───── */
+    .img-banner {
+      display: block;
+      width: 100%;
+      margin: 5mm 0;
+      clear: both;
+    }
+
+    /* ── Mode 4: Half-width centered, no float ─────────────────────
+       Was 100mm with the standard gold-bordered frame — too dominant
+       for a single artifact/diagram photo and the border read as a
+       heavy box around it. Sized down and unframed to match the
+       quieter .img-portrait treatment. */
+    .img-half {
+      display: block;
+      width: 80mm;
+      margin: 4mm auto;
+      clear: both;
+    }
+    .img-half img {
+      border: none !important;
+      border-radius: 0 !important;
+    }
+
+    /* ── Mode 5: Small centered portrait — 45mm, no border ───────
+       For a single author/subject portrait at an article's top (before
+       the lead paragraph) — smaller and plainer than .img-half so it
+       reads as a quiet identity photo, not a framed illustration. */
+    .img-portrait {
+      display: block;
+      width: 45mm;
+      margin: 3mm auto 5mm;
+      clear: both;
+    }
+    .img-portrait img {
+      border: none !important;
+      border-radius: 0 !important;
+    }
+
+    /* Image itself: maintain aspect ratio, thin gold border */
+    .article-figure img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border: 0.5pt solid color-mix(in srgb, var(--van-gold) 40%, transparent);
+      border-radius: 2px;
+    }
+
+    /* figcaption inside article-figure uses .img-caption */
+    .article-figure .img-caption {
+      text-align: center;
+    }
+    .img-banner .img-caption,
+    .img-half .img-caption {
+      text-align: center;
+    }
+    .img-right .img-caption,
+    .img-left .img-caption {
+      text-align: left;
+      font-size: 8.5pt;
+    }
+
+    /* Clearfix — ensures text after a float starts below the image */
+    .body-text::after {
+      content: '';
+      display: table;
+      clear: both;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════
+       IMPRINT PAGE (Page 2) — title / publication details
+    ═══════════════════════════════════════════════════════════ */
+    .page-imprint {
+      display: flex;
+      flex-direction: column;
+    }
+    .imprint-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding: 8mm 20mm 4mm;
+      text-align: center;
+    }
+    .imprint-org-label {
+      font-size: 9pt;
+      color: var(--van-deep);
+      letter-spacing: 1px;
+      font-style: italic;
+      margin-bottom: 4mm;
+    }
+    .imprint-mag-name {
+      font-size: 28pt;
+      font-weight: 900;
+      color: var(--van-deep);
+      line-height: 1.1;
+      margin-bottom: 3mm;
+    }
+    .imprint-tagline {
+      font-size: 10pt;
+      color: var(--van-dark);
+      font-style: italic;
+      margin-bottom: 5mm;
+    }
+    .imprint-rule {
+      width: 55mm;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--van-gold), transparent);
+      margin: 4mm auto;
+    }
+    .imprint-logos {
+      display: flex;
+      gap: 14mm;
+      align-items: center;
+      justify-content: center;
+      margin: 5mm 0;
+    }
+    .imprint-logo {
+      height: 32mm;
+      width: auto;
+      max-width: 50mm;
+      object-fit: contain;
+    }
+    .imprint-details {
+      margin-top: 5mm;
+    }
+    .imprint-detail {
+      font-size: 12pt;
+      color: var(--van-deepest);
+      font-weight: 600;
+      line-height: 2.1;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       MASTHEAD / CREDITS PAGE (Page 3) — editorial team
+    ═══════════════════════════════════════════════════════════ */
+    /* Make the content-area a flex column so masthead-grid can stretch */
+    .page-masthead .content-area {
+      display: flex;
+      flex-direction: column;
+    }
+    /* ── Masthead/Credits grid — fills full content-area height ── */
+    .masthead-grid {
+      display: grid;
+      grid-template-columns: 46% 50%;
+      gap: 4%;
+      flex: 1;                 /* fills the flex content-area */
+      align-items: stretch;    /* both columns stretch to full height */
+    }
+
+    /* ── Left: green card fills full column height ── */
+    .masthead-card {
+      background: var(--van-deepest);
+      border-radius: 8px;
+      padding: 6mm 6mm 6mm;
+      color: white;
+      display: flex;
+      flex-direction: column;
+    }
+    .masthead-card-title {
+      font-size: 13pt;
+      font-weight: 800;
+      color: var(--van-gold);
+      text-align: center;
+      letter-spacing: 0.5px;
+      margin-bottom: 2mm;
+      flex-shrink: 0;
+    }
+    .masthead-card-divider {
+      height: 1px;
+      background: color-mix(in srgb, var(--van-gold) 45%, transparent);
+      margin: 3mm 0;
+      flex-shrink: 0;
+    }
+    /* Equal-weight role blocks — same rhythm for every name */
+    .masthead-roles {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      flex: 1 1 auto;
+      gap: 0;
+      min-height: 0;
+    }
+    .masthead-role-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2.5mm 0;
+    }
+    .masthead-role-label {
+      font-size: 8pt;
+      font-weight: 700;
+      color: var(--van-gold);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin: 0 0 1.2mm 0;
+      opacity: 0.9;
+    }
+    /* All primary names — identical size/weight/colour */
+    .masthead-name {
+      font-size: 13pt;
+      font-weight: 700;
+      color: var(--van-text-on-dark);
+      margin: 0 0 1mm 0;
+      line-height: 1.35;
+      letter-spacing: 0.2px;
+    }
+    .masthead-contact-heading {
+      font-size: 8pt;
+      font-weight: 700;
+      color: var(--van-gold);
+      letter-spacing: 1px;
+      margin-top: 2mm;
+      opacity: 0.85;
+      flex-shrink: 0;
+    }
+    /* Secondary lines under a name (title, address) — same for every role */
+    .masthead-contact-text {
+      font-size: 9pt;
+      font-weight: 500;
+      color: rgba(255,255,255,0.82);
+      margin: 0 0 0.4mm 0;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+    /* The channel URL is one address. The card is too narrow for 9pt,
+       and break-word was splitting it mid-name. Shrink only this line. */
+    .masthead-contact-text.masthead-url {
+      white-space: nowrap;
+      word-break: normal;
+      overflow-wrap: normal;
+      font-size: 7pt;
+      letter-spacing: 0;
+      line-height: 1.3;
+    }
+    .masthead-card-spacer {
+      display: none; /* equal role spacing replaces the old spacer */
+    }
+
+    /* ── Right: logos on top, editorial board fills space ── */
+    .masthead-board {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;  /* spread content top-to-bottom */
+      /* no height:100% needed — grid stretch gives us full height */
+    }
+    .masthead-board-logos {
+      display: flex;
+      gap: 8mm;
+      justify-content: center;
+      align-items: center;
+      padding: 4mm 0 2mm;
+      flex-shrink: 0;
+    }
+    .masthead-logo {
+      height: 32mm;
+      max-height: 32mm;
+      width: auto;
+      max-width: 50mm;
+      object-fit: contain;
+    }
+    .masthead-board-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    .masthead-board-title {
+      font-size: 13pt;
+      font-weight: 800;
+      color: var(--van-deep);
+      margin-bottom: 4mm;
+      text-align: center;
+      border-bottom: 2pt solid color-mix(in srgb, var(--van-gold) 60%, transparent);
+      padding-bottom: 2.5mm;
+      width: 100%;
+    }
+    /* Compiler names match left-card name weight (13pt / 700) */
+    .masthead-board-list {
+      font-size: 13pt;
+      font-weight: 700;
+      color: var(--van-deepest);
+      line-height: 2.15;
+      padding-left: 7mm;
+      list-style-type: decimal;
+      width: 100%;
+    }
+    .masthead-board-list li {
+      padding-left: 1mm;
+      margin: 1mm 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       COVER — issue badge (circular gold stamp bottom-right)
+    ═══════════════════════════════════════════════════════════ */
+    .cover-issue-badge {
+      position: absolute;
+      bottom: 9mm;
+      right: 11mm;
+      width: 20mm;
+      height: 20mm;
+      background: radial-gradient(circle at 40% 40%,
+        color-mix(in srgb, var(--van-gold) 100%, white) 0%,
+        var(--van-gold) 55%,
+        color-mix(in srgb, var(--van-gold) 80%, var(--van-deepest)) 100%);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5),
+                  0 0 0 1.5px color-mix(in srgb, var(--van-gold) 50%, white),
+                  0 0 0 3px color-mix(in srgb, var(--van-deepest) 70%, transparent);
+    }
+    .badge-label-top {
+      font-size: 5pt;
+      font-weight: 700;
+      color: var(--van-deepest);
+      letter-spacing: 0.5px;
+      line-height: 1;
+      opacity: 0.75;
+    }
+    .badge-num {
+      font-size: 18pt;
+      font-weight: 900;
+      color: var(--van-deepest);
+      line-height: 1.0;
+    }
+    .badge-label-bot {
+      font-size: 4.5pt;
+      font-weight: 700;
+      color: var(--van-deepest);
+      letter-spacing: 0.3px;
+      line-height: 1;
+      opacity: 0.75;
+    }
+
+    /* keep cover badge within page — position above bottom-band to avoid teaser overlap */
+  .cover { position: relative !important; overflow: hidden !important; }
+  .cover-issue-badge { right: 10mm !important; bottom: calc(29% + 6mm) !important; }
+  /* harmonise lead-para with body text */
+  .lead-para { font-size: 12.5pt !important; line-height: 1.65 !important; }
+  /* issue-banner text always readable on dark background */
+  .issue-badge, .issue-title, .issue-subtitle { color: #fff8e8 !important; }
+  /* larger logos on imprint (page 2) and masthead (page 3) */
+  .imprint-logo { height: 44mm !important; max-width: 65mm !important; }
+  .masthead-logo { height: 44mm !important; max-height: 44mm !important; max-width: 65mm !important; }
+  /* Fix word-spacing in justified Tamil text — prevent stretched inter-word gaps */
+  .body-text p { word-spacing: normal !important; letter-spacing: normal !important; overflow-wrap: anywhere !important; }
+
+  </style>
+
+<style id="fix-html-overrides">
+    /* Center the page number on the printable page — not between the two
+       sibling elements (issue-info + logo), which causes visual mis-centering. */
+    .page-footer { position: relative !important; }
+    .page-footer .page-number {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        margin: 0 !important;
+        z-index: 5 !important;
+    }
+    /* The logo on the right gets a tiny bottom offset so it sits on the same
+       baseline as the issue-info after we absolute-position the number. */
+    .page-footer .van-logo-footer { flex-shrink: 0; }
+
+    /* ── Body text — reduce to industry-standard 11pt with tighter line-height.
+       Original 12pt + 1.65 LH felt large; magazines typically use 10-11pt for
+       print body text. This also packs ~15% more content per page,
+       eliminating much of the trailing empty space. */
+    .body-text {
+        font-size: 11pt !important;
+        line-height: 1.55 !important;
+    }
+    .body-text p {
+        margin-bottom: 2.5mm !important;
+    }
+    .salutation {
+        font-size: 11pt !important;
+        line-height: 1.4 !important;
+    }
+    /* Subheads and box titles step DOWN proportionally */
+    .subhead {
+        font-size: 12pt !important;
+    }
+    .highlights-box {
+        font-size: 11pt !important;
+    }
+    .highlights-box .box-title {
+        font-size: 11.5pt !important;
+    }
+
+    /* ── Missing corner decorations: add top-right + bottom-left so all
+       four corners carry the kolam motif (matches cover page). */
+    .corner-tr, .corner-bl {
+        position: absolute !important;
+        font-size: 13pt !important;
+        color: var(--van-brown, #8b6f47) !important;
+        opacity: 0.09 !important;
+        z-index: 1 !important;
+        pointer-events: none !important;
+    }
+    .corner-tr { top: 3.5mm !important; right: 4.5mm !important; }
+    .corner-bl { bottom: 3.5mm !important; left: 4.5mm !important; }
+
+    /* ── Slim-quote — REDESIGNED for elegant magazine look.
+       Removed restrictive top/bottom gold lines (felt like a frame).
+       Added subtle LEFT vertical accent bar (typographic anchor without
+       enclosure). Strip background tint for clean white. Better breathing
+       room via increased outer margin, tighter inner padding.
+       Captions/quotes now never overlap with floated images: clear:both.
+
+       Poem alignment: centre the quote *block* on the page, but every
+       verse line shares the same left edge as the first line
+       (.verse-line blocks + text-align:left). Do NOT centre / justify
+       each line (body-text justify must not stretch Tamil in poems). */
+    .slim-quote {
+        display: flex !important;
+        justify-content: center !important;  /* centres the poem unit */
+        margin: 6mm 14mm !important;
+        padding: 2mm 0 2mm 6mm !important;
+        border: none !important;
+        border-left: 2pt solid var(--van-gold, #D4AF37) !important;
+        border-radius: 0 !important;
+        background: none !important;
+        text-align: left !important;         /* never centre verse lines */
+        clear: both !important;              /* never overlap with floats */
+    }
+    .slim-quote .quote-text {
+        display: inline-block !important;
+        text-align: left !important;         /* all lines start at same point */
+        text-align-last: left !important;
+        max-width: 100% !important;
+        font-size: 11pt !important;
+        line-height: 1.55 !important;
+        font-style: italic !important;
+        color: var(--van-deep, #2d7a3e) !important;   /* theme green */
+        text-shadow: none !important;
+        word-spacing: normal !important;
+        letter-spacing: normal !important;
+        overflow-wrap: normal !important;
+        word-break: normal !important;
+        hyphens: none !important;
+    }
+    .slim-quote .verse-line {
+        display: block !important;
+        text-align: left !important;
+        text-align-last: left !important;
+        white-space: normal !important;
+    }
+    .slim-quote .quote-text::before,
+    .slim-quote .quote-text::after {
+        display: none !important;      /* drop the ❝ ❞ marks; left bar is anchor */
+    }
+    .slim-quote .quote-source {
+        font-size: 9pt !important;
+        font-style: normal !important;
+        color: #888 !important;
+        margin-top: 2mm !important;
+        letter-spacing: 0.2px !important;
+    }
+    .slim-quote + .slim-quote { margin-top: 3mm !important; }
+    .slim-quote + .slim-quote .quote-text { font-size: 10.5pt !important; }
+
+    /* ── Image captions — uniform centered alignment.
+       Pre-existing CSS in source had inconsistent alignment per float
+       type. Force ALL captions to center and italic for editorial look. */
+    .img-caption, figure figcaption {
+        text-align: center !important;
+        font-size: 8.5pt !important;
+        color: #666 !important;
+        font-style: italic !important;
+        margin-top: 1mm !important;
+        line-height: 1.3 !important;
+        display: block !important;
+    }
+    /* Floated figures: ensure caption width matches image width */
+    .img-right, .img-left {
+        text-align: center !important;
+    }
+    /* Prevent any quote/paragraph from overlapping a float image */
+    .slim-quote, .highlights-box {
+        clear: both !important;
+    }
+
+    /* ── UNIFORM FLOAT IMAGE SIZING — industry-standard magazine
+       thumbnail. All float images become 60×45mm landscape with
+       object-fit: cover (crops cleanly to fill). Caps the visual
+       footprint so:
+         (a) all float images look CONSISTENT in size
+         (b) body text wraps fully around image (no orphan empty
+             space below)
+         (c) captions are uniform width
+       Portrait sources (lotus flowers, etc.) get center-cropped to
+       a wider landscape view — same as how editorial magazines size
+       their photo thumbnails. */
+    .img-right, .img-left {
+        width: 60mm !important;
+        max-width: 60mm !important;
+    }
+    .img-right {
+        float: right !important;
+        margin: 1mm 0 3mm 6mm !important;
+        shape-margin: 4mm !important;
+    }
+    .img-left {
+        float: left !important;
+        margin: 1mm 6mm 3mm 0 !important;
+        shape-margin: 4mm !important;
+    }
+    .img-right img, .img-left img {
+        width: 60mm !important;
+        height: 45mm !important;
+        object-fit: cover !important;
+        object-position: center !important;
+        border-radius: 1mm !important;
+        display: block !important;
+        margin: 0 !important;
+    }
+
+    /* Banner & half-page images: not floated, keep at intended size
+       but bound height so they never dominate a page. */
+    .img-banner img {
+        max-height: 75mm !important;
+        object-fit: cover !important;
+    }
+    /* banner-full: full content width, height from the photo itself.
+       The 75mm cover crop above is for wide panoramas. A 4:3 frame
+       loses its top and bottom in that slot. */
+    .img-banner.img-banner-full img {
+        max-height: none !important;
+        height: auto !important;
+        object-fit: contain !important;
+    }
+    .img-half img {
+        max-height: 80mm !important;
+        object-fit: contain !important;
+    }
+
+    /* Subhead caption — when an explanatory line follows a subhead,
+       style it as an attached subtitle rather than a regular paragraph. */
+    .subhead-caption {
+        font-size: 10pt !important;
+        color: #666 !important;
+        font-style: italic !important;
+        margin: -2mm 0 4mm 4mm !important;
+        line-height: 1.4 !important;
+    }
+
+    /* Thamarai (Sangam Ilakkiyam) section — alternate image float
+       direction for visual rhythm. Default float is right; every even
+       img-right inside .sangam-section becomes a left float.
+       Implemented via :nth-of-type. */
+    .sangam-section figure.article-figure.img-right:nth-of-type(2n) {
+        float: left !important;
+        margin: 0 6mm 4mm 0 !important;
+    }
+
+    /* Activities page: 2-column image grid for each subsection */
+    .activities-image-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 3mm !important;
+        margin: 3mm 0 4mm !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    .activities-image-grid figure {
+        margin: 0 !important;
+        text-align: center;
+        page-break-inside: avoid !important;
+    }
+    .activities-image-grid img {
+        width: 100% !important;
+        height: 48mm !important;
+        object-fit: cover !important;
+        display: block !important;
+        border-radius: 1.5mm !important;
+        margin: 0 !important;
+        float: none !important;
+    }
+    .activities-image-grid figcaption {
+        font-size: 8pt !important;
+        color: #666 !important;
+        margin-top: 1mm !important;
+        text-align: center !important;
+        line-height: 1.3 !important;
+    }
+    /* Shared caption spans full width under both photos */
+    .activities-image-grid > .activities-grid-caption,
+    .activities-image-grid > figcaption.activities-grid-caption {
+        grid-column: 1 / -1 !important;
+        margin-top: 2mm !important;
+        font-size: 9pt !important;
+        font-weight: 600 !important;
+        color: #444 !important;
+    }
+
+    /* Side-by-side pair for two .img-half images of differing aspect
+       ratio (artifact/portrait photos) — height-capped, width follows
+       naturally, nothing gets cropped. See .activities-image-grid above
+       for the fixed-box variant used for same-shaped event photos. */
+    .image-pair-row {
+        display: flex !important;
+        gap: 4mm !important;
+        justify-content: center !important;
+        align-items: flex-start !important;
+        margin: 4mm 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+    .image-pair-row figure {
+        margin: 0 !important;
+        text-align: center;
+        flex: 0 1 auto !important;
+        max-width: 48% !important;
+    }
+    .image-pair-row img {
+        height: 55mm !important;
+        max-height: 55mm !important;
+        width: auto !important;
+        max-width: 100% !important;
+        object-fit: contain !important;
+        display: block !important;
+        margin: 0 auto !important;
+        border: none !important;
+        border-radius: 0 !important;
+        float: none !important;
+    }
+    .image-pair-row figcaption {
+        font-size: 8pt !important;
+        color: #666 !important;
+        margin-top: 1mm !important;
+        text-align: center !important;
+        line-height: 1.3 !important;
+    }
+</style>
+
+</head>
+<body>
+  <!-- COVER ═══════════════════════════════════════════════ -->
+  <div class="cover-section">
+    <div class="cover">
+      <img class="cover-image" src="Images/cover-image.jpeg" alt="">
+      <div class="glossy"></div>
+      <div class="border-frame"></div>
+      <span class="corner c-tl">❈</span>
+      <span class="corner c-tr">❈</span>
+      <span class="corner c-bl">❈</span>
+      <span class="corner c-br">❈</span>
+
+      <!-- MASTHEAD -->
+      <div class="masthead">
+        <!-- Org row: logo | organisation name | logo — all inline -->
+        <div class="cover-org-row">
+          <img class="cover-logo-left" src="Images/van-logo.jpg" alt="VAN">
+          <div class="cover-org-text">
+            <div class="org-name">வள்ளலார் அறநிலையம்</div>
+            <div class="org-vazangum">வழங்கும்</div>
+          </div>
+          <img class="cover-logo-right" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
+        </div>
+        <div class="gold-rule"></div>
+        <div class="mag-name-main">வான் வளரொளி இதழ்</div>
+        <div class="tagline">தாழ்வு எலாம் தவிர்த்துச் சக மிசை அழியா<br>வாழ்வு எனக்கு அளித்த <strong>வளர் ஒளி</strong> மணியே.</div>
+        <div class="issue-row">
+          <span class="pill">இதழ் 3  ·  புரட்டாசி 2026</span>
+          
+        </div>
+      </div>
+
+      <!-- QUOTE -->
+      <div class="quote-float">
+        <div class="quote-text">"எல்லா உயிர்களும் இன்புற்று வாழ்க"</div>
+        <div class="quote-attr">— வள்ளலார்</div>
+      </div>
+
+      <!-- BOTTOM BAND -->
+      <div class="bottom-band">
+        <div class="teasers-label">இந்த இதழில்</div>
+        <div class="teasers">
+          
+          <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">தலையங்கம் — ஒழுக்கமே உலக நலம்</span></div>
+          
+          <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">திருக்குறள் ஆய்வு — நாவினால் சுட்ட வடு</span></div>
+          
+          <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">சிறுகதை — கட்டில் பேசுகிறது</span></div>
+          
+          <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">சங்க இலக்கியம் — காந்தள் மலரின் அறம்</span></div>
+          
+          <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">தமிழகக் கலைகள் — மரம் முதல் கற்றளி வரை</span></div>
+          
+          <div class="teaser-item"><span class="teaser-dot">◆</span><span class="teaser-text">நூல் மதிப்புரை — வள்ளலார் பார்வையில் சனாதனம்</span></div>
+          
+        </div>
+        <div class="publisher-row">
+          <span class="publisher-name">பெண்ணாடம் வள்ளலார் அறநிலையம்</span>
+          <img class="van-seal" src="Images/van-logo.jpg" alt="VAN">
+        </div>
+      </div>
+
+      <!-- Issue number badge — circular gold stamp bottom right -->
+      <div class="cover-issue-badge">
+        <span class="badge-label-top">இதழ்</span>
+        <span class="badge-num">3</span>
+        <span class="badge-label-bot">புரட்டாசி</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2 — IMPRINT ═══════════════════════════════════════════════ -->
+  <div class="page page-imprint">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span><span class="corner-br">❈</span>
+
+    <div class="imprint-content">
+
+      <div class="imprint-org-label">பெண்ணாடம் வள்ளலார் அறநிலையம் வழங்கும்</div>
+
+      <div class="imprint-mag-name">வான் வளரொளி இதழ்</div>
+
+      <div class="imprint-tagline">செந்தமிழில் அறம் வளர்க்கும் அறிவொளி இதழ்</div>
+
+      <div class="imprint-rule"></div>
+
+      <div class="imprint-logos">
+        <img class="imprint-logo" src="Images/van-logo.jpg" alt="வள்ளலார் அறநிலையம்">
+        <img class="imprint-logo" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
+      </div>
+
+      <div class="imprint-rule"></div>
+
+      <div class="imprint-details">
+        <div class="imprint-detail">வான் வளரொளி இதழ் — 3</div>
+        <div class="imprint-detail">திருவள்ளுவர் ஆண்டு 2057 — புரட்டாசி</div>
+        <div class="imprint-detail">[ அக்டோபர் — 2026 ]</div>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">2</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  <span class="corner-bl">❈</span></div>
+
+  <!-- PAGE 3 — CREDITS / MASTHEAD (ஆசிரியர் குழு) ═══════════════════════════ -->
+  <div class="page page-masthead">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span>
+    <span class="corner-bl">❈</span>
+    <span class="corner-br">❈</span>
+
+    <div class="page-header">
+      <img class="header-logo-left" src="Images/van-logo.jpg" alt="VAN">
+      <span class="section-name">ஆசிரியர் குழு</span>
+      <img class="header-logo-right" src="Images/vallaroli-logo.jpg" alt="வான் வளரொளி">
+    </div>
+
+    <div class="content-area">
+      <div class="masthead-grid">
+        <!-- Left: three roles, equal visual weight -->
+        <div class="masthead-card">
+          <div class="masthead-card-title">வான் வளரொளி இதழ்</div>
+          <div class="masthead-card-divider"></div>
+
+          <div class="masthead-roles">
+            
+            <div class="masthead-role-block">
+              <div class="masthead-role-label">பொறுப்பாசிரியர்</div>
+              <div class="masthead-name">தயவு மு. முத்துஜோதி</div>
+              <div class="masthead-contact-text">தலைவர், வள்ளலார் அறநிலையம்</div>
+            </div>
+            
+            <div class="masthead-role-block">
+              <div class="masthead-role-label">வெளியீட்டாளர்</div>
+              <div class="masthead-name">தயவு க. குமாரவேல்</div>
+              <div class="masthead-contact-text">செயலாளர், வள்ளலார் அறநிலையம்</div>
+            </div>
+            
+            <div class="masthead-role-block">
+              <div class="masthead-role-label">பதிப்பாசிரியர்</div>
+              <div class="masthead-name">தயவு இரா. கௌரிசங்கர்</div>
+              
+            </div>
+            
+          </div>
+
+          <div class="masthead-card-divider"></div>
+          <div class="masthead-contact-heading">வலையொளி:</div>
+          <div class="masthead-contact-text masthead-url">https://www.youtube.com/@pennadamvallalararanilayam</div>
+          <div class="masthead-contact-heading">மின்னஞ்சல்:</div>
+          <div class="masthead-contact-text">vallalararanilayampdm@gmail.com</div>
+        </div>
+
+        <!-- Right: logos + தொகுப்பாசிரியர்கள் -->
+        <div class="masthead-board">
+          <div class="masthead-board-logos">
+            
+            <img class="masthead-logo" src="Images/van-logo.jpg" alt="">
+            
+            <img class="masthead-logo" src="Images/vallaroli-logo.jpg" alt="">
+            
+          </div>
+          <div class="masthead-board-main">
+            <div class="masthead-board-title">தொகுப்பாசிரியர்கள்</div>
+            <ol class="masthead-board-list">
+              
+              <li>தயவு வெ. வானதி</li>
+              
+              <li>தயவு கு. திருமுருகன்</li>
+              
+              <li>தயவு ஏ. ஹரிஹரன்</li>
+              
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">3</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  </div>
+
+  <!-- PAGE 4 — TABLE OF CONTENTS ══════════════════════════════════════════ -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span><span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">பொருளடக்கம்</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="issue-banner">
+        <div class="banner-text">
+          <div class="banner-title">இதழ் 3  ·  புரட்டாசி 2026</div>
+          <div class="banner-sub">பெண்ணாடம் வள்ளலார் அறநிலையம்</div>
+        </div>
+      </div>
+      <div class="toc-list">
+        
+        <div class="toc-row">
+          <div class="toc-accent" style="background:#8DC63F;"></div>
+          <div class="toc-content">
+            <div class="toc-section">தலையங்கம்</div>
+            <div class="toc-desc">ஒழுக்கமே உலக நலம்</div>
+          </div>
+          <div class="toc-dots"></div>
+          <div class="toc-page" style="color:#8DC63F;">5</div>
+        </div>
+        
+        <div class="toc-row row-alt">
+          <div class="toc-accent" style="background:#D4AF37;"></div>
+          <div class="toc-content">
+            <div class="toc-section">திருக்குறள் ஆய்வு</div>
+            <div class="toc-desc">நாவினால் சுட்ட வடு</div>
+          </div>
+          <div class="toc-dots"></div>
+          <div class="toc-page" style="color:#D4AF37;">7</div>
+        </div>
+        
+        <div class="toc-row">
+          <div class="toc-accent" style="background:#2d7a3e;"></div>
+          <div class="toc-content">
+            <div class="toc-section">சிறுகதை</div>
+            <div class="toc-desc">கட்டில் பேசுகிறது</div>
+          </div>
+          <div class="toc-dots"></div>
+          <div class="toc-page" style="color:#2d7a3e;">9</div>
+        </div>
+        
+        <div class="toc-row row-alt">
+          <div class="toc-accent" style="background:#6BA82F;"></div>
+          <div class="toc-content">
+            <div class="toc-section">சங்க இலக்கியம்</div>
+            <div class="toc-desc">காந்தள் மலரின் அறம்</div>
+          </div>
+          <div class="toc-dots"></div>
+          <div class="toc-page" style="color:#6BA82F;">10</div>
+        </div>
+        
+        <div class="toc-row">
+          <div class="toc-accent" style="background:#8DC63F;"></div>
+          <div class="toc-content">
+            <div class="toc-section">தமிழகக் கலைகள்</div>
+            <div class="toc-desc">மரம் முதல் கற்றளி வரை</div>
+          </div>
+          <div class="toc-dots"></div>
+          <div class="toc-page" style="color:#8DC63F;">13</div>
+        </div>
+        
+        <div class="toc-row row-alt">
+          <div class="toc-accent" style="background:#D4AF37;"></div>
+          <div class="toc-content">
+            <div class="toc-section">நூல் மதிப்புரை</div>
+            <div class="toc-desc">வள்ளலார் பார்வையில் சனாதனம்</div>
+          </div>
+          <div class="toc-dots"></div>
+          <div class="toc-page" style="color:#D4AF37;">14</div>
+        </div>
+        
+        <div class="toc-row">
+          <div class="toc-accent" style="background:#2d7a3e;"></div>
+          <div class="toc-content">
+            <div class="toc-section">ஓர் ஒழுக்கம்</div>
+            <div class="toc-desc">தந்த சுத்தி — வழலை நீக்கல்</div>
+          </div>
+          <div class="toc-dots"></div>
+          <div class="toc-page" style="color:#2d7a3e;">16</div>
+        </div>
+        
+        <div class="toc-row row-alt">
+          <div class="toc-accent" style="background:#6BA82F;"></div>
+          <div class="toc-content">
+            <div class="toc-section">மனம் தொடர்</div>
+            <div class="toc-desc">மனம் எனும் ஏணி</div>
+          </div>
+          <div class="toc-dots"></div>
+          <div class="toc-page" style="color:#6BA82F;">17</div>
+        </div>
+        
+        <div class="toc-row">
+          <div class="toc-accent" style="background:#8DC63F;"></div>
+          <div class="toc-content">
+            <div class="toc-section">இயற்கை தரும் இன்பம்</div>
+            <div class="toc-desc">குறிஞ்சி நிலம் — மலையும் ஏரியும்</div>
+          </div>
+          <div class="toc-dots"></div>
+          <div class="toc-page" style="color:#8DC63F;">19</div>
+        </div>
+        
+        <div class="toc-row row-alt">
+          <div class="toc-accent" style="background:#D4AF37;"></div>
+          <div class="toc-content">
+            <div class="toc-section">அறநிலையச் செய்திகள்</div>
+            <div class="toc-desc">அறநிலைய நிகழ்வுகள் — ஆகஸ்ட்-செப்டம்பர் 2026</div>
+          </div>
+          <div class="toc-dots"></div>
+          <div class="toc-page" style="color:#D4AF37;">20</div>
+        </div>
+        
+        <div class="toc-row">
+          <div class="toc-accent" style="background:#2d7a3e;"></div>
+          <div class="toc-content">
+            <div class="toc-section">அடுத்த இதழில்</div>
+            <div class="toc-desc">கார்த்திகை 2026 — இதழ் 4</div>
+          </div>
+          <div class="toc-dots"></div>
+          <div class="toc-page" style="color:#2d7a3e;">22</div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">4</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  <span class="corner-bl">❈</span></div>
+
+  <!-- தலையங்கம் — page (placeholder; rebalance will distribute) -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span><span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">தலையங்கம்</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="section-header">
+        <div class="topic-title">ஒழுக்கமே உலக நலம்</div>
+        
+        <div class="section-label-row">
+          <span class="lotus-icon">❀</span>
+          <span class="section-label">தலையங்கம்</span>
+          <span class="lotus-icon">❀</span>
+        </div>
+        <div class="title-underline"></div>
+      </div>
+      <div class="section-divider">•   •   •</div>
+      <div class="author-byline">மு. முத்துஜோதி</div>
+      <div class="body-text">
+<p class="lead-para">வான் வளரொளி இதழ் நேயர்களுக்கு வணக்கங்களும் வாழ்த்துக்களும்,</p>
+        <p>மூன்றாவது இதழ் வாயிலாக உங்களோடு என் உள்ளக்கிடக்கையைப் பங்கிட்டுக் கொள்வதில் மகிழ்ச்சி அடைகிறேன்.</p>
+        <p>தமிழிலக்கணத்தில், உலகு என்பது இடவாகு பெயர்.</p>
+        <p>அதாவது, உலகு என்பது மண்ணாலும் நீராலும் ஆன இந்த பூமியை குறிப்பதல்ல; அது இந்த உலகில் வாழ்கிற உயிர்களைக் குறிக்கும்.</p>
+        <p>உயிர்களின் தொகுப்பே இந்த உலகம். எனவே, உலக நலம் என்பது இந்த உயிர்களின் தனிப்பட்ட நலனைப் பொருத்து அமைகிறது.</p>
+        <p>தனி மனிதர்கள் எப்படியோ அப்படியேதான் உலகமும் அமையும். எனவே, உலக நலம் என்பது தனி மனித ஒழுக்கத்தின் பிரதிபலிப்பே என்பதுதான் உண்மை.</p>
+        <p>நல்ல நூல்களை வாசித்தல், நல்லவரோடு பழகுதல், மற்றவருக்கு நல்லதையே எண்ணுதல், சொல்லுதல், செய்தல் என்பன ஒரு மனிதனை ஒழுக்கம் உடையவனாக ஆக்குகிறது.</p>
+        <p>தனி மனித ஒழுக்க மேம்பாடு என்பது ஒரு குடும்ப மேம்பாடாக மலர்ந்து, இறுதியில் உலகின் ஒழுக்க மேம்பாடாக நிறைகிறது.</p>
+        <p>தனி மனித ஒழுக்க மேம்பாட்டை வலியுறுத்தாத உலக சமய மதங்கள் இல்லை; அற நூல்கள் இல்லை.</p>
+        <p>இந்த ஒழுக்க மேம்பாடு, நற்குடியில் பிறந்தவர்களுக்கு இயல்பாக வந்து விடுகிறது. ஆனால், நற்குடியில் பிறந்தவர்கள் கூட, ஒழுக்கம் கெட்டு வீணாய்ப் போனதைப் பற்றி வரலாறு சொல்கிறது. இது நல்ல நெற்பயிரில் களை முளைப்பது போல.</p>
+        <p>அதுபோல, தீய குடியில் பிறந்தோரும் நல்ல ஒழுக்கம் உள்ளவர்களாக சில நேரம் மாறுவது உண்டு என்பதையும் வரலாறு பதிந்து உள்ளது.</p>
+        <p>ஜென் துறவிகளின் நூலில் இதற்கு ஒரு சான்று உள்ளது.</p>
+        <p>ஒரு ஊரில் ஒரு கயவன் இருந்தான். சூதாட்டம், திருடு, கொள்ளை போன்ற கருணையற்ற செயல்களை செய்து வந்தான்.</p>
+        <p>அவன் குடி இருக்கிற தெருவில், ஒரு புத்த துறவிகள் மடாலயம் இருந்தது. அவன் போகும்போது, வரும்போது அந்த மடாலயத்தை ஏளனமாகப் பார்ப்பான். அதன் தலைவரும் இவனை உற்று பார்ப்பார், புன்முறுவல் பூப்பார்.</p>
+        <p>ஒரு நாள் அவன் நினைத்தான்: “இந்த மடாலயத்தில் இத்தனை துறவிகள் தினந்தோறும் என்னதான் செய்கிறார்கள்? உள்ளே போய்தான் பார்ப்போமே” என்று எண்ணியபடியே உள்ளே நுழைந்தான். இவனை தினம் பார்த்துக் கொண்டு இருந்த தலைமைத் துறவி இவனை புன்முறுவலோடு வரவேற்றார். “வா அப்பனே! உணவு அருந்துகிறாயா?” என்றார். இவனுக்கு வியப்பாய் இருந்தது. “நமக்கும் ஒரு வரவேற்பா?” என்று எண்ணினான்.</p>
+        <p>“என்ன தொழில் செய்கிறாய்?” என்றார் துறவி.</p>
+        <p>“உங்க வழி எல்லாம் எனக்கு சரிபட்டு வராது. நமக்கு சூதாட்டம் போன்றவை தினம் வேண்டும்” என்றான்.</p>
+        <p>சிரித்த துறவி, “ஓ அது எல்லாம் இங்கு இல்லை. வேண்டுமானால், ஆடு புலி ஆட்டம் ஆடச் செய்கிறேன்” என்றார்.</p>
+        <p>உடனே அந்தக் கயவன் “துறவியாரே, அதில் நான் வில்லாதி வில்லன். யோசிக்காமல் வாயைக் கொடுத்து மாட்டிக் கொள்ளாதீர்கள்” என்றான்.</p>
+        <p>சற்று யோசித்த துறவியார் இப்படிச் சொன்னார்: “சரி உனக்கு உன் திறமைமேல் அவ்வளவு நம்பிக்கையா? என் துறவிகளில் ஒருவரை உன்னோடு விளையாட சொல்கிறேன். இங்கே ஒரு வாளை வைப்பேன். நீ வெற்றிகொண்டால், துறவி தன் கழுத்தை அறுத்துக் கொள்ள வேண்டும். துறவி வெற்றி பெற்றால், நீ அவ்வாறு செய்து கொள்ள வேண்டும். உன்மேல்தான் உனக்கு அபார நம்பிக்கை இருக்கிறதே?” என்றார் துறவி.</p>
+        <p>அவனும் உடனே “சரி” என்றான்.</p>
+        <p>தலைமைத் துறவி ஒரு துறவியின் பெயரைச் சொல்லி அழைத்து வரச் சொன்னார்.</p>
+        <p>அந்த சீடர் துறவியோ, சதாசர்வ நேரம் உலகத்தை மறந்து தியானத்தில் ஆழ்ந்து இருப்பவர். அவர் இந்த ஆடு புலி ஆட்டத்தைப் பார்த்ததே இல்லை. நிபந்தனையை விளக்கினார் குரு.</p>
+        <p>இருப்பினும், குருநாதர் கட்டளையை ஏற்று விளையாட ஆரம்பித்தார் சீடர்.</p>
+        <p>ஆடத்தெரியாத சீடர் காய்களை கன்னா பின்னா என்று நகர்த்தினார். அந்தக் கயவனோ, அந்த விளையாட்டில் வல்லமை பெற்று இருந்ததால், வெகு சுலபமாக – விரைவாக – ஆட்டத்தை இறுதி நிலைக்கு கொண்டு வந்தான்.</p>
+        <p>அந்த கயவனுக்கு திடீரென குருநாதரின் நிபந்தனை நினைவுக்கு வந்தது.</p>
+        <p>அவன் இப்படி எண்ணினான்: “இந்த துறவி தோற்றால் வாளால் கழுத்தை வெட்டிக் கொள்ள வேண்டும். இதோ இன்னும் மூன்று நகர்வில் போட்டி முடியப் போகிறது. இந்த சீடர் தோற்று இறக்கப் போவது நிச்சயம். ஆனால், இவர் முகத்தில் எந்த சலனமும் இல்லாமல், ஆரம்பத்திலிருந்த அதே புன்முறுவலோடு உட்கார்ந்து இருக்கிறாரே! ஆகா இவர் எவ்வளவு பெரிய மா மனிதர்! நான் ஒன்றுக்கும் உதவாதவன். இவர் இறந்து நான் வாழ்ந்து என்ன செய்யப் போகிறேன்! இவர் வாழ்ந்தால், இந்த சமுதாயமே வாழுமே”! என்று எண்ணினான். வேண்டுமென்றே காய்களை தாறுமாறாக நகர்த்தி தோற்றான்.</p>
+        <p>இதை உற்றுக் கவனித்துக் கொண்டு இருந்த குருநாதர் அவனைப் பார்த்துச் சொன்னார்:</p>
+        <p>“அப்பா, ஆரம்பத்தில் உன்னை அறிமுகப் படுத்திக் கொண்டபோது நீ ஒரு கயவன், தீய பழக்கம் உள்ளவன், யாருக்கும் எந்தப் பயனும் கொடுக்காதவன் என்றாயே! அப்படி அல்ல அப்பா. நீதான் தேர்ந்த சான்றாளன்! பிறர் வாழ வேண்டும் என்று உன் உயிரை கொடுக்க முன் வந்தாயே! இந்த ஒரு பண்பு போதும் நீ ஜென் துறவி ஆவதற்கு” என்றார். அவன் பின்னாளில் ஆகச் சிறந்த ஜென் துறவி ஆனதாக நூல் சொல்கிறது.</p>
+        <p>கயவர்களும் ஒரு கணத்தில் ஒழுக்கத்தில் சிறந்தவர்களாக ஆவதும் உண்டு. காட்டில் ஒரு கொள்ளைக்காரனாக வாழ்ந்தவன்; பின்னாளில் வால்மீகி மகரிஷியாக மாறவில்லையா?</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">ஒழுக்கம் விழுப்பந் தரலான் ஒழுக்கம்</div><div class="verse-line">உயிரினும் ஓம்பப் படும்.<span class="quote-cite"> — திருக்குறள் 131</span></div></div></div>
+        <p>ஒழுக்கமே ஒருவருக்கு உயர்வு தருவதால், அதை உயிரினும் மேலாகப் போற்ற வேண்டும் என்கிறார் திருவள்ளுவர்.</p>
+        <p>எனவே ஒழுக்கத்தால் தரணியை வளர்ப்போம்!</p>
+        <div class="closing"><div class="sign-off">மு. முத்துஜோதி</div><div class="sign-name">நிறுவனத் தலைவர்</div><div class="sign-title">வள்ளலார் அறநிலையம்</div><div class="org-name">பெண்ணாடம்</div><div class="lotus-end">❀</div></div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">5</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  <span class="corner-bl">❈</span></div>
+
+  <!-- திருக்குறள் ஆய்வு — page (placeholder; rebalance will distribute) -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span><span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">திருக்குறள் ஆய்வு</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="section-header">
+        <div class="topic-title">நாவினால் சுட்ட வடு</div>
+        
+        <div class="section-label-row">
+          <span class="lotus-icon">❀</span>
+          <span class="section-label">திருக்குறள் ஆய்வு</span>
+          <span class="lotus-icon">❀</span>
+        </div>
+        <div class="title-underline"></div>
+      </div>
+      <div class="section-divider">•   •   •</div>
+      <div class="author-byline">வெ. வானதி</div>
+      <div class="body-text">
+<p class="lead-para"><strong>"ஆறுவது சினம்"</strong> என்பது ஔவையாரின் ஆத்திசூடியில் வரும் மிக முக்கியமான பொன்மொழியாகும். "கோபம் என்பது தணிய வேண்டிய ஒன்று; அதை உடனே வெளிப்படுத்தாமல் ஆறப்போட வேண்டும்" என்பதே இதன் எளிய பொருள்.</p>
+        <p>இதை விளக்கும் ஒரு அழகான, வாழ்வியலோடு இணைந்த கதை இதோ:</p>
+        <div class="subhead">கோபக்கார கதிரவனும் மரவேலியும்</div>
+        <p>ஒரு கிராமத்தில் <strong>கதிரவன்</strong> என்ற இளைஞன் வாழ்ந்து வந்தான். அவன் திறமையானவன், நல்ல குணம் படைத்தவன். ஆனால், அவனிடம் ஒரு பெரிய குறை இருந்தது — அவனுக்கு <strong>மூக்குக்கு மேல் கோபம் வரும்</strong>. கோபம் வந்துவிட்டால் தான் என்ன பேசுகிறோம், என்ன செய்கிறோம் என்றே அவனுக்குத் தெரியாது. இதனால் அவனது நண்பர்களும், உறவினர்களும் அவனை விட்டு மெல்ல மெல்ல விலகத் தொடங்கினர்.</p>
+        <p>மகனின் இந்த மோசமான குணத்தைக் கண்டு கவலையடைந்த அவனது தந்தை, அவனுக்கு ஒரு பாடம் புகட்ட நினைத்தார்.</p>
+        <div class="subhead">தந்தையின் விசித்திரமான சோதனை</div>
+        <p>ஒரு நாள், தந்தை கதிரவனை அழைத்து ஒரு பை நிறைய <strong>ஆணிகளையும்</strong> ஒரு <strong>சுத்தியலையும்</strong> கொடுத்தார்.</p>
+        <figure class="article-figure img-half"><img src="Images/02-sinam-panel-1.jpeg" alt="02-sinam-panel-1.jpeg"></figure>
+        <p>"மகனே! இனி உனக்கு எப்போதெல்லாம் கோபம் வருகிறதோ, அப்போதெல்லாம் நமது வீட்டுப் பின்புறம் உள்ள மரவேலியில் போய் ஒரு ஆணியை அடி," என்றார் தந்தை.</p>
+        <p>முதல் நாள், கதிரவனுக்கு ஏகப்பட்ட கோபம் வந்தது. அன்று மட்டுமே அவன் வேலியில் <strong>30க்கும் மேற்பட்ட ஆணிகளை</strong> அடித்தான்.</p>
+        <figure class="article-figure img-half"><img src="Images/02-sinam-panel-2.jpeg" alt="02-sinam-panel-2.jpeg"></figure>
+        <p>ஆனால், சுத்தியலைத் தூக்கி ஆணி அடிப்பது அத்தனை எளிதாக இல்லை. போகப் போக, ஆணி அடிப்பதற்குப் பதில் தன் கோபத்தைக் கட்டுப்படுத்துவது எவ்வளவோ மேல் என்று அவனுக்குத் தோன்றியது.</p>
+        <p>நாட்கள் செல்லச் செல்ல, வேலியில் அடிக்கப்படும் ஆணிகளின் எண்ணிக்கை குறையத் தொடங்கியது.</p>
+        <figure class="article-figure img-half"><img src="Images/02-sinam-panel-3.jpeg" alt="02-sinam-panel-3.jpeg"></figure>
+        <div class="subhead">கோபம் குறைந்த நாள்</div>
+        <p>இறுதியாக, ஒரு நாள் கதிரவனுக்கு அன்றைய நாள் முழுவதும் ஒருமுறை கூடக் கோபமே வரவில்லை. ஓடிப் போய் தன் தந்தையிடம் அதை பெருமையுடன் கூறினான்.</p>
+        <p>அதற்கு தந்தை, "மிகவும் மகிழ்ச்சி மகனே! இப்போது நீ மற்றொரு காரியம் செய்ய வேண்டும். இனி உனக்குக் கோபம் வராத ஒவ்வொரு நாளும், வேலியில் நீ அடித்த ஆணிகளில் இருந்து ஒவ்வொரு ஆணியாகப் பிடுங்கி எடு," என்றார்.</p>
+        <p>கதிரவனும் அதேபோலச் செய்தான். சில வாரங்களில், வேலியில் இருந்த அனைத்து ஆணிகளும் பிடுங்கப்பட்டுவிட்டன. அவன் பெருமிதத்தோடு தன் தந்தையை வேலியினருகே அழைத்துச் சென்று காட்டினான்.</p>
+        <figure class="article-figure img-half"><img src="Images/02-sinam-panel-4.jpeg" alt="02-sinam-panel-4.jpeg"></figure>
+        <div class="subhead">தந்தை புகட்டிய உன்னத பாடம்</div>
+        <p>தந்தை அவனது தோளைத் தட்டிக் கொடுத்து, அந்த மரவேலியைச் சுட்டிக்காட்டினார்:</p>
+        <p>"மகனே, நன்றாகப் பார். ஆணிகளை எல்லாம் பிடுங்கிவிட்டாய். ஆனால், அந்த மரவேலியில் ஏற்பட்டுள்ள <strong>ஆழமான துளைகளைப் (வடுக்களை) பார்</strong>. அது இனி பழையபடி மாற முடியுமா?"</p>
+        <p>கதிரவன் மௌனமாகத் தலைகுனிந்தான். தந்தை தொடர்ந்தார்:</p>
+        <figure class="article-figure img-banner"><img src="Images/02-sinam-father-son.png" alt="02-sinam-father-son.png"></figure>
+        <p>"நீ கோபத்தில் பேசும் வார்த்தைகளும், செய்யும் செயல்களும் மற்றவர்களின் மனங்களில் இப்படிப்பட்ட ஆழமான வடுக்களைத்தான் உருவாக்குகின்றன."</p>
+        <p>"அதன் பிறகு நீ எவ்வளவுதான் மன்னிப்புக் கேட்டாலும் (ஆணியை எடுத்தாலும்), அந்த மனக்காயம் (துளை) அப்படியேதான் இருக்கும்." என்றார். கதிரவன் தன் தவற்றை உணர்ந்தான்.</p>
+        <div class="subhead">கதையின் நீதி</div>
+        <p>இந்தக் கதையிலிருந்து கதிரவன் தன் தவறை முழுமையாக உணர்ந்தான். அன்று முதல் தன் கோபத்தைக் கட்டுப்படுத்தக் கற்றுக்கொண்டான்.</p>
+        <p>எனவே கோபம் வரும் அந்த நொடியில் அமைதியாக இருந்து, அந்த இடத்தை விட்டு நகர்ந்துவிட்டாலே பல பிரச்சனைகள் வராமல் தடுத்துவிடலாம். இதையே ஔவையார் மிகச் சுருக்கமாக <strong>"ஆறுவது சினம்"</strong> என்று பாடினார்.</p>
+        <div class="subhead">"ஆறுவது சினம்" கதையும், வள்ளுவரின் குறட்பாக்களும்</div>
+        <p>ஔவையின் "ஆறுவது சினம்" கதையில் வரும் கதிரவனின் செயல்களும், அவனது தந்தை புகட்டிய பாடமும் வான்புகழ் வள்ளுவரின் <strong>"வெகுளாமை"</strong> என்ற அதிகாரத்தோடும்</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">தீயினாற் சுட்டபுண் உள்ளாறும் ஆறாதே</div><div class="verse-line">நாவினாற் சுட்ட வடு.<span class="quote-cite"> — திருக்குறள் 129</span></div></div></div>
+        <p>என்ற குறளோடும் மிக நெருங்கிய தொடர்புடையவை.</p>
+        <div class="subhead">திருக்குறள் ஒப்பீடு</div>
+        <p>வள்ளுவர் சினத்தின் கொடுமையையும், அதைத் தடுக்கும் வழியையும் பல குறட்பாக்களில் விளக்கியுள்ளார். கதிரவனின் கதைக்கு மிகவும் பொருத்தமான இரண்டு குறள்கள்:</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">தன்னைத்தான் காக்கின் சினங்காக்க காவாக்கால்</div><div class="verse-line">தன்னையே கொல்லும் சினம்.<span class="quote-cite"> — திருக்குறள் 305</span></div></div></div>
+        <p><strong>ஒப்பீடு:</strong> கதிரவன் தன் கோபத்தைக் கட்டுப்படுத்தத் தவறியபோது, அது அவனது உறவுகளையும் அவனது மன அமைதியையும் அழித்தது. சினத்தைக் காக்கத் தவறினால் அது நம்மையே அழித்துவிடும் என்பதற்கு அவன் வாழ்வே சான்று.</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">சினமென்னும் சேர்ந்தாரைக் கொல்லி இனமென்னும்</div><div class="verse-line">ஏமப் புணையைச் சுடும்.<span class="quote-cite"> — திருக்குறள் 306</span></div></div></div>
+        <p><strong>ஒப்பீடு:</strong> சினம் தன்னை வைத்திருப்பவரை அழிப்பதுடன் நின்றுவிடாமல், அவனுக்குப் பாதுகாப்பாக இருக்கும் சுற்றம் என்னும் மரக்கலத்தையும் சுட்டெரித்துவிடும். கதிரவனின் கோபத்தால் அவனது நண்பர்களும் உறவினர்களும் அவனை விட்டு விலகியதை இக்குறள் அப்படியே பிரதிபலிக்கிறது.</p>
+        <div class="subhead">கற்றல் வெளிப்பாடு</div>
+        <p>இக்கதை மற்றும் திருக்குறள் ஒப்பீட்டின் மூலம் நாம் அறிந்துகொள்ளும் மிக முக்கியமான பாடங்கள்:</p>
+        <p><strong>வார்த்தைகளின் வடு:</strong> ஆணியை எடுத்த பின்பும் மரத்தில் வடுக்கள் தங்குவது போல, கோபத்தில் கொட்டும் வார்த்தைகளுக்குப் பின் கேட்கும் மன்னிப்பு, மனக்காயங்களை முழுமையாகக் குணப்படுத்துவதில்லை.</p>
+        <p><strong>உறவுகளின் மேன்மை:</strong> சினம் நம்மைத் தனிமைப்படுத்தும். உறவுகளையும் அன்பையும் தக்கவைத்துக் கொள்ள பொறுமையும், இன்சொல்லும் மட்டுமே உதவும். எனவே உறவுகளே இன்சொல் பேச முயல்வோம்.</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">6</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  <span class="corner-bl">❈</span></div>
+
+  <!-- சிறுகதை — page (placeholder; rebalance will distribute) -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span><span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">சிறுகதை</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="section-header">
+        <div class="topic-title">கட்டில் பேசுகிறது</div>
+        <div class="topic-subtitle">மணிக்கொடி, 13.5.1934</div>
+        <div class="section-label-row">
+          <span class="lotus-icon">❀</span>
+          <span class="section-label">சிறுகதை</span>
+          <span class="lotus-icon">❀</span>
+        </div>
+        <div class="title-underline"></div>
+      </div>
+      <div class="section-divider">•   •   •</div>
+      <div class="author-byline">புதுமைப்பித்தன்</div>
+      <div class="body-text">
+<p class="lead-para"><strong>க</strong>வர்ன்மெண்டு ஆஸ்பத்திரியில், அந்தக் கிழக்கு வார்டுப் படுக்கையில், எனது வியாதிக்கு என்னமோ ஒரு முழ நீள லத்தின் பெயர் கொடுத்து, என்னைக் கொண்டுபோய்க் கிடத்தினார்கள்.</p>
+        <p>எனது இரண்டு பக்கங்களிலும் என்னைப் போல் பல நோயாளிகள். முக்கலும் முனங்கலும் நரகத்தின் உதாரணம் மாதிரி.</p>
+        <p>ஒவ்வொரு கட்டிலின் பக்கத்திலும் மருந்தையும் கஞ்சியையும் வைக்க ஒரு சிறு அலமாரி. கட்டில் கம்பியில், டாக்டரின் வெற்றி அல்லது வியாதியின் வெற்றி - இரண்டிலொன்றைக் காண்பிக்கும் 'சார்ட்' என்ற படம்.</p>
+        <p>ஹாலின் மத்தியில் ஒரு மின்சார விளக்கு; தூங்கும்பொழுது கண்களை உறுத்தாதபடி அதற்கு மங்கலான ஒரு 'டோம்'.</p>
+        <p>அதன்கீழ் வெள்ளை வர்ணம் பூசிய ஒரு மேஜை, நாற்காலி.</p>
+        <p>அதில் வெள்ளுடை தரித்து, 'ஆஸ்பத்திரி முக்கா'டிட்ட ஒரு நர்ஸ் என்னவோ எழுதிக்கொண்டிருக்கிறாள்.</p>
+        <p>ஒன்றையும் பற்றாமல் சலித்துக்கொண்டிருக்கும் மனம்.</p>
+        <p>ஐயோ! மறுபடியும் அந்த வயிற்றுவலி. குடலையே பிய்த்துக் கொண்டு வந்துவிடும் போலிருக்கிறதே! ஒரு கையால் வயிற்றை அமுக்கிக் கொண்டு ஒரு புறமாகத் திரும்பிப் படுத்தேன். சீ! 'ஸ்பிரிங்' கட்டிலாம்! என்னமாக உறுத்துகிறது!</p>
+        <p>சற்று அயர்வு...</p>
+        <p>என்ன வேடிக்கை! கட்டில் என்னுடன் பேசுகிறது!</p>
+        <p>"என்ன வோய்! என் 'ஸ்பிரிங்'கிற்கு என்ன குறைச்சல்? நீர் நாளைக்கு ரொம்ப... என்னிடம் வருகிறவர்களை, மரியாதையாக நாலு பேரோடு, சங்கு சப்தம் அல்லது வேத மந்திரம் சகிதமாகத்தான் நீண்ட பிரயாணமாக அனுப்புவது! என்ன, அர்த்தமாச்சா? உமக்கும் அந்த வழிதான்!</p>
+        <p>"ஹி! ஹி! ஹி!..."</p>
+        <p>என்ன கோரமான பிசாசுச் சிரிப்பு!</p>
+        <p>மறுபடியும்...</p>
+        <p>"இன்னும் சந்தேகமா? நம்ம 'டயரி'யை வாசிக்கிறேன், கேளும்!"</p>
+        <p>"உம்..."</p>
+        <p>"ஒரு ரஸமான காதற் கதை சொல்லட்டுமா?</p>
+        <p>"ஒரு வாலிபன். நல்ல அழகன். விஷம் உள்ளே போனதால் குடல் வெந்து புண். என் மடியில்தான் கிடத்தினார்கள். எங்கள் டாக்டர் பெரிய அசகாய சூரர்; இரண்டாவது பிரம்மா. புண் குணப்பட்டுத் தான் வருகிறது. ஆள்தான் கீழே போய்க் கொண்டிருக்கிறான். டாக்டர் முழிக்கிறார். எனக்குத் தெரியும் அவன் கதை; அவருக்குத் தெரியுமா? இரண்டு வாலிபர்கள், ஆனால் பெண் ஒருத்தி, இருவருக்கும் அவள் பேரில் ஆசை. அதிர்ஷ்டச் சீட்டு இவனுக்கு விழுந்தது. ஆனால் பெண் அவனைக் காதலிக்கிறாள்.</p>
+        <p>"பிறகு என்ன! அவனுக்குக் காதல், பெண், பஞ்சணை; இவனுக்குச் சோகம், விஷம், நான்! இவன் காதல் தெய்வீகமானது. காரியம் கைகடந்த பின் தெரிந்திருந்தாலும், திருமணம் என்று சொல்லுகிறார்களே அந்த மாற்றமுடியாத உரிமை, அதையுங்கூட விட்டுக் கொடுத்திருப்பான் - அவள் வாழ்க்கையின் இன்பத்தைப் பூர்த்தியாக்க, 'அவள் கை விஷத்தால் சாகிறோம்' என்ற குதூகலம் இருந்தால், பாரேன்! பிறகு... அன்று ராத்திரி மூடிய கண் சிறிது திறந்தது. ஒரு புன்சிரிப்பு. உதட்டின் மேல் அவள் பெயர். காற்றிற்கு ஒரு முத்தம். அவ்வளவு தான்!</p>
+        <p>"நன்றாயிருக்கிறதா?</p>
+        <p>"பிறகு... அவன் சிறு பையன். சத்தியாக்கிரகி வயிற்றில்... தடிக் கம்புக் குத்து. அவனுக்கும் வைத்தியம் நடந்தது. பாவி எமனும் அவனைப் பாத்துத்தான் அன்ன நடை நடக்கிறான்! பையனுக்குச் சாவின் மேல் எவ்வளவு ஆசை! நெஞ்சில் குண்டுபடவில்லையே என்ற பெரிய ஏக்கம். அதே புலம்பல்தான். என் கையில் ஒரு துப்பாக்கி இருந்தால்... சாவைக் கண்டதும் என்ன உற்சாகம்! காதலியைக் கண்டது போலத்தான். என்னமோ, 'ஸுஜலாம், ஸுபலாம்' என்று ஆரம்பித்தான். குரல்வளையில் கொர்ர் என்றது... பிறகு என்ன? அவன் தாயாராம், ஒரு விதவை; என்ன அழுகை அழுதாள்! - கருமஞ் செய்யத் தனக்கு ஆள் இல்லை என்றோ!</p>
+        <p>"ஹி! ஹி!! ஹி!!!</p>
+        <p>"இன்னும் ஒன்று சொல்லுகிறேன், கேள்...</p>
+        <p>"ரத்த பேதி கேஸ். அவன் ஒரு மில் கூலி. அப்பொழுது 'ஸீஸன் டல்' என் மேல்தான் கொண்டு வந்து கிடத்தினர். கூட நஞ்சானும் குஞ்சானுமாக எத்தனி உருப்படி! இத்தனைக்குமேல் இவனுடைய ஆயா ஒரு கிழவி. டாக்டர் வந்தார். வந்துவிட்டதையா கோபம்! 'கழுதையை இழுத்துக் கீழே போடு!' என்று கத்தினார். நானா விடுகிறவன்? ஒரே அமுக்கு ஆளை 'குளோஸ்' பண்ணித்தான் விட்டேன்!</p>
+        <p>"வேறு என்ன?</p>
+        <p>"நான் யார் தெரியுமா? சூ! கோழை, பயப்படாதே!</p>
+        <p>"நான் ஒரு போல்ஷிவிக்கி (அபேதவாதி)!</p>
+        <p>"ஹி! ஹி! ஹி!..."</p>
+        <p>மறுபடியும் அந்தக் கோரமான கம்பிப்பல் சிரிப்பு! யாரோ என்னை எழுப்பினார்கள்.</p>
+        <p>"ஏன் முனங்குகிறாய்? தூக்கம் வரும்படி மருந்து தரவா?" என்றாள், என் மேல் குனிந்து கொண்டிருந்த நர்ஸ்.</p>
+        <p>எங்கோ டக், டக், டக் என்ற பூட்ஸ் சப்தம். டாக்டரோ?</p>
+        <div class="subhead">ஆசிரியர் குறிப்பு</div>
+        <p>புதுமைப்பித்தன் என்ற புனைபெயர் கொண்ட சொ. விருத்தாசலம் (ஏப்ரல் 25, 1906 – சூன் 30, 1948), மிகச்சிறந்த தமிழ் எழுத்தாளர்களுள் ஒருவர். கூரிய சமூக விமர்சனமும் நையாண்டியும், முற்போக்குச் சிந்தனையும், இலக்கியச் சுவையும் கொண்ட இவருடைய படைப்புகள், இவரின் தனித்தன்மையினை நிறுவுகின்றன.</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">7</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  <span class="corner-bl">❈</span></div>
+
+  <!-- சங்க இலக்கியம் — page (placeholder; rebalance will distribute) -->
+  <div class="page sangam-section">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span><span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">சங்க இலக்கியம்</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="section-header">
+        <div class="topic-title">காந்தள் மலரின் அறம்</div>
+        <div class="topic-subtitle">மலைப் பாறைமேல் பூக்கும் செங்காந்தள்</div>
+        <div class="section-label-row">
+          <span class="lotus-icon">❀</span>
+          <span class="section-label">சங்க இலக்கியம்</span>
+          <span class="lotus-icon">❀</span>
+        </div>
+        <div class="title-underline"></div>
+      </div>
+      <div class="section-divider">•   •   •</div>
+      <div class="author-byline">இரா. கௌரிசங்கர்</div>
+      <div class="body-text">
+<p class="lead-para">கடந்த இதழில் சங்கத் தமிழரின் வாழ்வில் பிறப்பு முதல் இறப்பு வரை ஒரு மலர் இருந்ததைக் கண்டோம். நிலத்திற்கு மலர்ப் பெயர் வைத்தனர். போருக்கும், காதலுக்கும், கொடைக்கும், துயரத்துக்கும் மலரையே மொழியாகக் கொண்டனர். கபிலர் குறிஞ்சிப்பாட்டில் தொண்ணூற்றொன்பது மலர்களை அடுக்கும்போது, முதல் பெயராகச் சொன்னது ஒண்செங்காந்தள் (குறிஞ்சிப்பாட்டு 62). இந்த இதழில் அந்த ஒரே மலரை அருகில் வைத்துப் பார்ப்போம்.</p>
+        <p>அந்த மலர்தான் இன்று தமிழ்நாட்டின் மாநில மலர். மக்கள் இதனைச் செங்காந்தள் என்றும், கார்த்திகைப் பூ என்றும் அழைப்பர். மழை பெய்த பின்னர் மலைச் சாரலிலும் பாறை இடுக்கிலும் பூக்கும் கொடிமலர். மொட்டு முதலில் தாழ்ந்து தொங்கும். பிறகு இதழ்கள் மேலெழுந்து பின்னால் சுருளும். ஆறு இதழ்கள். செந்நிறம். ஓரத்தில் மஞ்சள் அலை. நடுவில் நீண்ட மகரந்தக் கம்பிகள் தீநாக்கு போல நீண்டிருக்கும். தூரத்திலிருந்து பார்த்தால் ஒரு சிறு தீ மலைமேல் நின்றது போலத் தோன்றும்.</p>
+        <p>அழகு மிகுந்தது. ஆனால் இந்தச் செடியின் எந்தப் பாகமும் உணவு அல்ல. கிழங்கில் நஞ்சு அதிகம். பார்த்து மகிழும் மலர். தோண்டிக் கொண்டு வரும் செடி அல்ல.</p>
+        <div class="subhead">பாறைமேல் ஒரு செந்தீ</div>
+        <figure class="article-figure img-half"><img src="Images/04-kandhal-hill.jpg" alt="மழைக்காலத்தில் மலைச் சாரலில் பூத்த செங்காந்தள்"><figcaption class="img-caption">மழைக்காலத்தில் மலைச் சாரலில் பூத்த செங்காந்தள்</figcaption></figure>
+        <p>சங்கப் புலவர் காந்தளைத் தோட்டப் பூவாகப் பாடவில்லை. பாறைமேல், கூட்டமாக, மழைக்காலத்தில் பூக்கும் மலராகப் பாடினார். மிளைவேள் தித்தன் என்னும் புலவர் சங்க நூலில் ஒரே ஒரு பாடல் பாடியிருக்கிறார். அந்த ஒரே பாடல் இன்றும் நம் கண்ணில் காந்தளை நிறுத்துகிறது. குறுந்தொகையில் (284):</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">பொருத யானைப் புகர்முகங் கடுப்ப</div><div class="verse-line">மன்றத்து உறுகல் மீமிசைப் பலவுடன்</div><div class="verse-line">ஒண்செங் காந்தள் அவிழும் நாடன்<span class="quote-cite"> — குறுந்தொகை 284</span></div></div></div>
+        <p>விளக்கம்: போரிட்ட யானையின் முகத்தில் புள்ளிகள் விழுந்திருக்கும். ஊர் மன்றத்தின் நடுவில் நிற்கும் பாறையும் அப்படித்தான். அதன் மேல் பல காந்தள் மலர்கள் ஒன்றாக அவிழ்ந்திருக்கும் நாட்டுத் தலைவன் என்று தோழி சொல்கிறாள். ஒரு மலரின் நிலையே ஒரு நாட்டின் அடையாளம்.</p>
+        <p>அந்தப் பாடல் ஒரு அழகு வருணனையோடு நிற்கவில்லை. திருமணத்துக்காகப் பொருள் தேடிச் சென்ற தலைவன் திரும்பி வருவானா என்று தலைவி வருந்துகிறாள். தோழி அவளைத் தேற்றுகிறாள். அந்த மலர் பூக்கும் சிறுகுடியின் மக்கள், தலைவன் வந்து மணந்தாலும் மணக்காவிட்டாலும், காத்திருக்கும் பெண்ணைப் பழிக்க மாட்டார்கள் என்று. மலர் இங்கே காட்சி மட்டும் அல்ல. ஒரு பெண்ணை வெளியே தள்ளாத ஊரின் அறமும் அதில் இருக்கிறது.</p>
+        <div class="subhead">கண்ணீரைத் துடைக்காத விரல்</div>
+        <figure class="article-figure img-right"><img src="Images/04-kandhal-viral.jpg" alt="மலர்ந்த இதழ் — அடியில் மஞ்சள், நுனியில் செம்மை"><figcaption class="img-caption">மலர்ந்த இதழ் — அடியில் மஞ்சள், நுனியில் செம்மை</figcaption></figure>
+        <p>புலவர்கள் இந்த மலரைக் கையோடு சேர்த்துப் பார்த்தனர். மொட்டு, விரல் நுனி போல. மலர்ந்த இதழ், கைகூப்பி நின்றது போல. உதிர்ந்த இதழ், உடைந்த வளையல் போல. மலைபடுகடாம் (519) உதிர்ந்த காந்தள் இதழை உடைந்த வளையலுக்கு ஒப்பிடுகிறது. பொருநராற்றுப்படை மலைமேல் பூத்த காந்தளை மென்மையான விரல் என்கிறது. சிறுபாணாற்றுப்படை செழுங்குலைக் காந்தள் கைவிரல் பூப்பது போல என்று சொல்கிறது.</p>
+        <p>அதே மெல்விரல் ஒரு மகிழ்ச்சியிலும் வருகிறது. கூடலூர் கிழார் பாடிய குறுந்தொகை (167) ஒரு இல்லறக் காட்சி. தலைவனும் தலைவியும் வாழும் வீட்டுக்குச் சென்று வந்த செவிலித்தாய் இதைச் சொல்கிறாள்.</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">முளிதயிர் பிசைந்த காந்தண் மெல்விரல்</div><div class="verse-line">கழுவுறு கலிங்கங் கழாஅது உடீஇக்</div><div class="verse-line">குவளை உண்கண் குய்ப்புகை கழுமத்</div><div class="verse-line">தான் துழந்து அட்ட தீம்புளிப் பாகர்</div><div class="verse-line">இனிதெனக் கணவன் உண்டலின்</div><div class="verse-line">நுண்ணிதின் மகிழ்ந்தன்று ஒண்ணுதல் முகனே<span class="quote-cite"> — குறுந்தொகை 167</span></div></div></div>
+        <p>விளக்கம்: முற்றிய தயிரைக் காந்தள் போன்ற மெல்லிய விரலால் பிசைந்தாள். கணவனுக்கு விரைவில் பரிமாற வேண்டும் என்ற விருப்பத்தில், அந்தக் கையைத் தன் ஆடையிலேயே துடைத்து, அதைத் துவைக்காமல் உடுத்துக்கொண்டாள். குவளை போன்ற மையுண்ட கண்களில் தாளிப்பின் புகை பட, தான் துழாவிச் சமைத்த இனிய புளிக் குழம்பை அவனுக்குப் பரிமாறினாள். இனிது என்று அவன் உண்டான். அந்தப் பாராட்டைக் கேட்டதும் ஒளிமிகுந்த அவள் நெற்றி சிறிதே பொலிந்தது. மகிழ்ச்சியை மிகுதியாகக் காட்டவில்லை. மறைக்கவும் இல்லை. நுண்ணிதின் மகிழ்ந்தாள்.</p>
+        <p>அந்த விரல் ஒரு அழுகையிலும் வருகிறது. வையாவிக் கோப்பெரும் பேகன் தன் துணைவியை விட்டு வேறு ஊரில் வாழ்ந்தார். அவள் அழுது நின்றாள். கபிலர் அதைக் கண்டு கடந்து போகவில்லை. யாழ் மீட்டியபடி அவளிடம் பேசினார். புறநானூற்றில் (144):</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">யாம் தன் தொழுதனம் வினவக் காந்தள்</div><div class="verse-line">முகை புரை விரலின் கண்ணீர் துடையா<span class="quote-cite"> — புறநானூறு 144</span></div></div></div>
+        <p>விளக்கம்: நான் வணங்கிக் கேட்டேன். அவள் காந்தள் மொட்டு போன்ற விரலால் கண்ணீரைத் துடைக்கவில்லை. பேசத் தொடங்கினாள். கபிலர் அந்தக் காட்சியைப் பேகனிடமே கொண்டு போய்ச் சொல்கிறார். ஒரு மலர் வருணனை இங்கே அழகுக்காக வரவில்லை. ஒருவர் அழுவதைப் பார்த்து, அமைதியாக நகர்ந்துவிடாமல், அவளுக்காகப் பேசிய புலவரின் கண் அது.</p>
+        <div class="subhead">இடம் கொடுக்கும் மொட்டு</div>
+        <p>காந்தளிடமிருந்து சங்கப் புலவர் கற்ற நுட்பமான பாடம் ஒன்று உண்டு. மொட்டு தானாகவே வெடித்து மலர்வதில்லை. வண்டு வந்ததும் இதழ் விலகி இடம் கொடுக்கிறது. கருவூர்க்கதப் பிள்ளை பாடிய குறுந்தொகையில் (265):</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">காந்தள் அம் கொழுமுகை காவல் செல்லாது</div><div class="verse-line">வண்டு வாய் திறக்கும் பொழுதில் பண்டும்</div><div class="verse-line">தாம் அறி செம்மைச் சான்றோர்க் கண்ட</div><div class="verse-line">கடன் அறி மாக்கள் போல இடன் விட்டு</div><div class="verse-line">இதழ் தளை அவிழ்ந்த ஏகல் வெற்பன்<span class="quote-cite"> — குறுந்தொகை 265</span></div></div></div>
+        <p>விளக்கம்: அழகிய கொழுத்த காந்தள் மொட்டு, தானாக மலரும்வரை காத்து நிற்காது. வண்டு வாய் திறக்கும் நேரத்தில் இதழ் விலகி இடம் தரும். முன்பு சான்றோரைக் கண்டதும் கடமை அறிந்து இடம் கொடுத்த மக்களைப் போல. அப்படிப்பட்ட மலை நாட்டுத் தலைவன் என்று தோழி சொல்கிறாள். தலைவி வருந்த, அவள் நிலையைத் தலைவனிடம் சொன்னதாகக் கூறி, அவன் நாணமுற்று விரைவில் வருவான் என்று தேற்றுகிறாள்.</p>
+        <p>இங்கே மலரின் இயல்பு ஒரு ஒழுக்கமாகிறது. அறிந்தவர் வந்தால், சிறியவர் வந்தால், விருந்தினர் வந்தால், இடம் கொடுப்பது. இதழ் தன் இடத்தை இழக்காது. வண்டுக்கும் இடம் கிடைக்கும். இரண்டுமே நிற்கும் ஒரு திறப்பு அது.</p>
+        <div class="subhead">முருகன் சூடிய மலர்</div>
+        <figure class="article-figure img-left"><img src="Images/04-kandhal-muruga.jpg" alt="நெருப்பு நிறத்தில் மலரும் செங்காந்தள்"><figcaption class="img-caption">நெருப்பு நிறத்தில் மலரும் செங்காந்தள்</figcaption></figure>
+        <p>குறிஞ்சி நிலத்தின் தெய்வமாகச் சங்கப் பாடல் முருகனைப் பாடும். அவன் சூடிய மாலையும் காந்தள்தான். நக்கீரரின் திருமுருகாற்றுப்படையில்:</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">மந்தியும் அறியா மரன்பயில் அடுக்கத்துச்</div><div class="verse-line">சுரும்பும் மூசாச் சுடர்ப்பூங் காந்தள்</div><div class="verse-line">பெருந்தண் கண்ணி மிலைந்த சென்னியன்<span class="quote-cite"> — திருமுருகாற்றுப்படை</span></div></div></div>
+        <p>விளக்கம்: குரங்கும் அறியாத மரமடர்ந்த மலைச் சரிவில், வண்டுகளும் நெருங்காத, தீ போன்ற காந்தள் மலர் பூக்கும். அந்த மலரின் பெரிய குளிர்ந்த மாலையைத் தலையில் சூடியவன் முருகன். மக்கள் பறித்து மாலை தொடுக்கும் பூ அல்ல இது. மலை தானே கொடுத்த பூ. அதைச் சூடிய தெய்வம், ஊருக்கு அப்பால் இருக்கும் காட்டின் காவலன்.</p>
+        <p>அதே மலரை வேறொரு கோணத்தில் குன்றம்பூதனார் பார்க்கிறார். பரிபாடலில் (18):</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">போர் தோற்றுக் கட்டுண்டார் கை போல்வ</div><div class="verse-line">கார் தோற்றும் காந்தள் செறிந்த கவின்<span class="quote-cite"> — பரிபாடல் 18</span></div></div></div>
+        <p>விளக்கம்: மழைக்காலத்தில் காந்தள் மொட்டு குவிந்து நிற்கும். அது போரில் தோற்று, கை கட்டப்பட்டவரின் குவிந்த கை போல இருக்கும் என்கிறார் புலவர். அடுத்த அடியில், அந்தக் கட்டை வண்டு வந்து அவிழ்ப்பதாகவும் சொல்கிறார். அழகை மட்டும் பாடாத கண் இது. ஒரு மொட்டிலேயே தோல்வியின் அசையாமையையும், பிறகு திறக்கும் நேரத்தையும் கண்ட கண்.</p>
+        <div class="subhead">கிழங்கு புரட்டிய மண் — விருந்து</div>
+        <p>காந்தளின் அறம் மலைமேல் மட்டும் நிற்கவில்லை. காட்டுப் பன்றி அதன் கிழங்கைத் தேடி மண்ணைப் புரட்ட, அந்த மண்ணில் விளைந்த உணவு ஒரு விருந்தாக மாறுகிறது. பிட்டங் கொற்றனைப் பாடி, கருவூர்க் கந்தப்பிள்ளைச் சாத்தனார் புறநானூற்றில் (168) சொல்கிறார்:</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">கறிவளர் அடுக்கத்து மலர்ந்த காந்தள்</div><div class="verse-line">கொழுங்கிழங்கு மிளிரக் கிண்டிக் கிளையொடு</div><div class="verse-line">கடுங்கண் கேழல் உழுத பூழி</div><div class="verse-line">நன்னாள் வருபதம் நோக்கிக் குறவர்</div><div class="verse-line">உழாஅது வித்திய பரூஉக்குரற் சிறுதினை<span class="quote-cite"> — புறநானூறு 168</span></div></div></div>
+        <p>விளக்கம்: மிளகுக் கொடி படர்ந்த மலைச் சரிவில் காந்தள் மலர்ந்திருக்கும். அதன் கொழுத்த கிழங்கு மின்னும்படி காட்டுப் பன்றி தன் கூட்டத்தோடு மண்ணைக் கிண்டும். அப்படிப் புரண்ட மண்ணில் குறவர் ஏர் பூட்டாமலே சிறுதினையை விதைப்பர். அது முந்து விளையும். அந்தப் புதிய தானியத்தையும் பாலையும் சேர்த்து, கூதளம் பூத்துக் கிடக்கும் முற்றத்தில், வாழை இலையில் பகுத்து, வருபவர்க்குக் கொடுப்பர்.</p>
+        <p>இந்தச் சங்கிலியை மெதுவாகப் படியுங்கள். ஒரு மலர். ஒரு கிழங்கு. ஒரு பன்றி புரட்டிய மண். உழாமல் விதைத்த தினை. வந்தவர்க்குப் பகுத்து வைத்த இலை. மலரின் கதை இறுதியில் ஒரு வீட்டின் வாசலில் முடிகிறது. கொடுப்பவர் யார் என்று பார்க்காத கொடை. கடந்த இதழில் பகன்றை மலர் சொன்னதும் இதுவே. கொடுக்காத வாழ்வு வெறுமை.</p>
+        <p>ஒன்று மட்டும் பிரித்து வைக்க வேண்டும். பாடல் சொல்லும் கிழங்கு பன்றியின் தேடல். நமது உணவு அல்ல. அழகுக்காகப் பாருங்கள். தோண்டி வீட்டுக்குக் கொண்டு வராதீர்கள். மலையிலேயே பூக்க விடுங்கள். இன்று காடுகளில் இந்த மலர் குறைந்து வருவதற்கு, பிடுங்கிச் செல்வதும் ஒரு காரணம். பார்த்துவிட்டு நடந்து செல்வதே அந்த மலருக்கு நாம் தரும் இடம்.</p>
+        <div class="subhead">நடைமுறைப் பயன்</div>
+        <p>காந்தள் நமக்குச் சொல்லும் செய்தி கடினம் அல்ல.</p>
+        <p>வண்டு வந்தால் இதழ் இடம் கொடுத்தது. வீட்டிலும், பள்ளியிலும், பேருந்திலும், ஒருவர் நம் முன் நின்றால் ஒரு அடி விலகுவோம். முதியவர் ஆகட்டும். குழந்தை ஆகட்டும். முதல் முறை வந்த விருந்தினர் ஆகட்டும். இடம் கொடுப்பது தோல்வி அல்ல. மொட்டு மலர்ந்த பிறகும் மலராகவே இருக்கிறது.</p>
+        <p>கண்ணீரைத் துடைக்காமல் நின்ற பெண்ணைக் கபிலர் கடந்து போகவில்லை. நம் அருகில் ஒருவர் அமைதியாக வருந்தினால், நாமும் கடந்து போகாதிருப்போம். ஒரு கேள்வி போதும். ஒரு இடம் போதும்.</p>
+        <p>மலைச் சாரலுக்குப் போகும் வாய்ப்பு வந்தால், பாறைமேல் செங்காந்தள் பூத்திருக்கிறதா என்று பாருங்கள். பெயர் தெரிந்த ஒரு மலர், பெயர் தெரியாத நூறு மலரை விட நெருக்கமானது. கபிலர் தொண்ணூற்றொன்பது பெயர் சொன்னார். நாம் இந்தக் கார்த்திகையில் ஒரே ஒரு பெயரை நினைவில் வைத்தால் போதும்.</p>
+        <p>வள்ளலார் காட்டும் வழியும் இங்கேதான் நிற்கிறது. உயிரெனும் உயிரிடமும் பாகுபாடின்றி அன்பு காட்டுதல். மலர் தன் நிறத்தைப் பாறைக்கும், வண்டுக்கும், மாலைக்கும், வந்த விருந்தினருக்கும் பகிர்ந்தது. யார் என்று கேட்கவில்லை. நாமும் கேட்க வேண்டாம். பகிர்ந்த ஒரு பிடி உணவும், பறிக்காமல் விட்ட ஒரு மலரும், ஒரே அறத்தின் இரண்டு பக்கங்கள்.</p>
+        <div class="subhead">முடிவுரை</div>
+        <p>முதல் இதழில் தாமரை சேற்றிலிருந்து தூய்மையாக எழுவதைக் கண்டோம். இரண்டாம் இதழில் ஒரு நாகரிகம் முழுவதும் மலர் சூடியிருந்ததைக் கண்டோம். இந்த இதழில் ஒரு பாறைமேல் ஒரு செந்தீ. அதன் பெயர் காந்தள். தமிழ்நாடு தன் மலராகக் கொண்டதும் இதுவே.</p>
+        <p>அது இடம் கொடுக்கும் மொட்டு. தயிர் பிசைந்து இனிதெனக் கேட்டு மகிழும் விரல். அழுகையைக் கவனிக்கச் சொல்லும் விரல். மழைக்காலத்தில் குவிந்து, பிறகு திறக்கும் கை. பன்றி கிழங்கைத் தேடிப் புரட்டிய மண்ணில் விளைந்து, வந்தவர்க்கு உணவாகும் தினை. இதையெல்லாம் ஒரு மலர் செய்கிறது என்று சங்கப் புலவர் பார்த்தார்கள். நாமும் பார்க்கலாம்.</p>
+        <p>இந்தப் புரட்டாசி மழை தீர்ந்து கார்த்திகை வரும்போது, மலைச் சாரலில் செங்காந்தள் பூக்கும். பார்க்கும்போது நினைவுகூருங்கள். இடம் கொடுங்கள். பகிருங்கள். பறிக்காமல் விடுங்கள்.</p>
+        <p>அடுத்த இதழில் உங்கள் எண்ணங்களைப் பகிருங்கள். நீங்கள் கண்ட ஒரு மலரின் பெயரை எழுதுங்கள். இணைந்து சங்க அறிவை வளர்ப்போம்.</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">8</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  <span class="corner-bl">❈</span></div>
+
+  <!-- தமிழகக் கலைகள் — page (placeholder; rebalance will distribute) -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span><span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">தமிழகக் கலைகள்</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="section-header">
+        <div class="topic-title">மரம் முதல் கற்றளி வரை</div>
+        
+        <div class="section-label-row">
+          <span class="lotus-icon">❀</span>
+          <span class="section-label">தமிழகக் கலைகள்</span>
+          <span class="lotus-icon">❀</span>
+        </div>
+        <div class="title-underline"></div>
+      </div>
+      <div class="section-divider">•   •   •</div>
+      <div class="author-byline">கு. திருமுருகன்</div>
+      <div class="body-text">
+<p class="lead-para">தமிழர் கோவில் கட்டிடக்கலை மற்றும் சிற்பக்கலை ஒரே நாளில் மாறியவை அல்ல. மரம் → செங்கல் → கல் → முழுமையான கற்றளி என்ற படிநிலைகளில், கட்டுமானத் தொழில்நுட்ப வளர்ச்சி, அரச ஆதரவு, சமய வளர்ச்சி, சிற்பிகளின் அனுபவம் ஆகியவற்றின் இணைப்பால் அவை படிப்படியாக வளர்ந்தன.</p>
+        <div class="subhead">1. மரக்கட்டிடக் கோவில்கள்</div>
+        <p>தமிழகத்தின் தொடக்ககால வழிபாட்டுத் தலங்களில் மரம், மூங்கில், மண், புல் போன்ற அழியும் பொருட்கள் பயன்படுத்தப்பட்டிருக்கலாம். இக்கட்டிடங்கள் காலப்போக்கில் அழிந்துவிட்டதால், அவற்றின் நேரடி சான்றுகள் மிகக் குறைவு.</p>
+        <p>அக்கால மரக்கட்டிடங்களின் சில வடிவமைப்பு மரபுகள் பின்னர் கல் கட்டிடங்களிலும் தொடர்ந்ததாகக் கருதப்படுகிறது. குறிப்பாக:</p>
+        <ul><li>தூண்கள் மற்றும் உத்திரங்களின் அமைப்பு</li><li>கூரை அமைப்பு</li><li>விமானத்தின் அடுக்குமுறை</li><li>கதவு, சாளர வடிவங்கள்</li><li>மரத்தில் செய்யப்பட்ட அலங்கார வடிவங்கள்</li></ul>
+        <p>பின்னர் இவை செங்கல் மற்றும் கல் கட்டிடங்களில் புதிய பொருட்களுக்கு ஏற்ப மாற்றப்பட்டன.</p>
+        <div class="subhead">2. செங்கல் கட்டிடக்கலை</div>
+        <p>மரக்கட்டிடங்களுக்குப் பின்னர் செங்கல், சுண்ணாம்பு, மண் போன்ற பொருட்களால் நிலையான கட்டிடங்கள் உருவாகத் தொடங்கின. சங்ககாலம் மற்றும் பிற்காலத் தமிழகத்தில் செங்கற் கோவில்கள் இருந்ததற்கான இலக்கிய மற்றும் தொல்லியல் சான்றுகள் காணப்படுகின்றன.</p>
+        <p>செங்கல் கட்டிடங்கள் மரத்தைக் காட்டிலும் நீடித்தவை. இதனால் கோவில்களின்:</p>
+        <ul><li>கருவறை</li><li>அர்த்தமண்டபம்</li><li>விமானம்</li><li>சுற்றுச்சுவர்</li></ul>
+        <p>போன்ற பகுதிகள் நிலையான வடிவம் பெறத் தொடங்கின.</p>
+        <p>ஆனால் செங்கல் மற்றும் சுண்ணாம்பு கட்டிடங்களும் காலநிலை, பராமரிப்பு குறைவு போன்ற காரணங்களால் சேதமடையக்கூடியவை.</p>
+        <div class="subhead">3. கல்லைப் பயன்படுத்திய கட்டிடக்கலை</div>
+        <figure class="article-figure img-right"><img src="Images/05-mandagapattu.jpeg" alt="மண்டகப்பட்டு குடைவரைக் கோயில் — முதலாம் மகேந்திரவர்மன்"><figcaption class="img-caption">மண்டகப்பட்டு குடைவரைக் கோயில் — முதலாம் மகேந்திரவர்மன்</figcaption></figure>
+        <p>பல்லவர் காலத்தில் தமிழகக் கோவில் கட்டிடக்கலையில் குறிப்பிடத்தக்க மாற்றம் ஏற்பட்டது. குறிப்பாக முதலாம் மகேந்திரவர்மன் காலத்தில் குடைவரைக் கோவில்கள் உருவாக்கப்பட்டன. மலையைக் குடைந்து கோவில் அமைக்கும் முறையிலிருந்து, கற்களை வெட்டி அடுக்கிக் கட்டும் முறைக்கு கட்டிடக்கலை படிப்படியாக நகர்ந்தது.</p>
+        <p>இதன் மூலம் சிற்பக்கலைக்கும் புதிய வாய்ப்புகள் கிடைத்தன.</p>
+        <figure class="article-figure img-left"><img src="Images/05-mamallapuram-relief.jpeg" alt="மாமல்லபுரத்தில் முதலாம் மகேந்திரவர்மன் புடைப்பு சிற்பங்கள்"><figcaption class="img-caption">மாமல்லபுரத்தில் முதலாம் மகேந்திரவர்மன் புடைப்பு சிற்பங்கள்</figcaption></figure>
+        <p>கல்லில்:</p>
+        <ul><li>தெய்வ உருவங்கள்</li><li>தூண்கள்</li><li>யாளி, சிங்கம் போன்ற வடிவங்கள்</li><li>துவாரபாலகர்கள்</li><li>மலர் மற்றும் கொடிச்சிற்பங்கள்</li><li>புராணக் காட்சிகள்</li></ul>
+        <p>ஆகியவற்றை நிரந்தரமாக வடிக்க முடிந்தது.</p>
+        <div class="subhead">4. குடைவரைக் கோவிலிலிருந்து கற்றளிக்கு</div>
+        <p>தமிழர் கட்டிடக்கலையின் மிக முக்கியமான முன்னேற்றம் குடைவரைக் கோவில் → ஒற்றைக்கல் கோவில் → கட்டுமானக் கற்கோவில் (கற்றளி) என்ற வளர்ச்சியாகும்.</p>
+        <p>பல்லவர்களின் காலத்தில்:</p>
+        <ol class="numbered-list"><li>முதலாம் மகேந்திரவர்மன் காலம் – குடைவரைக் கோவில் மரபு வளர்ச்சி</li><li>முதலாம் நரசிம்மவர்மன் காலம் – மாமல்லபுரத்தில் ஒற்றைக்கல் ரதங்கள் மற்றும் சிற்பக்கலை வளர்ச்சி</li><li>இரண்டாம் மகேந்திரவர்மன் மற்றும் முதலாம் பரமேஸ்வரவர்மன் காலம்</li><li>ராஜசிம்மன் (இரண்டாம் நரசிம்மவர்மன்) காலம் – கட்டுமானக் கற்கோவில்கள் பெரும் வளர்ச்சி</li><li>சோழர் காலம் – கற்றளி கட்டிடக்கலை மிகப் பெரிய அளவில் வளர்ச்சி</li></ol>
+        <p>என்ற பரிணாமத்தைப் பார்க்கலாம்.</p>
+        <p>மாமல்லபுரத்தின் பஞ்சரதங்கள் ஒற்றைக்கல்லைச் செதுக்கி கோவில் வடிவங்களை உருவாக்கிய முக்கியமான பரிசோதனைகளாக விளங்குகின்றன.</p>
+        <div class="image-pair-row"><figure class=""><img src="Images/05-pancha-ratham.jpeg" alt="மாமல்லபுரத்தில் ஒற்றைக்கல் ரதங்கள் — முதலாம் நரசிம்மவர்மன்"><figcaption class="img-caption">மாமல்லபுரத்தில் ஒற்றைக்கல் ரதங்கள் — முதலாம் நரசிம்மவர்மன்</figcaption></figure>
+        <figure class=""><img src="Images/05-shore-temple.jpeg" alt="கடற்கரை கோயில் — மாமல்லபுரம் — ராஜசிம்மன்"><figcaption class="img-caption">கடற்கரை கோயில் — மாமல்லபுரம் — ராஜசிம்மன்</figcaption></figure>
+        </div><figure class="article-figure img-half"><img src="Images/05-kailasanathar.jpeg" alt="காஞ்சிபுரம் கைலாசநாதர் கோவில் — ராஜசிம்மன்"><figcaption class="img-caption">காஞ்சிபுரம் கைலாசநாதர் கோவில் — ராஜசிம்மன்</figcaption></figure>
+        <p>காஞ்சிபுரம் கைலாசநாதர் கோவில் போன்ற கட்டுமானக் கற்கோவில்களில் தனித்தனி கற்களை வெட்டி, செதுக்கி, ஒன்றுடன் ஒன்று பொருத்தி கோவில் அமைக்கும் தொழில்நுட்பம் முதிர்ச்சி பெற்றது.</p>
+        <p>ஆதாரம்: தமிழர் வாழ்வியல் — தயவு முத்துஜோதி, பகுதி 80; இணையக் காணொளிகள், விக்கிப்பீடியா.</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">9</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  <span class="corner-bl">❈</span></div>
+
+  <!-- நூல் மதிப்புரை — page (placeholder; rebalance will distribute) -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span><span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">நூல் மதிப்புரை</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="section-header">
+        <div class="topic-title">வள்ளலார் பார்வையில் சனாதனம்</div>
+        <div class="topic-subtitle">மு. முத்துஜோதி</div>
+        <div class="section-label-row">
+          <span class="lotus-icon">❀</span>
+          <span class="section-label">நூல் மதிப்புரை</span>
+          <span class="lotus-icon">❀</span>
+        </div>
+        <div class="title-underline"></div>
+      </div>
+      <div class="section-divider">•   •   •</div>
+      <div class="author-byline">எம்.ஜோதிமணி</div>
+      <div class="body-text">
+<figure class="article-figure img-half"><img src="Images/06-nool-mathippurai-frontpage.jpeg" alt="வள்ளலார் பார்வையில் சனாதனம் — நூல் அட்டை"><figcaption class="img-caption">வள்ளலார் பார்வையில் சனாதனம் — நூல் அட்டை</figcaption></figure>
+        <p class="lead-para">நூல்: வள்ளலார் பார்வையில் சனாதனம்</p>
+        <p>நூலாசிரியர்: மு. முத்துஜோதி</p>
+        <p>பதிப்பகம்: மணிமேகலை பிரசுரம்</p>
+        <p>வெளியான ஆண்டு: 1 சனவரி 2023</p>
+        <p>பக்கங்கள்: 172</p>
+        <p>ISBN: 978-9395147545</p>
+        <p>'சனாதனம்' என்ற சொல்லும் 'சன்மார்க்கம்' என்ற சொல்லும் மிகுந்த ஆழமும், அதே சமயம் விவாதப் புள்ளிகளும் கொண்டவை. இந்த இரண்டுக்குமிடையே உள்ள மெல்லிய கோட்டை ஒரே நூலில் தேட விரும்பினால், "வள்ளலார் பார்வையில் சனாதனம்" ஒரு தெளிவான தொடக்கம்.</p>
+        <p>இதை எழுதிய மு. முத்துஜோதி சர்க்கரைத் துறையில் முதுகலை பயின்றவர். புது டெல்லியில் செயல் இயக்குனராய் இருந்து ஓய்வுபெற்ற இவர், "வாழ்நாள் சாதனையாளர் விருது" பெற்றவர். மூன்றாம் தலைமுறை சன்மார்க்கி. திக்கற்ற மாணவர்கள் இல்லமும் முதியோர் வாழ்வகமும் இணைந்த பெண்ணாடம் வள்ளலார் அறநிலையத்தின் நிறுவனத் தலைவர்.</p>
+        <p>எட்டுக்கும் மேற்பட்ட சிறு குறு நூல்கள் எழுதிய இவர், வள்ளலாரின் ஜீவகாருண்ய ஒழுக்கம் என்ற நூலை எளிமைப்படுத்தியவர். 50 ஆண்டுகளாக வரலாறு, தத்துவம், அறிவியல் மற்றும் சன்மார்க்க கருத்துக்களை எழுதியும் பேசியும் வகுப்புகளும் எடுத்து வருபவர். சன்மார்க்க வாழ்வியல் பயிற்சி அளித்து வருபவர். இந்நூலில் சுமார் 33 ஆய்வு நூல்களைத் துணைக்குக் கொண்டு ஐந்து அத்தியாயங்களில் தம் வாதத்தை முன்வைக்கிறார். வேதம் முழுவதையும் வாசிக்க இயலாத சாதாரண மக்களுக்கும் புரியும் வகையில், வேதத்தின் சாரத்தையும் அதில் சொல்லப்படாதவற்றையும் சுருக்கமாகத் தருகிறார்.</p>
+        <div class="subhead">மையப்பொருள்</div>
+        <p>நூலின் மையம், சனாதனத்தின் பெயரால் நடந்த அநீதியை வள்ளலார் எப்படிப் பார்த்தார் என்பதே. வரலாற்றுப் பின்னணியில் ஆசிரியர் முன்வைக்கும் நங்கேலி, முலைவரி சம்பவங்கள் வாசிப்பவர் நெஞ்சைப் பதறவைக்கின்றன. திருவாங்கூர் சமஸ்தானத்தில் சாதியக் கொடுமை நடந்தது. அதற்கு எதிராக நங்கேலி என்ற பெண் தன் மார்பகங்களையே அறுத்து எறிந்தாள். அந்த வீர வரலாற்றை ஆசிரியர், சனாதனத்தின் பெயரால் நடந்த அநீதிக்குச் சான்றாக முன்வைக்கிறார். மதம் மாறியவர்களுக்குத் தெளிவில்லை என்ற வழக்கமான வாதத்தை ஆசிரியர் வரலாற்று ரீதியாக மறுக்கிறார். தங்களுக்கு இழைக்கப்பட்ட இழிவுகளில் இருந்து தப்பிக்கவும், மானத்தோடு வாழவும், உடை அணியும் உரிமைக்காகவுமே மக்கள் மதம் மாறினார்கள் என்று உரக்கச் சொல்கிறார். இதற்கு நூல் காட்டும் எதிர்நிலை வள்ளலாரின் சுத்த சன்மார்க்கம். கடவுள் பல அல்ல; அவர் உருவமற்ற அருட்பெருஞ்ஜோதி. வழிபாடு சடங்குகளில் இல்லை; சீவகாருண்யத்தில் (உயிரிரக்கத்தில்) உள்ளது. "யாவரும் ஒரு இறைவனால் படைக்கப்பட்ட சகோதரர்களே" என்ற சமரச உணர்வு மேலோங்க வேண்டும் என்று ஆசிரியர் முடிக்கிறார்.</p>
+        <div class="subhead">மொழிநடை மற்றும் கட்டமைப்பு</div>
+        <p>ஐந்து அத்தியாயங்கள். முதலாவது 'சனாதனம்' என்றால் என்ன என்பதைத் தெளிவாக விளக்குகிறது. இரண்டாவது 'சன்மார்க்கம்', "சிவனும் திருமாலும் வேதத்தில் இல்லை" என்ற வரியுடன் தொடங்குகிறது. வைதீக மரபு காட்டும் உருவங்களும் கதைகளும் பிற்காலத்தில் கற்பிக்கப்பட்டவை என்பதை ஆசிரியர் ஆதாரங்களுடன் நிறுவுகிறார்.</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">கலையுரைத்த கற்பனையே நிலைஎனக் கொண்டாடும்</div><div class="verse-line">கண்மூடி வழக்கமெல்லாம் மண்மூடிப் போக!<span class="quote-cite"> — வள்ளலார்</span></div></div></div>
+        <p>இந்த வரியை வைத்து, புராணங்களில் சொல்லப்படும் கடவுள்களின் மனித உருவங்கள், சண்டைகள், திருமணங்கள் மற்றும் ஆயுதங்களை அவர் ஏன் "சிறுபிள்ளை விளையாட்டு" என்றார் என்று விளக்குகிறார். நல்லதங்காள், சந்திரமதி, கண்ணகி கதைகள் சாமானிய மனிதர்களுக்கு "தன்னைப் போலவே ஒருத்தி துன்பப்பட்டாள்" என்ற மன ஆறுதலைத் தருவதாகவும் ஆசிரியர் விளக்குகிறார்.</p>
+        <div class="subhead">வெளிப்படுத்தும் கருத்து</div>
+        <p>வள்ளலார் கடவுள் உணர்வுக்கு எதிரானவர் அல்லர்; அறிவுப் புரட்சியாளர். "அணுவில் அமைந்த பேரொளியே" என்று அவர் பாடியது நவீன அறிவியலோடு ஒத்துப்போவதை நூல் சுட்டிக்காட்டுகிறது. சூரியன் ஒரு உண்மைப் பொருள்; அதன் வெப்பம் அறிவியல் உண்மை. ராகு-கேது கதைகள் வெறும் நம்பிக்கை சார்ந்தவை. உண்மை என்பது நிலையானது; நம்பிக்கை என்பது கற்பனையானது. ஒரு சிலையைப் பார்ப்பதற்குப் புறக்கண்கள் போதும்; உள்ளே இறைவனைக் காண அகக்கண் வேண்டும். உபநிடதங்களும் பிரம்மசூத்திரமும் பேசும் உயர் ஞானத்தை வெறும் 5% அறிவுஜீவிகளிடம் சிறைவைத்து, மீதமுள்ள 95% மக்களுக்குப் புராணக் கதைகளையும் அர்த்தமற்ற சடங்குகளையும் மட்டுமே 'மதம்' என்று போதிப்பதை ஆசிரியர் கடுமையாகச் சாடுகிறார். வேள்வித் தீயில் உயிர்களைப் பொசுக்குவதை விட, பசியோடு இருப்பவருக்கு ஒரு பிடி சோறு போடுவதே உண்மையான ஆன்மீகம். ஏழையின் பசியைப் பார்க்காமல் மந்திரங்கள் ஓதுவோரை நோக்கி வள்ளலார் "வட்டிமேல் வட்டிகொள் மார்க்கத்தில் நின்றீர்" என்று பாடினார். வைதீக மரபு காட்டிய ஆடம்பர வழிபாடுகளை வள்ளலார் "பிராக்கு பார்த்தல்" என்று சாடினார்.</p>
+        <div class="subhead">நூலின் மேன்மை</div>
+        <p>நூலின் இறுதியில், 'சச்சிதானந்தம்' என்ற சொல்லுக்கு மூலமாக விளங்குவது தமிழின் 'மெய்யறிவானந்தம்' (மெய்-அறிவு-ஆனந்தம்) என்று ஆசிரியர் நிறுவுகிறார். சுத்த சன்மார்க்கம் இந்த மண்ணின் ஆதி இயற்கை அறிவு; அது சனாதனத்திற்கும் முற்பட்டது என்று வாதிடுகிறார். சமூகத்தைச் சீரமைக்க மூன்று பரிந்துரைகள்: பிறப்பு வழி உயர்வு-தாழ்வு ஒழிய வேண்டும், மொழிச் சமத்துவம் பேணப்பட வேண்டும், "யாவரும் ஒரு இறைவனால் படைக்கப்பட்ட சகோதரர்களே" என்ற உணர்வு மேலோங்க வேண்டும். 19-ஆம் நூற்றாண்டின் அறிவுப் புரட்சியை 21-ஆம் நூற்றாண்டின் சூழலுக்கு ஏற்பத் தொகுத்திருப்பது இந்நூலின் சிறப்பு. புராண இருளில் சிக்கிக் கிடப்பவர்களுக்கு இந்தப் புத்தகம் ஒரு ஒளிவிளக்கு.</p>
+        <div class="subhead">நடைமுறைப் பயன்</div>
+        <p>பசியோடு இருப்பவருக்கு ஒரு பிடி சோறு போடுவதே உண்மையான ஆன்மீகம் என்ற நிலையைப் பேரக்குழந்தைகளுடன் பகிர்ந்து பேசலாம். அந்த உரையாடலை "யாவரும் ஒரு இறைவனால் படைக்கப்பட்ட சகோதரர்களே" என்ற வரியில் தொடங்கலாம். இது மூத்தோருக்கும் இளையோருக்கும் பொதுவான அனுபவமாக அமையும்.</p>
+        <div class="subhead">யாருக்கு ஏற்றது</div>
+        <p>சனாதனம் என்ற போர்வையில் புகுத்தப்படும் கற்பனைகளையும், சன்மார்க்கம் காட்டும் வாழ்வியல் உண்மையையும் பிரித்தறிய விரும்புவோர்க்கு ஏற்ற நூல். வள்ளலாரின் சீவகாருண்யத்தை வீட்டில் பேச விரும்பும் மூத்தோருக்கும், அதே சகோதர உணர்வை இன்றைய வாழ்வில் வைத்துப் பார்க்கும் இளையோருக்கும் பொருந்தும்.</p>
+        <p>எங்கு கிடைக்கும்: பெண்ணாடம் வள்ளலார் அறநிலைய அலுவலகம் — கைப்பேசி: 9788033666</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">10</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  <span class="corner-bl">❈</span></div>
+
+  <!-- ஓர் ஒழுக்கம் — page (placeholder; rebalance will distribute) -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span><span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">ஓர் ஒழுக்கம்</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="section-header">
+        <div class="topic-title">தந்த சுத்தி — வழலை நீக்கல்</div>
+        
+        <div class="section-label-row">
+          <span class="lotus-icon">❀</span>
+          <span class="section-label">ஓர் ஒழுக்கம்</span>
+          <span class="lotus-icon">❀</span>
+        </div>
+        <div class="title-underline"></div>
+      </div>
+      <div class="section-divider">•   •   •</div>
+      <div class="author-byline">ஏ. ஹரிஹரன்</div>
+      <div class="body-text">
+<p class="lead-para">அன்பு வணக்கம்!</p>
+        <p>தமிழர் வாழ்வில் அறமும் ஒழுக்கமும் இயல்பாய்ப் பின்னிப் பிணைந்த ஒன்று. எளிய மக்கள் கூட இயல்பாய்ப் பல அறங்களையும் ஒழுக்கங்களையும் பின்பற்றுவதை இன்றும் காண இயலும்.</p>
+        <p>அருள் நெறியான சன்மார்க்க நெறியில் பயணிக்க வள்ளற் பெருமான் 28 ஒழுக்கங்களை நமக்குக் கொடுத்திருக்கிறார். இவ்வொழுக்கங்களை நம் வாழ்வில் எவ்வாறு எளிமையாகக் கடைப்பிடிக்கலாம் என்பதை ஒவ்வொன்றாகப் பார்த்து வருகிறோம். இக்கட்டுரைகளுக்கு ஆதாரமாக விளங்குவது பெண்ணாடம் வள்ளலார் அறநிலைய நிறுவனர் தயவுத்திரு முத்துஜோதி ஐயா அவர்களின் உரையாகும்.</p>
+        <div class="subhead">ஒழுக்கத்தின் முக்கியத்துவம்:</div>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">ஒழுக்கம் விழுப்பம் தரலான் ஒழுக்கம்</div><div class="verse-line">உயிரினும் ஓம்பப் படும்<span class="quote-cite"> — திருக்குறள் 131</span></div></div></div>
+        <p>உயிரினும் மேலாகப் போற்றப்பட வேண்டியது ஒழுக்கம் என்கிறார் வள்ளுவப் பெருந்தகை. ஒழுக்கம் என்பது என்ன? மழை பெய்யும்போது கூரையிலுள்ள நீர் ஒரு வழியைக் கண்டுபிடித்துத் தொடர்ந்து ஒழுகுவது போல், மனம் அறிவைக் கொண்டு நல்வழியைத் தொடர்ந்து பின்பற்றுவது ஒழுக்கம். உயிரிரக்கத்தை வலியுறுத்தும் வள்ளற்பெருமான் உயிர்க்கருணை என்று சொல்லாமல் ஜீவகாருண்ய ஒழுக்கம் என்று சொல்கிறார்.</p>
+        <div class="subhead">மூன்றாம் ஒழுக்கம்</div>
+        <p>கடந்த இரண்டு இதழ்களில் முறையே அதிகாலைத் துயில் எழல் மற்றும் மலசலம் கழித்தல் என்ற இரு ஒழுக்கத்தின் இன்றியமையாமையைக் கண்டோம். இவ்விதழில் தந்த சுத்தி செய்தல் (பல் தூய்மை செய்தல்) மற்றும் வழலை நீக்குதலின் முக்கியத்துவத்தைக் காண்போம்.</p>
+        <div class="subhead">தந்த சுத்தி செய்தல்</div>
+        <p>யானைக்குத் தந்தம் இருப்பது போல் நமக்கு இருக்கும் தந்தம்தான் நமது பற்கள். இரவு முழுதும் தூக்கத்தில் வாயும் நாக்கும் அசையாமல் பல் இடுக்குகளில் அழுக்கு (கிருமி) சேருவதால் அதிகாலை எழுந்தவுடன் தந்த சுத்தி (பல் தூய்மை) செய்தல் அவசியம்.</p>
+        <div class="subhead">பாரம்பரிய பற்தூரிகை</div>
+        <p>நம் முன்னோர்கள் ஆலங்குச்சி, வேலங்குச்சி கொண்டு பல் தூய்மை செய்தார்கள். இதில் இரண்டு நன்மை உண்டு. ஒன்று, வாயில் போட்டு மெல்லும்போது பற்தூரிகை போலாகி பல்லின் இடுக்கில் உள்ள அழுக்கு வெளியேறும். இரண்டு, அதன் சாரம் இறங்கி உடலுக்கு நன்மை செய்யும். எனவேதான்</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">ஆலும் வேலும் பல்லுக்குறுதி</div><div class="verse-line">நாலும் இரண்டும் சொல்லுக்குறுதி</div></div></div>
+        <p>என்ற வாய்மொழி வந்தது.</p>
+        <p>நாலு என்பது நாலடியார் இரண்டு என்பது திருக்குறள். நாலடியாரும் திருக்குறளும் அறவாழ்க்கைக்கு உறுதிப்பொருளாயிருப்பது போல் ஆலங்குச்சியும் வேலங்குச்சியும் பல்லுக்கு உறுதி அளிக்கிறது.</p>
+        <div class="subhead">மாற்று வழி</div>
+        <p>நகரங்களில் இக்குச்சிகளைத் தேடுவதற்கு மாற்றாக பற்தூரிகை கொண்டு கடைகளில் கிடைக்கும் மூலிகைப் பற்பொடிகளைப் பயன்படுத்திப் பல் தூய்மை செய்யலாம்.</p>
+        <p>அடுத்து கரிசாலை இலை அல்லது கரிசாலைத் தூள் கொண்டு பல்லில் தேய்க்க வேண்டும். கரிசாலையின் துவர்ப்பு, காரம் உட் செல்ல வேண்டும். அதன் பின் 4 கரிசாலை இலையை மென்று விழுங்க வேண்டும்.</p>
+        <div class="subhead">வழலை நீக்குதல்</div>
+        <p>கரிசாலை இலையின் பின்பகுதி சொரசொரப்பாக இருக்கும். சூரிய ஒளிபடும் மேற்பகுதி மென்மையாய் இருக்கும். இலையைக் கழுவி கட்டை விரலில் (ஆள்காட்டி விரல்) மென்மையான பகுதியை வைத்தால் ஒட்டிக் கொள்ளும். அப்படியே சொரசொரப்பான பகுதியைக் கொண்டு அடி நாக்கிலும் உள் நாக்கிலும் தேய்க்க வேண்டும். இதைச் செய்யும்போது கண்ணில் பித்த நீரும் வாய் வழியே கப நீரும் வெளியேறும். வாய் வழியே வெளியேறும் கபநீருக்குக் கோழை என்று பெயர்.</p>
+        <div class="subhead">கோழை பெயர்க்காரணம்</div>
+        <p>கோழை என்பது பொருத்தமான பொருளுடைய சொல். எப்படி எனில் வீரன் தெருவில் இறங்கித் துணிந்து சண்டைக்கு வருவான். சாது வீட்டுக் கதவைப் பூட்டிக் கொண்டு அமைதியாய் உள்ளே இருப்பான். கோழையோ கதவைக் கொஞ்சமாய்த் திறந்து வைத்து வெளியேயும் வராமல் உள்ளேயும் அமைதியாய் இல்லாமல் வாசலில் நின்றுகொண்டு சத்தம்போட்டுக் கொண்டிருப்பான். அதுபோல் தொண்டையில் உள்ள கப நீரானது நுரையீரலுக்குள் சளியாகவும் இல்லை, வாயில் எச்சிலாகவும் இல்லாமல் இடையில் இருப்பதால் கோழை எனப்படுகிறது.</p>
+        <div class="subhead">சளியும் மரணமும்</div>
+        <p>இந்தக் கோழையே நுரையீரலில் சளியாகச் சேர்கிறது. இதை முளையிலேயே (கோழையாக இருக்கும்போதே) கிள்ளி எறிய நினைத்த வள்ளற் பெருமான் வழலை நீக்க வற்புறுத்துகிறார்.</p>
+        <p>சன்மார்க்கத்துக்குப் பெரும் தடை சளி. எப்படி எனில் ஒருவர் எந்த நோயால் மரணித்தாலும் ஒரு துளி சளிதான் அவரின் மூச்சை நிறுத்தும். பெருமான் அந்தச் சளியை வேரறுக்க நினைக்கிறார்.</p>
+        <p>பெருமான் இதை அகவலில்</p>
+        <div class="slim-quote"><div class="quote-text"><div class="verse-line">ஐயமும் திரிபும் அறுத்து எனதுடம்பினுள்</div><div class="verse-line">ஐயமும் நீக்கிய அருட்பெருஞ்ஜோதி<span class="quote-cite"> — அருட்பெருஞ்ஜோதி அகவல்</span></div></div></div>
+        <p>என்கிறார்.</p>
+        <p>முதலடியில் உள்ள ஐயம் மனத்திலுள்ள ஐயம் (சந்தேகம்). இரண்டாம் அடியில் உள்ள ஐயம் உடலில் உள்ள சளியைக் குறிக்கிறது.</p>
+        <p>அருட்பெருஞ்ஜோதி ஆண்டவர் வள்ளற்பெருமானின் மனத்தில் உள்ள ஐயத்தையும் உடலிலுள்ள ஐயத்தையும் (சளியையும்) நீக்கியருளியதாகக் கூறுகின்றார்.</p>
+        <div class="subhead">அக ஜீவகாருண்யம்</div>
+        <p>பசி நீக்கல் என்பது பிறருக்கு நாம் செய்வது — புற ஜீவகாருண்யம். நாம் காணும் ஒழுக்கங்கள் நம் உடலுக்கு நாம் செய்யும் அக ஜீவகாருண்யம். புற ஜீவகாருண்யத்தோடு அக ஜீவகாருண்யத்தையும் பழகுவோம்.</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">11</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  <span class="corner-bl">❈</span></div>
+
+  <!-- மனம் தொடர் — page (placeholder; rebalance will distribute) -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span><span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">மனம் தொடர்</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="section-header">
+        <div class="topic-title">மனம் எனும் ஏணி</div>
+        <div class="topic-subtitle">பகுதி 2</div>
+        <div class="section-label-row">
+          <span class="lotus-icon">❀</span>
+          <span class="section-label">மனம் தொடர்</span>
+          <span class="lotus-icon">❀</span>
+        </div>
+        <div class="title-underline"></div>
+      </div>
+      <div class="section-divider">•   •   •</div>
+      <div class="author-byline">ம. அபிராமி</div>
+      <div class="body-text">
+<p class="lead-para">"படிப்படியாய் சன்மார்க்கம் அறிவோம்" தொடரின் முந்தைய இதழில், மு. முத்துஜோதி ஐயா அளித்த 236-வது வகுப்பின் முதல் பாதியைக் கண்டோம் — வள்ளலாரின் "எல்லா உயிர்களும் இன்புற்று வாழ்க" எனும் அழைப்போடு தொடங்கி, ஐன்ஸ்டீனை ஒரு மகரிஷியாகக் கண்டு, தொல்காப்பியர் டார்வினுக்கு 3300 ஆண்டுகள் முன்பே அறிவின் படிநிலைகளை விளக்கியதைக் கண்டு, "மன்-மனம்-மனிதன்" என்ற மொழித் தொடர்பையும் அறிந்தோம். மனம் எனும் ஆறாம் அறிவுதான் மனிதனை மற்ற உயிரினங்களிலிருந்து பிரிக்கிறது என்பதே அன்றைய பாடம். இன்று, அதே வகுப்பின் இரண்டாம் பாதியில், அந்த மனத்தை எப்படிச் சரியாகப் பயன்படுத்துவது என்பதைக் காண்போம்.</p>
+        <div class="subhead">பகுத்தறிவு — இரண்டு விதங்கள்</div>
+        <p>நாம் எல்லோரும் நம்மை "பகுத்தறிவாளர்கள்" என்று பெருமையாகச் சொல்லிக் கொள்கிறோம். ஆனால் உண்மையிலேயே பகுத்தறிவு என்றால் என்ன? உண்ணத்தக்கது எது, உண்ணத்தகாதது எது என்று பிரித்தறிவது மட்டும் பகுத்தறிவு எனில், அது ஒரு மாட்டுக்கும் இருக்கிறது, ஒரு தேனீக்கும் இருக்கிறது. அது வெறும் உலகியல் பகுத்தறிவு.</p>
+        <p>மெய்ஞானிகள் பேசும் பகுத்தறிவு வேறு. "இந்த உலகில் நிலைத்து நிற்பது எது? உண்மைப் பொருள் எது? அழிந்து போவது எது?" என்று பிரித்தறிவதுதான் அசலான பகுத்தறிவு. இதுதான் மனிதனுக்கு மட்டும் உரிய ஆறாம் அறிவு. மனத்தின் உண்மையான பயன் என்னவென்றால், இந்த உலகின் மெய்ப்பொருளை உணர்ந்து, அதன்படி வாழ்வதுதான்.</p>
+        <p>இதை ஒரு சிறு உதாரணத்தால் புரிந்துகொள்ளலாம். நாம் நாள்தோறும் பணம், புகழ், உறவுகள், உடைமைகள் என எத்தனையோ விஷயங்களைத் தேடி ஓடுகிறோம். இவை அனைத்துமே ஒரு நாள் மாறும், அல்லது நம்மை விட்டு நீங்கும் என்பதை நாம் அறிவோம். ஆனாலும், நிலையற்றதையே நிலையானதாக நினைத்து ஓடுவதுதான் நம் சோகத்திற்குக் காரணம். எது மாறாதோ, எது எப்போதும் நம்முடன் இருக்குமோ, அதைத் தேடி அறிவதே மெய்ஞானிகள் காட்டும் பகுத்தறிவு. இந்தப் பிரித்தறியும் திறனை நாம் தினமும் இழக்காமல் காத்துக் கொள்வதுதான் ஆன்மீக முதிர்ச்சி என்று சொல்லலாம்.</p>
+        <div class="subhead">மனம் நமக்குப் பேயுமாகலாம், ஏணியுமாகலாம்</div>
+        <p>ஒரு கேள்வி எழலாம் — மனிதனை மற்ற உயிரினங்களிலிருந்து வேறுபடுத்திக் காட்டுவது எது? பதில் தெளிவு: மனம் எனும் பகுத்தறிவும், சிந்திக்கும் திறனும்தான். "தான்" என்ற உணர்வு — தன்னைத்தானே அறியும் பிரக்ஞை — மனிதனுக்கு மட்டுமே உரியது.</p>
+        <p>ஆனால் இந்த மனமே நமக்குப் பேயாகவும் மாறிவிடும் அபாயம் இருக்கிறது. புலன் இன்பங்களில் மட்டும் திளைத்திருக்கும் மனம், சரியான திசையில் திருப்பப்பட்டு, புருவ மத்திக்குள் (இரு கண்களுக்கும் நடுவே) சென்று சேரும்போது, அதுவே அருள்நிலையாக மாறுகிறது என்று சேலம் முருகேசன் அவர்கள் அழகாக விளக்குகிறார். புலனின்பம் தேடும் அதே மனம், திசை மாறினால், இறையருளைத் தேடும் கருவியாகவும் மாறும்.</p>
+        <p>இந்த மனத்தை அளவுக்கு மீறிச் செலுத்தி, அது நம்மை ஆட்டிப்படைக்காமல் பார்த்துக் கொள்ள வேண்டும் என்று திருஞானசம்பந்தர் "மிக்குச் சோதியல்" என்று எச்சரிக்கிறார் — அதிகமாகச் சிந்தித்து, மனதை அலைக்கழிக்கக் கூடாது என்பது பொருள். புத்தர் ஞானம் அடையும் தருணத்திலும் அவரது மனமே பல மாயக் காட்சிகளையும் சோதனைகளையும் காட்டி அவரைத் திசை திருப்ப முயன்றது என்பதை நினைவுகூருங்கள். இறுதி நிலையில் ஏழு திரைகள் அவரை மிரட்டிப் பார்த்தனவாம். அந்தத் திரைகளைக் கிழித்துச் செல்பவனே மெய்ஞானியாகிறான்.</p>
+        <p>வகுப்பின் இறுதியில் நடந்த கேள்வி-பதில் நேரத்திலும் இந்த டார்வின்-தொல்காப்பியர் ஒப்பீடு மீண்டும் விவாதத்திற்கு வந்தது. பங்கேற்பாளர்கள் எழுப்பிய கேள்விகளுக்கு ஐயா அளித்த தெளிவு இதுதான் — டார்வின் பேசியது உடல் வலிமையையும், சூழ்நிலைக்கு ஏற்ற தகுதியையும் பற்றி; ஆனால் மனிதன் வளர்ந்தது உடல் வலிமையால் அல்ல, மனம் எனும் அறிவினால்தான். இந்த வேறுபாட்டைத் தெளிவாகப் புரிந்துகொள்வதே, நாம் நம்மை மிருகங்களிலிருந்து பிரித்துப் பார்க்கும் முதல் படி.</p>
+        <div class="subhead">ராமானுஜம் — சலிப்பில்லாத பயணம்</div>
+        <p>நமது தேடலில் நாம் வெற்றி பெற வேண்டுமெனில், லட்சியத்தில் தெளிவும், அதன் மேல் அசைக்க முடியாத ஈடுபாடும் தேவை. கணித மேதை ராமானுஜத்தை எடுத்துக் கொள்ளுங்கள். இறக்கும் தருவாயில் கூட அவர் கணக்குப் பலகையை விடவில்லை. தன் லட்சியத்தின் மீது அவருக்கு இருந்த அந்த அளவற்ற ஈடுபாடே, அவருக்குச் சலிப்பு (Boredom) என்பதையே அறியாமல் செய்துவிட்டது. அவர் கண்டெடுத்த அந்தச் சூத்திரங்கள் எல்லாம், அவருடைய மனம் புற உலகைக் கடந்து ஓர் ஆழ்ந்த மூலத்துடன் இணைந்திருந்ததன் அடையாளமே. நாமும் நம் ஆன்மீகப் பயணத்தில் இதே ஈடுபாட்டையும், சலிப்பின்மையையும் வளர்த்துக் கொள்ள வேண்டும் என்பதே இந்த வாழ்க்கை வரலாறு நமக்குச் சொல்லும் பாடம்.</p>
+        <div class="subhead">நடைமுறைப் பயன்</div>
+        <p>இத்தனை ஆழமான தத்துவங்களையும் நாம் அன்றாட வாழ்வில் எப்படிக் கடைப்பிடிப்பது?</p>
+        <p>முதலில், நம் மனம் எதைத் தேடிக் கொண்டிருக்கிறது என்று தினமும் சிறிது நேரம் அமைதியாக அமர்ந்து கவனிக்கப் பழகுங்கள். வயதான பெற்றோர் தங்கள் அனுபவ ஞானத்தை இதில் நினைவுகூரலாம்; இளையவர்கள் இதை ஒரு புதிய பயிற்சியாகத் தொடங்கலாம் — இருவருக்குமே இது பொருந்தும் ஒரு பாடம்.</p>
+        <p>இரண்டாவதாக, ஒவ்வொரு முடிவெடுக்கும் போதும் — இது நிலையானதா, நிலையற்றதா என்று ஒரு நொடி தன்னைக் கேட்டுக் கொள்ளுங்கள். மூன்றாவதாக, தொல்காப்பியர் காட்டிய பணிவை நினைவில் கொள்ளுங்கள் — நாம் அறிந்தது நம் சொந்தச் சாதனை அல்ல, நமக்கு முன் வாழ்ந்த ஞானிகளின் தொடர்ச்சி என்பதை உணருங்கள். நான்காவதாக, ராமானுஜம் காட்டிய அர்ப்பணிப்பை நம் ஆன்மீகப் பயிற்சியிலும் கொண்டு வாருங்கள் — தினமும் சிறிது நேரமேனும் தியானத்திலோ, வேண்டுதலிலோ, சுயபரிசோதனையிலோ செலவிடுங்கள். இந்தச் சிறு பழக்கங்களும் சேர்ந்தால், நம் மனம் மெல்ல மெல்ல ஒரு பேயிலிருந்து ஓர் ஏணியாக மாறத் தொடங்கும்.</p>
+        <div class="subhead">முடிவுரை</div>
+        <p>அன்பு நேயர்களே, நம் உடம்பு ஒரு புதிர்ப் பெட்டி என்றால், அதைத் திறக்கும் சாவி நம்மிடமே இருக்கிறது — அதுதான் நம் மனம். அந்தச் சாவியைச் சரியாகப் பயன்படுத்தத் தெரிந்தால், புலன் இன்பங்களைக் கடந்து, நிலையான உண்மையை, அருள்நிலையை நோக்கிச் செல்லலாம். தவறாகப் பயன்படுத்தினால், அதே மனம் நம்மை மாயையில் அலைக்கழித்துக் கொண்டே இருக்கும். "படிப்படியாய் சன்மார்க்கம் அறிவோம்" தொடரின் இந்த முதல் இரு பாடங்கள், நமக்கு ஒரு அழைப்பு விடுக்கின்றன — நம் அக உலகைத் திறந்து பார்க்க, நம்மையே அறிந்து கொள்ள. அடுத்த இதழ்களில், மனத்திற்கும் உள்ளத்திற்கும் இடையே இருக்கும் அந்த நுட்பமான வேறுபாட்டையும், இந்தத் தொடரின் அடுத்த வகுப்புகளையும் தொடர்ந்து பார்ப்போம்.</p>
+        <p>(தொடரும்...)</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">12</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  <span class="corner-bl">❈</span></div>
+
+  <!-- இயற்கை தரும் இன்பம் — page (placeholder; rebalance will distribute) -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span><span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">இயற்கை தரும் இன்பம்</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="section-header">
+        <div class="topic-title">குறிஞ்சி நிலம் — மலையும் ஏரியும்</div>
+        <div class="topic-subtitle">இயற்கையின் கவிதை</div>
+        <div class="section-label-row">
+          <span class="lotus-icon">❀</span>
+          <span class="section-label">இயற்கை தரும் இன்பம்</span>
+          <span class="lotus-icon">❀</span>
+        </div>
+        <div class="title-underline"></div>
+      </div>
+      <div class="section-divider">•   •   •</div>
+      <div class="author-byline">தொகுப்பு: ஆசிரியர் குழு</div>
+      <div class="body-text">
+<figure class="article-figure img-banner"><img src="Images/09-iyarkai-emerald-lake-ooty.jpeg" alt="உதகமண்டலம் மரகத ஏரியைச் சுற்றியுள்ள தேயிலைத் தோட்டங்கள்"><figcaption class="img-caption">உதகமண்டலம் மரகத ஏரியைச் சுற்றியுள்ள தேயிலைத் தோட்டங்கள்</figcaption></figure>
+        <p class="lead-para">சங்கத் தமிழர் குறிஞ்சி நிலம் என்று போற்றிய மலைச் சாரல்கள், மேகம் தொடும் தேயிலைத் தோட்டங்கள், அமைதியாய் ஒளிரும் நீர்நிலைகள் — இவை இயற்கை நமக்கு அளிக்கும் மௌன கவிதை. புரட்டாசி மாதத்தின் இந்த இதழிலும், அந்த அழகை ஒரு கணம் பார்த்து மனம் நிறைவோம்.</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">13</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  <span class="corner-bl">❈</span></div>
+
+  <!-- அறநிலையச் செய்திகள் — page (placeholder; rebalance will distribute) -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span><span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">அறநிலையச் செய்திகள்</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="section-header">
+        <div class="topic-title">அறநிலைய நிகழ்வுகள் — ஆகஸ்ட்-செப்டம்பர் 2026</div>
+        <div class="topic-subtitle">ஆகஸ்ட்-செப்டம்பர் 2026</div>
+        <div class="section-label-row">
+          <span class="lotus-icon">❀</span>
+          <span class="section-label">அறநிலையச் செய்திகள்</span>
+          <span class="lotus-icon">❀</span>
+        </div>
+        <div class="title-underline"></div>
+      </div>
+      <div class="section-divider">•   •   •</div>
+      <div class="author-byline">க. குமாரவேல்</div>
+      <div class="body-text">
+<div class="activities-image-grid"><figure class="article-figure"><img src="Images/10-header-logo-01.jpeg" alt="10-header-logo-01.jpeg"></figure>
+        <figure class="article-figure"><img src="Images/10-header-logo-02.jpeg" alt="10-header-logo-02.jpeg"></figure>
+        </div><p class="lead-para">பெண்ணாடம் வள்ளலார் அறநிலையம் கடலூர் மாவட்டம் திட்டக்குடி வட்டத்திலுள்ள பெண்ணாடம் என்னும் ஊரில் இயங்கிவரும் ஆதரவற்ற முதியோர் மற்றும் மாணவர் வாழ்விடமாகும்.</p>
+        <p>இவ்வறநிலையம் இங்கு வசிக்கும் முதியவர் மற்றும் மாணவர் நலனை பேணுவதோடு தமிழ்வளர்ச்சி, மருத்துவம், சுற்றுப்புற மாணவர் நலன், சுற்றுச்சூழல் நலன் குறித்து பல்வேறு சமூக தொண்டுகள் ஆற்றும் நிறுவனமாகும். மாணவர்களுக்குப் புத்தகம் வாசிப்பு போன்ற பல்வேறு பயிற்சிகளும் வழங்கப்படுகின்றன.</p>
+        <p>இங்கு மாதந்தோறும், ஆண்டுதோறும் எனப் பல்வேறு நிகழ்வுகள் அறநிலைய வளாகத்திலும், மெய்நிகர் தளத்திலும் நிகழ்கிறது. இந்நிகழ்வுகள் பற்றிய குறிப்புகள் இவ்விதழில் வெளியிடப்படுகிறது. வாய்ப்புள்ள அன்பர்கள் பங்கு கொண்டு பயன் பெறலாம்.</p>
+        <div class="subhead">ஆகஸ்ட்-செப்டம்பர் 2026 மாதம் இலவச ஹோமியோபதி மருத்துவ முகாம்</div>
+        <p>இது மாத பூச தினத்தில் நடைபெறும் நிகழ்வாகும். 11.08.2026 மற்றும் 07.09.2026 ஆகிய இரு தினங்களிலும் இந்நிகழ்வு நடைபெற்றது. தயவு மருத்துவர் அருள் MD, ஹோமியோபதி மருத்துவர் அவர்களால் இலவசமாக மருத்துவம் பார்க்கப்பட்டு மருந்துகளும் இலவசமாக வழங்கப்பட்டது.</p>
+        <p>பெண்ணாடம் சுற்று வட்டாரத்திலுள்ள முதியவர்களும், பொதுமக்களும் இதில் கலந்து கொண்டு பயனடைந்தனர்.</p>
+        <div class="activities-image-grid"><figure class="article-figure"><img src="Images/10-homoeopathy-01.jpeg" alt="இலவச ஹோமியோபதி மருத்துவ முகாம்"></figure>
+        <figure class="article-figure"><img src="Images/10-homoeopathy-02.jpeg" alt="இலவச ஹோமியோபதி மருத்துவ முகாம்"></figure>
+        <figcaption class="img-caption activities-grid-caption">இலவச ஹோமியோபதி மருத்துவ முகாம்</figcaption></div><div class="subhead">மாதப்பூசம் — விளக்கு வழிபாடு மற்றும் அன்னதானம் — ஆகஸ்ட்-செப்டம்பர் 2026</div>
+        <div class="activities-image-grid"><figure class="article-figure"><img src="Images/10-poosam-01.jpeg" alt="மாதப்பூசம் விளக்கு வழிபாடு"></figure>
+        <figure class="article-figure"><img src="Images/10-poosam-02.jpeg" alt="மாதப்பூசம் விளக்கு வழிபாடு"></figure>
+        <figcaption class="img-caption activities-grid-caption">மாதப்பூசம் விளக்கு வழிபாடு</figcaption></div><figure class="article-figure img-half"><img src="Images/10-poosam-03.jpeg" alt="மாதப்பூசம் அன்னதானம்"><figcaption class="img-caption">மாதப்பூசம் அன்னதானம்</figcaption></figure>
+        <p>11.08.2026 செவ்வாய்க்கிழமை அன்று ஆடி மாத நிகழ்வும் 07.09.2026 திங்கட்கிழமையன்று ஆவணி மாத பூச நிகழ்வும் இனிதே நடைபெற்றன. இவ்விரு தினங்களிலும் விளக்கு வழிபாடு நடைபெற்றது. பெண்ணாடம் சுற்று வட்டாரத்திலுள்ள மகளிர் கலந்து கொண்டனர். வழிபாட்டுக்கு தேவையான பொருட்களை அறநிலையமே வழங்கியது. வழிபாட்டின் நிறைவில் பொது மக்களுக்கும் கலந்து கொண்டோருக்கும் அன்னதானம் வழங்கப்பட்டது.</p>
+        <div class="subhead">அறநிலையத்தில் 80-வது சுதந்திர தின விழா — 15.08.2026</div>
+        <div class="activities-image-grid"><figure class="article-figure"><img src="Images/10-independence-01.jpeg" alt="அறநிலையத்தில் 80-வது சுதந்திர தின விழா"></figure>
+        <figure class="article-figure"><img src="Images/10-independence-02.jpeg" alt="அறநிலையத்தில் 80-வது சுதந்திர தின விழா"></figure>
+        <figcaption class="img-caption activities-grid-caption">அறநிலையத்தில் 80-வது சுதந்திர தின விழா</figcaption></div><p>அறநிலைய வளாகத்தில் 15.08.2026 அன்று 80-வது சுதந்திர தின விழா சிறப்பாகக் கொண்டாடப்பட்டது. தயவு திரு.சுப்பிரமணி ஐயா தேசியக் கொடி ஏற்றிவைத்து சிறப்புரை ஆற்றினார்கள். மாணவர்களுக்கும் பல்வேறு போட்டிகள் நடத்தப்பட்டு பரிசுகளும் வழங்கப்பட்டது.</p>
+        <div class="subhead">NMMS வகுப்பு மற்றும் கணினி வகுப்பு — ஆகஸ்ட்-செப்டம்பர் 2026</div>
+        <div class="activities-image-grid"><figure class="article-figure"><img src="Images/10-nmms-01.jpeg" alt="NMMS தேர்வு பயிற்சி வகுப்பு"></figure>
+        <figure class="article-figure"><img src="Images/10-nmms-02.jpeg" alt="கணினி பயிற்சி வகுப்பு"></figure>
+        <figure class="article-figure"><img src="Images/10-nmms-04.jpeg" alt="பயிற்சி முடித்த மாணவர்கள் — சான்றிதழ் வழங்கல்"></figure>
+        <figcaption class="img-caption activities-grid-caption">NMMS தேர்வு பயிற்சி வகுப்பு</figcaption></div><p>NMMS தேர்வு என்பது அரசு மற்றும் அரசு உதவி பெறும் பள்ளியில் படிக்கும் ஏழை மாணவர்கள் மாதந்தோறும் ரூபாய் 1000 உதவி தொகை பெறுவதற்காக அரசால் நடத்தப்படும் ஒரு தேர்வு ஆகும். இதில் வெற்றிபெறும் மாணவர்கள் 8-ம் வகுப்பிலிருந்து 12-ம் வகுப்பு வரை மாதந்தோறும் ரூபாய் 1000 கல்வி உதவித் தொகை பெற முடியும். பெண்ணாடம் சுற்றுவட்டாரத்திலுள்ள ஏழை குடும்பங்களின் நலன் கருதி இல்லத்தில் NMMS தேர்வுக்கான பயிற்சி ஞாயிற்றுக்கிழமைகளில் நடைபெறுகிறது. இதில் அரசு மற்றும் அரசு உதவி பெறும் பள்ளி மாணவர்கள் கலந்து கொண்டு தேர்வுக்குத் தயாராகிறார்கள்.</p>
+        <p>ஏழை மாணவர்கள் அடிப்படை கணினி அறிவு பெற வேண்டும் என்ற நோக்கில் ஞாயிற்றுக் கிழமைகளில் அறநிலைய மாணவர்கள் மட்டுமில்லாமல் வெளி மாணவர்களுக்கும் அடிப்படைக் கணினி பயிற்சி அளிக்கப்படுகிறது.</p>
+        <div class="subhead">அறநிலையத்தை பார்வையிட வந்த ஆறுமுக பள்ளி மாணவர்கள் — செப்டம்பர் 2026</div>
+        <div class="activities-image-grid"><figure class="article-figure"><img src="Images/10-school-visit-01.jpeg" alt="அறநிலையத்தைப் பார்வையிட்ட ஆறுமுக பள்ளி மாணவர்கள்"></figure>
+        <figure class="article-figure"><img src="Images/10-school-visit-02.jpeg" alt="அறநிலையத்தைப் பார்வையிட்ட ஆறுமுக பள்ளி மாணவர்கள்"></figure>
+        <figcaption class="img-caption activities-grid-caption">அறநிலையத்தைப் பார்வையிட்ட ஆறுமுக பள்ளி மாணவர்கள்</figcaption></div><p>திட்டக்குடி ஆறுமுக மெட்ரிக் பள்ளியில் UKG படிக்கும் 68 குழந்தைகள் செப்டம்பர் 1-ம் தேதி அறநிலையத்தைப் பார்வையிட்டுச் சென்றனர். மாணவர்களுக்குத் தின்பண்டமும், அறவுரையும் வழங்கப்பட்டது.</p>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">14</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  <span class="corner-bl">❈</span></div>
+
+  <!-- அடுத்த இதழில் — page (placeholder; rebalance will distribute) -->
+  <div class="page">
+    <div class="glossy"></div>
+    <span class="corner-tl">❈</span>
+    <span class="corner-tr">❈</span><span class="corner-br">❈</span>
+    <div class="page-header">
+      <span class="section-name">அடுத்த இதழில்</span>
+      <span class="mag-name">வான் வளரொளி இதழ்</span>
+    </div>
+    <div class="content-area">
+      <div class="section-header">
+        <div class="topic-title">கார்த்திகை 2026 — இதழ் 4</div>
+        <div class="topic-subtitle">அடுத்த இதழில் • வாசகர் குரல்</div>
+        <div class="section-label-row">
+          <span class="lotus-icon">❀</span>
+          <span class="section-label">அடுத்த இதழில்</span>
+          <span class="lotus-icon">❀</span>
+        </div>
+        <div class="title-underline"></div>
+      </div>
+      <div class="section-divider">•   •   •</div>
+      <div class="author-byline">ஆசிரியர் குழு</div>
+      <div class="body-text">
+<div class="subhead">வாசகர் குரல்</div>
+        <p class="lead-para">ஆடி இதழுக்குப் பின் வாசகர்களிடமிருந்து வந்த கருத்துகளில் சில:</p>
+        <ul><li>"வான் வளரொளி ஆடி 2026 இதழ் தமிழ், அறம், இலக்கியம், வரலாறு, இயற்கை, கலை, மனிதநேயம் ஆகியவற்றை அழகாக இணைக்கிறது. தலையங்கம் “யாதும் ஊரே” சிந்தனையையும் சங்ககால அறவாழ்வையும் நினைவூட்டுகிறது; பாரி–பேகன் கொடை, திறந்த ஜன்னல் சிறுகதை, மலர் சூடிய நாகரிகம், தமிழர் சிற்பக்கலை (கீழடி முதலான தொல்லியல் சான்றுகள்), தமிழர் வீரம் மதிப்புரை ஆகியவை சிறப்பு. இதுவரை தெரியாத நிறைய தகவல்கள் இதில் உள்ளன. தமிழர் பெருமையோடு அறம், அன்பு, இயற்கை நேயம், கொடை, ஒழுக்கத்தை அன்றாட வாழ்வில் கடைப்பிடிக்கத் தூண்டும், வாசிக்கவும் சிந்திக்கவும் ஏற்ற அருமையான தமிழ் இதழ்." — <strong>கோவை ஜெயலட்சுமி அம்மா</strong></li><li>"வான் வளரொளி மின்னிதழைப் படித்தேன்; முதல் இதழையும் படிக்கத் தூண்டியது. தமிழின் தொன்மை, கீழடி ஆராய்ச்சியின் அற்புதம் ஆகியவை மீதமுள்ள ஆய்வுக்கு அரசைத் தூண்டும் பணியை அறநிலையம் முன்வைக்க வேண்டும். நடுகல், தமிழர் வீரம் கட்டுரைகள் “தமிழ் இன்பம்” நூலைப் படிக்கத் தூண்டுகின்றன. கருத்துச் செறிவு மிக்க அற்புதமான நூல்; நல்ல முயற்சி. மனம் நிறைந்த பாராட்டுகள்." — <strong>தேன்மொழி லோகநாதன் அம்மா</strong></li><li>"பொறுப்பாசிரியர் தலையங்கம் தமிழர் அறநெறி, பொற்கால வாழ்வு மற்றும் அடுத்த தலைமுறைக்குக் கடமை ஆற்ற வழிகாட்டியது; “யாதும் ஊரே யாவரும் கேளிர்” வரிகள் உள்ளத்தைத் தொட்டன. பாரி–வேளிர் கொடை, புதுமைப்பித்தன் சிறுகதை மற்றும் குறிஞ்சிப் பாடல் இசைவு ஆகியவை மனதை உயர்த்தின; அறம் செய்யத் தூண்டும் அருமையான இதழ்." — <strong>சித்ரா பிரபாகரன் அம்மா</strong></li></ul>
+        <p>கார்த்திகை இதழில் மனம் தொடரின் அடுத்த பகுதியும், ஓர் ஒழுக்கத்தின் அடுத்த பாடமும் வரும்; நீங்கள் கண்ட ஒரு மலரின் பெயரை எழுதி அனுப்புங்கள்.</p>
+        <div class="highlights-box"><div class="box-title">இதழில் பங்களிக்க / தொடர்புகொள்ள</div><ul><li>கட்டுரைகள், கவிதைகள், இயற்கைப் படங்கள் அனுப்பலாம்</li><li>மின்னஞ்சல்: vallalararanilayampdm@gmail.com</li><li>WhatsApp: +91 97880 33666</li><li>வலையொளி: https://www.youtube.com/@pennadamvallalararanilayam</li><li>அடுத்த இதழ் வெளியீடு: கார்த்திகை 2026 — டிசம்பர் 2026</li></ul></div>
+        <div class="closing"><p>வான் வளரொளி இதழின் மூன்றாம் பயணம் இங்கே நிறைவுபெறுகிறது. உங்கள் வாசிப்பும் ஆதரவும் இந்த அறப்பணியைத் தொடர வைக்கும். மீண்டும் கார்த்திகையில் சந்திப்போம்!</p><div class="lotus-end">❀</div></div>
+      </div>
+    </div>
+    <div class="page-footer">
+      <span class="issue-info">இதழ் எண்: 3  |  புரட்டாசி 2026</span>
+      <span class="page-number">15</span>
+      <img class="van-logo-footer" src="Images/van-logo.jpg" alt="VAN">
+    </div>
+  <span class="corner-bl">❈</span></div>
+
+</body>
+</html>
