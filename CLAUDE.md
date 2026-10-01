@@ -490,6 +490,14 @@ A first attempt at a fix measured only `.section-header`'s own height and used i
 **Rule:** when a "fix" to an estimation constant produces *zero* measured change, don't assume the constant wasn't the problem — check whether the *replacement measurement* is actually capturing everything the constant was standing in for. Enumerate the real DOM children of the relevant container before assuming you know its structure from a CSS class name alone.
 **Also folded into this same pass:** the Playwright measurement pass in `rebalance_sections.py` never called `page.emulate_media(media='print')` (Lesson 11's rule) — added defensively to both measurement passes in that file, though the header-region fix above was the one that actually resolved the symptom this time.
 
+### ❌ Lesson 14 — A bounding-box/border check doesn't catch float-driven text-line indentation
+On an Issue 03 page, a `.subhead` ("4. குடைவரைக் கோவிலிலிருந்து கற்றளிக்கு") sat right after a `<p>`/`<ul>` that itself followed a taller `img-left` floated image. The subhead's text visibly started ~500px right of the page margin, while the subhead above it started flush left — reported by Gowri from a screenshot.
+
+First diagnostic pass checked the `.subhead` element's bounding box via Playwright `getBoundingClientRect()` and pixel-scanned the `border-left` accent bar's x-position — both were identical to the correctly-positioned subhead. Concluded "no issue," reverted the speculative `clear: both` fix. Wrong: a block element's border/box edge is unaffected by a float — only the *line boxes* (actual text) inside it get squeezed and pushed to the side away from an still-active float. The float (taller than the preceding list) was still intruding vertically when the subhead rendered, so its border stayed at the margin while its text line didn't.
+
+Second pass pixel-scanned for the first dark-text-colored pixel (not the bar's lighter accent color) per row and found the real ~500px gap, confirming the bug.
+**Rule:** when diagnosing a reported visual shift near a float, measure the actual glyph/text start position, not just the element's box or border — `getBoundingClientRect()` and a border/background pixel scan will both report the unshifted box position even when the text inside is visibly indented by a float. Fix: `clear: both` on `.subhead` so it always starts on a fresh line below any preceding float.
+
 ### ℹ️ Note — WeasyPrint was evaluated and rejected for PDF generation
 When asked to switch the PDF step to WeasyPrint, we recommended staying on the Playwright-based `build_text_pdf.py` instead: WeasyPrint substitutes fonts it can't find (risk of breaking Tamil glyph rendering) and computes `height:auto` layout independently of the Playwright-measured HTML the rebalance step already tuned, reopening every pagination bug this section describes. Playwright renders with the same Chromium engine used for measurement, so what was measured is what gets printed.
 

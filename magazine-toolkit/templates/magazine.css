@@ -701,6 +701,7 @@
       padding-left: 3.5mm;
       border-left: 3pt solid var(--van-primary);
       line-height: 1.4;
+      clear: both;
     }
 
     /* Poem / kural block: centre the unit on the page, but keep every
