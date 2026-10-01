@@ -37,4 +37,4 @@ magazine-toolkit/source/**
 magazine-toolkit/output/*.pdf
 
 # magazine-toolkit per-issue draft-intake staging (raw author docx before MMD conversion)
-magazine-toolkit/issues/*/_drafts/
+magazine-toolkit/issues/**/_drafts/
