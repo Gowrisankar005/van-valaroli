@@ -7,22 +7,22 @@
   "special_label": "",
 
   "next_issue": {
-    "tamil_month": "மார்கழி",
-    "year": 2026
+    "tamil_month": "தை",
+    "year": 2027
   },
 
   "sections": [
     {"file": "01-thalaiyangam.md",     "section_name": "தலையங்கம்",           "topic_title": "(TBD)"},
     {"file": "02-thirukkural.md",      "section_name": "திருக்குறள் ஆய்வு",   "topic_title": "(TBD)"},
-    {"file": "03-sirukathai.md",       "section_name": "சிறுகதை",             "topic_title": "(TBD)"},
-    {"file": "04-sangailakkiyam.md",   "section_name": "சங்க இலக்கியம்",      "topic_title": "(TBD)"},
+    {"file": "03-sirukathai.md",       "section_name": "சிறுகதை",             "topic_title": "(TBD — open: another author, or the next புதுமைப்பித்தன் story)"},
+    {"file": "04-sangailakkiyam.md",   "section_name": "சங்க இலக்கியம்",      "topic_title": "(TBD — a flower a reader names)"},
     {"file": "05-kalai.md",            "section_name": "தமிழகக் கலைகள்",      "topic_title": "(TBD)"},
     {"file": "06-nool-mathippurai.md", "section_name": "நூல் மதிப்புரை",      "topic_title": "(TBD)"},
-    {"file": "07-ozhukkam.md",         "section_name": "ஓர் ஒழுக்கம்",        "topic_title": "(TBD)"},
-    {"file": "08-manam.md",            "section_name": "மனம் தொடர்",          "topic_title": "(TBD) — பகுதி 3"},
+    {"file": "07-ozhukkam.md",         "section_name": "ஓர் ஒழுக்கம்",        "topic_title": "(TBD — 4th of the 28; name not chosen)"},
+    {"file": "08-manam.md",            "section_name": "மனம் தொடர்",          "topic_title": "(TBD — பகுதி 3, மனமும் உள்ளமும்)"},
     {"file": "09-iyarkai.md",          "section_name": "இயற்கை தரும் இன்பம்", "topic_title": "(TBD)"},
     {"file": "10-activities.md",       "section_name": "அறநிலையச் செய்திகள்", "topic_title": "அறநிலைய நிகழ்வுகள் — அக்டோபர்-நவம்பர் 2026"},
-    {"file": "11-closing.md",          "section_name": "அடுத்த இதழில்",       "topic_title": "மார்கழி 2026 — இதழ் 5"}
+    {"file": "11-closing.md",          "section_name": "அடுத்த இதழில்",       "topic_title": "தை 2027 — இதழ் 5"}
   ],
 
   "masthead": {
@@ -31,5 +31,5 @@
     "email":     "vallalararanilayampdm@gmail.com"
   },
 
-  "_notes": "SCAFFOLD ONLY — no real article content yet. Topics are (TBD); check the rotation tracker in root CLAUDE.md PART 6 before assigning, and update the sections list as topics are confirmed. தொகுப்பாசிரியர்கள் and default masthead logos come from magazine-toolkit/magazine_defaults.json."
+  "_notes": "SCAFFOLD ONLY — no real article content yet. Replace every (TBD) topic_title before a real build; cover teasers are built from these strings. Next issue is தை 2027 because the release after 1 டிசம்பர் 2026 is 1 பிப்ரவரி 2027, and that date falls in தை. Check the rotation tracker in root CLAUDE.md PART 6 before assigning topics. தொகுப்பாசிரியர்கள் and default masthead logos come from magazine-toolkit/magazine_defaults.json."
 }

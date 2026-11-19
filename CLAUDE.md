@@ -381,15 +381,15 @@ Every article should sound like a wise, warm, learned elder — not a textbook, 
 | Section | Issue 1 (வைகாசி 2026) | Issue 2 (ஆடி 2026) | Issue 3 (புரட்டாசி 2026 — released Oct 2026) | Issue 4 (கார்த்திகை 2026 — release 1 Dec 2026) |
 |---|---|---|---|---|
 | திருக்குறள் ஆய்வு | அறிவுடைமை — பத்துக் குறட்பாக்கள் | அறம் செய விரும்பு — பாரி · பேகன் (கடையெழு வள்ளல்கள்), குறள் 211 | ஆறுவது சினம் — நாவினால் சுட்ட வடு (குறள் 129, 305, 306) | TBD |
-| சிறுகதை | பால்வண்ணம் பிள்ளை — புதுமைப்பித்தன் | திறந்த ஜன்னல் — புதுமைப்பித்தன் (மணிக்கொடி, 1934) | கட்டில் பேசுகிறது — புதுமைப்பித்தன் (மணிக்கொடி, 1934) | TBD (Pudhumaipithan series — next story) |
+| சிறுகதை | பால்வண்ணம் பிள்ளை — புதுமைப்பித்தன் | திறந்த ஜன்னல் — புதுமைப்பித்தன் (மணிக்கொடி, 1934) | கட்டில் பேசுகிறது — புதுமைப்பித்தன் (மணிக்கொடி, 1934) | TBD (open: another author, or the next புதுமைப்பித்தன் story) |
 | தமிழகக் கலைகள் | கோயிற் கட்டிடக்கலை — ஓர் அறிமுகம் | தமிழர் சிற்பக்கலையின் தொன்மை — கீழடி, ஆதிச்சநல்லூர், நடுகற்கள் | மரம் முதல் கற்றளி வரை (Issue 02 தொடர்ச்சி) | TBD (continue series?) |
-| சங்க இலக்கியம் | தாமரை மலரின் அறச்செய்தி (Lotus) | மலர் சூடிய நாகரிகம் — சங்க இலக்கியத்தில் மலர்களின் பெருமையும் அறமும் | காந்தள் மலரின் அறம் — செங்காந்தள் (தமிழ்நாட்டின் மாநில மலர்) | TBD |
-| ஓர் ஒழுக்கம் | அதிகாலை துயில் எழல் — வள்ளலாரின் நெறி | மல சலம் கழித்தல் — எருவாய்க்கான ஒழுக்கம் | தந்த சுத்தி — வழலை நீக்கல் | TBD (next lesson) |
+| சங்க இலக்கியம் | தாமரை மலரின் அறச்செய்தி (Lotus) | மலர் சூடிய நாகரிகம் — சங்க இலக்கியத்தில் மலர்களின் பெருமையும் அறமும் | காந்தள் மலரின் அறம் — செங்காந்தள் (தமிழ்நாட்டின் மாநில மலர்) | TBD (a flower a reader names) |
+| ஓர் ஒழுக்கம் | அதிகாலை துயில் எழல் — வள்ளலாரின் நெறி | மல சலம் கழித்தல் — எருவாய்க்கான ஒழுக்கம் | தந்த சுத்தி — வழலை நீக்கல் | TBD (4th of the 28; name not chosen) |
 | நூல் மதிப்புரை | வாசிப்பது எப்படி? — செல்வேந்திரன் | தமிழர் வீரம் — முனைவர் ரா.பி. சேதுப்பிள்ளை | வள்ளலார் பார்வையில் சனாதனம் | TBD |
-| மனம் தொடர் | Not started (teaser only) | மனதின் இயல்பு (Part 1) — shipped | மனம் எனும் ஏணி (Part 2) — series continues | TBD (Part 3) |
-| இயற்கை தரும் இன்பம் | Not started | Photo essay — shipped (new section, added mid-issue) | குறிஞ்சி நிலம் — மலையும் ஏரியும் |
+| மனம் தொடர் | Not started (teaser only) | மனதின் இயல்பு (Part 1) — shipped | மனம் எனும் ஏணி (Part 2) — series continues | TBD (Part 3 — மனமும் உள்ளமும்) |
+| இயற்கை தரும் இன்பம் | Not started | Photo essay — shipped (new section, added mid-issue) | குறிஞ்சி நிலம் — மலையும் ஏரியும் | TBD |
 
-Note: சிறுகதை is an ongoing series of Pudhumaipithan's classic short stories (Issues 1–3) — accepted by Gowri, no reprint flag needed. Keep the classic text as written.
+Note: Issues 1–3 சிறுகதை are புதுமைப்பித்தன், accepted by Gowri; keep a reprinted classic's original words. Issue 4 fiction is still open (Issue 03 plan, editorial note E7). Issue 03's closing page promised three continuations: மனம் தொடர் Part 3 (ம. அபிராமி), the 4th ஒழுக்கம் (ஏ. ஹரிஹரன்), and a reader-named flower for சங்க இலக்கியம் — not தாமரை, Issue 02's flower essay, or செங்காந்தள்.
 
 ---
 
